@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site.config'
+import { brl, plans } from '../lib/plans'
 
 /** Resumo para assistentes de IA (llms.txt): o que o produto faz e não faz, e onde está o conteúdo. */
 export const GET: APIRoute = async () => {
@@ -12,6 +13,10 @@ export const GET: APIRoute = async () => {
     '',
     'O MinhaOS App é um aplicativo web (instalável no celular como PWA) para prestadores de serviço autônomos e pequenas empresas: registro de serviços com datas, quantidades e valores; fechamento mensal por cliente; demonstrativo de cobrança com link público, registro de acessos e confirmação de recebimento pelo cliente; anexo de notas fiscais emitidas fora do sistema; registro manual de recebimentos e saldos; relatórios e exportação CSV.',
     'Não emite nota fiscal, não processa pagamentos e não é banco.',
+    '',
+    '## Planos',
+    ...plans.map((p) => `- ${p.name} (${p.monthly === 0 ? 'R$ 0' : `${brl(p.monthly, false)}/mês; anual com 20% de desconto`}): ${p.tagline}. ${p.features.join('; ')}.`),
+    `- Comparação completa: ${site.url}/planos/`,
     '',
     '## Guias',
     ...guias.map((g) => `- [${g.data.h1}](${site.url}/guias/${g.id}/): ${g.data.description}`),

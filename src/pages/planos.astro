@@ -1,0 +1,467 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Cta from '../components/Cta.astro'
+import Base from '../layouts/Base.astro'
+import { annualDiscount, annualMonthly, annualTotal, brl, compare, offersLd, plans } from '../lib/plans'
+import { breadcrumbLd, faqLd, graph, organizationLd, softwareLd } from '../lib/seo'
+import { links, site } from '../site.config'
+
+const path = '/planos/'
+const title = 'Planos e preços do MinhaOS App'
+const description =
+  'Comece grátis e evolua quando precisar. Compare os planos Grátis, Profissional (R$ 49/mês) e Negócios (R$ 99/mês): limites, recursos e perguntas comuns.'
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Planos e preços', href: path },
+]
+const pct = Math.round(annualDiscount * 100)
+
+const incluso = [
+  'Registro de serviços com datas, quantidades e valores, sem limite de lançamentos',
+  'Fechamento mensal por cliente, sem cobrar o mesmo lançamento duas vezes',
+  'Demonstrativo de cobrança numerado, com impressão em A4 e PDF',
+  'Link para o cliente abrir sem criar conta e confirmar o recebimento',
+  'Recebimentos registrados por você, com saldo em aberto e atrasos',
+  'Painel do mês: executado, a faturar, faturado e recebido',
+  'Funciona no navegador e instalado no celular (Android e iPhone)',
+  'Dados da sua conta separados dos de qualquer outra',
+]
+
+const faq = [
+  {
+    q: 'O plano Grátis tem prazo?',
+    a: 'Não. Ele vale enquanto você quiser, dentro dos limites de 10 clientes ativos e 5 demonstrativos por mês. Não pedimos cartão de crédito para criar a conta.',
+  },
+  {
+    q: 'O que acontece se eu passar do limite do plano?',
+    a: 'Você continua acessando tudo o que já registrou. Para emitir novos demonstrativos ou cadastrar novos clientes além do limite, basta mudar para o plano seguinte; a mudança vale na hora.',
+  },
+  {
+    q: 'Como funciona o desconto do plano anual?',
+    a: `No anual você paga 12 meses de uma vez com ${pct}% de desconto: o Profissional sai por ${brl(annualTotal(49))} por ano (${brl(annualMonthly(49))} por mês) e o Negócios por ${brl(annualTotal(99))} por ano (${brl(annualMonthly(99))} por mês).`,
+  },
+  {
+    q: 'Posso cancelar quando quiser?',
+    a: 'Sim. O cancelamento é feito no próprio aplicativo, sem multa. No plano mensal, você mantém os recursos até o fim do período já pago. Seus registros continuam acessíveis no plano Grátis, dentro dos limites dele.',
+  },
+  {
+    q: 'Posso trocar de plano depois?',
+    a: 'Sim, para cima ou para baixo, a qualquer momento, dentro do aplicativo. Ao subir de plano, os novos recursos ficam disponíveis imediatamente.',
+  },
+  {
+    q: 'Se eu voltar para o Grátis, perco meus dados?',
+    a: 'Não. Clientes, serviços, demonstrativos e recebimentos continuam na sua conta. O que muda são os limites: por exemplo, novos demonstrativos passam a valer a cota de 5 por mês, e os anexos acima de 100 MB ficam disponíveis para download, mas não dá para enviar novos até liberar espaço.',
+  },
+  {
+    q: 'A marca “organizado com MinhaOS” aparece para o meu cliente?',
+    a: 'No plano Grátis, sim: uma linha discreta no rodapé do demonstrativo. Nos planos Profissional e Negócios o documento sai sem a marca e com o seu logo.',
+  },
+  {
+    q: 'Os planos incluem emissão de nota fiscal ou recebimento de pagamentos?',
+    a: 'Não, em nenhum plano. A nota fiscal continua sendo emitida no sistema da prefeitura ou no emissor nacional, e você pode anexar o arquivo ao demonstrativo. Pagamentos são registrados por você; o MinhaOS App não processa cobranças nem gera boleto ou Pix.',
+  },
+  {
+    q: 'Quais formas de pagamento da assinatura?',
+    a: 'As formas de pagamento disponíveis e as condições aparecem na tela de assinatura, dentro do aplicativo. Os preços são em reais.',
+  },
+]
+
+const software = { ...softwareLd, offers: offersLd(softwareLd['@id']) }
+const ld = graph(organizationLd, software, breadcrumbLd(crumbs), faqLd(faq))
+const signup = (key: string) => `${links.signup}?plano=${key}`
+---
+
+<Base title={title} description={description} path={path} jsonLd={ld}>
+  <section class="hero">
+    <div class="container">
+      <Breadcrumbs items={crumbs} />
+      <span class="eyebrow">Planos e preços</span>
+      <h1>Comece grátis. Pague só quando a cobrança virar rotina.</h1>
+      <p class="lead">
+        Os três planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está em quantos clientes e documentos você emite, em como a cobrança chega ao cliente e em quem mais trabalha na conta.
+      </p>
+
+      <fieldset class="toggle" aria-label="Período de cobrança">
+        <legend class="sr-only">Período de cobrança</legend>
+        <label><input type="radio" name="billing" value="monthly" checked /> <span>Mensal</span></label>
+        <label><input type="radio" name="billing" value="annual" /> <span>Anual <small>−{pct}%</small></span></label>
+      </fieldset>
+    </div>
+  </section>
+
+  <section class="container plans" data-billing="monthly" id="planos">
+    {plans.map((p) => (
+      <article class={`plan card${p.highlight ? ' featured' : ''}`} aria-labelledby={`plan-${p.key}`}>
+        {p.highlight && <span class="badge">Mais escolhido</span>}
+        <h2 id={`plan-${p.key}`}>{p.name}</h2>
+        <p class="tagline">{p.tagline}</p>
+        {p.monthly === 0 ? (
+          <p class="price"><span class="amount">R$ 0</span><span class="per">para sempre</span></p>
+        ) : (
+          <div class="prices">
+            <p class="price m"><span class="amount">{brl(p.monthly, false)}</span><span class="per">/mês</span></p>
+            <p class="price a">
+              <span class="amount">{brl(annualMonthly(p.monthly))}</span><span class="per">/mês</span>
+              <span class="note">{brl(annualTotal(p.monthly))} cobrados por ano</span>
+            </p>
+          </div>
+        )}
+        <p class="audience muted">{p.audience}</p>
+        <a href={signup(p.key)} class={`btn ${p.highlight ? 'btn-primary' : 'btn-secondary'}`}>{p.cta}</a>
+        <ul class="feats">
+          {p.features.map((f) => (
+            <li>
+              <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l3.5 3.5L16 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <span>{f}</span>
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </section>
+
+  <section class="section section-muted">
+    <div class="container">
+      <h2>Todos os planos incluem</h2>
+      <ul class="incluso">
+        {incluso.map((i) => <li>{i}</li>)}
+      </ul>
+      <p class="small">O MinhaOS App não emite nota fiscal nem processa pagamentos em nenhum plano. Veja o que ele faz em detalhe em <a href="/funcionalidades/">Funcionalidades</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Comparação completa</h2>
+      <p class="muted">Tudo o que muda de um plano para o outro, item a item.</p>
+      <p class="small swipe-hint" aria-hidden="true">Deslize a tabela para o lado para ver os outros planos →</p>
+      <div class="table-wrap">
+        <table class="compare">
+          <thead>
+            <tr>
+              <th scope="col">Recurso</th>
+              {plans.map((p) => <th scope="col">{p.name}</th>)}
+            </tr>
+          </thead>
+          {compare.map((g) => (
+            <tbody>
+              <tr class="group"><th scope="rowgroup" colspan="4">{g.title}</th></tr>
+              {g.rows.map((r) => (
+                <tr>
+                  <th scope="row">{r.label}</th>
+                  {r.values.map((v) =>
+                    typeof v === 'boolean' ? (
+                      <td class={v ? 'yes' : 'no'}>
+                        {v ? (
+                          <><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l3.5 3.5L16 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr-only">Incluído</span></>
+                        ) : (
+                          <><span aria-hidden="true">—</span><span class="sr-only">Não incluído</span></>
+                        )}
+                      </td>
+                    ) : (
+                      <td>{v}</td>
+                    ),
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          ))}
+        </table>
+      </div>
+      <div class="table-ctas">
+        {plans.map((p) => <a href={signup(p.key)} class={`btn ${p.highlight ? 'btn-primary' : 'btn-secondary'}`}>{p.cta}</a>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container prose faq-wrap">
+      <h2>Perguntas sobre os planos</h2>
+      {faq.map((f) => <details class="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      <p>Outra dúvida? Veja as <a href="/perguntas-frequentes/">perguntas frequentes</a> ou escreva para <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</p>
+    </div>
+  </section>
+
+  <div class="container"><Cta title="Comece pelo plano Grátis" text="Crie a conta, registre o primeiro serviço e emita um demonstrativo hoje. Mude de plano só quando precisar de mais." /></div>
+</Base>
+
+<script>
+  const root = document.getElementById('planos')
+  const radios = document.querySelectorAll<HTMLInputElement>('input[name="billing"]')
+  radios.forEach((r) =>
+    r.addEventListener('change', () => {
+      if (r.checked && root) root.dataset.billing = r.value
+    }),
+  )
+</script>
+
+<style>
+  .hero {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding-block: 24px 40px;
+  }
+  .hero h1 {
+    max-width: 22ch;
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--text-2);
+    max-width: 62ch;
+  }
+  .toggle {
+    display: inline-flex;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    border-radius: 999px;
+    padding: 4px;
+    margin: 8px 0 0;
+    gap: 2px;
+  }
+  .toggle label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 18px;
+    border-radius: 999px;
+    font-weight: 600;
+    color: var(--text-2);
+    cursor: pointer;
+  }
+  .toggle label:has(input:checked) {
+    background: var(--navy);
+    color: #fff;
+  }
+  .toggle label:has(input:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .toggle input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+  }
+  .toggle small {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--teal-bright);
+  }
+  .toggle label:not(:has(input:checked)) small {
+    color: var(--teal);
+  }
+
+  .plans {
+    display: grid;
+    gap: 20px;
+    padding-block: 40px 16px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .plans {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .plan {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 26px 24px;
+  }
+  .plan.featured {
+    border: 2px solid var(--teal);
+    box-shadow: 0 16px 48px rgb(15 118 110 / 0.14);
+  }
+  .badge {
+    position: absolute;
+    top: -13px;
+    left: 24px;
+    background: var(--teal);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 999px;
+  }
+  .plan h2 {
+    margin: 0 0 4px;
+    font-size: 24px;
+  }
+  .tagline {
+    margin: 0 0 16px;
+    color: var(--text-2);
+    font-size: 15px;
+  }
+  .price {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .amount {
+    font-size: 40px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .per {
+    color: var(--text-2);
+    font-weight: 500;
+  }
+  .note {
+    flex-basis: 100%;
+    font-size: 14px;
+    color: var(--text-3);
+    margin-top: 4px;
+  }
+  .prices .a {
+    display: none;
+  }
+  .plans[data-billing='annual'] .prices .a {
+    display: flex;
+  }
+  .plans[data-billing='annual'] .prices .m {
+    display: none;
+  }
+  .audience {
+    margin: 16px 0 18px;
+    font-size: 15px;
+    min-height: 3lh;
+  }
+  .plan .btn {
+    width: 100%;
+  }
+  .feats {
+    list-style: none;
+    padding: 0;
+    margin: 22px 0 0;
+    display: grid;
+    gap: 10px;
+    font-size: 15px;
+  }
+  .feats li {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+  .feats svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+    color: var(--teal);
+  }
+
+  .incluso {
+    display: grid;
+    gap: 10px 28px;
+    padding-left: 20px;
+    margin: 20px 0 20px;
+  }
+  @media (min-width: 760px) {
+    .incluso {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .swipe-hint {
+    display: none;
+    margin: 12px 0 -8px;
+  }
+  @media (max-width: 760px) {
+    .swipe-hint {
+      display: block;
+    }
+  }
+  .table-wrap {
+    position: relative;
+    overflow-x: auto;
+    margin-top: 20px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .compare {
+    width: 100%;
+    min-width: 720px;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .compare th,
+  .compare td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .compare thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+  }
+  .compare thead th:first-child {
+    width: 38%;
+  }
+  .compare tbody th[scope='row'] {
+    font-weight: 500;
+    color: var(--text);
+  }
+  .compare tbody th[scope='row'],
+  .compare thead th:first-child {
+    position: sticky;
+    left: 0;
+    background: inherit;
+  }
+  .compare tbody th[scope='row'] {
+    background: var(--surface);
+  }
+  .compare tr.group th {
+    background: var(--surface-muted);
+    color: var(--teal-dark);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding-block: 8px;
+    position: static;
+  }
+  .compare td.yes {
+    color: var(--teal);
+  }
+  .compare td.no {
+    color: var(--text-3);
+  }
+  .table-ctas {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  @media (min-width: 760px) {
+    .table-ctas {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .faq-wrap {
+    max-width: 820px;
+  }
+  .faq {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+  .faq summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .faq p {
+    padding: 0 16px 14px;
+    margin: 0;
+  }
+</style>

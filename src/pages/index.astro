@@ -5,6 +5,7 @@ import GuideList from '../components/GuideList.astro'
 import Base from '../layouts/Base.astro'
 import { faqLd, graph, organizationLd, softwareLd, websiteLd } from '../lib/seo'
 import { tools } from '../lib/tools'
+import { brl, plans } from '../lib/plans'
 import { links, site } from '../site.config'
 
 const guias = await getCollection('guias')
@@ -41,10 +42,10 @@ const recursos = [
         <h1>Registre seus serviços, feche o mês e cobre com clareza</h1>
         <p class="lead">O MinhaOS App junta o que você fez, para quem e quanto vale. No fim do mês, gera um demonstrativo profissional que o cliente abre por link — sem planilha, sem caderno, sem cobrança esquecida.</p>
         <div class="cta-row">
-          <a href={links.signup} class="btn btn-primary">Criar conta</a>
+          <a href={links.signup} class="btn btn-primary">Começar grátis</a>
           <a href="/funcionalidades/" class="btn btn-secondary">Ver como funciona</a>
         </div>
-        <p class="small">Funciona no navegador e pode ser instalado no celular.</p>
+        <p class="small">Plano grátis sem cartão de crédito. Funciona no navegador e pode ser instalado no celular.</p>
       </div>
       <figure class="doc" aria-label="Exemplo de demonstrativo de cobrança (dados fictícios)">
         <div class="doc-head">
@@ -84,6 +85,23 @@ const recursos = [
         {recursos.map((r) => <a class="card" href={r.href}><h3>{r.t}</h3><p class="muted small" style="margin:0">{r.d}</p></a>)}
       </div>
       <p class="small" style="margin-top:20px">O MinhaOS App não emite nota fiscal e não processa pagamentos. Você pode anexar a nota emitida no sistema oficial ao demonstrativo, para o cliente baixar.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Planos simples, a partir de R$ 0</h2>
+      <p class="muted">Comece grátis e mude de plano só quando a cobrança virar rotina.</p>
+      <div class="grid grid-3" style="margin-top:24px">
+        {plans.map((p) => (
+          <a class={`card plan${p.highlight ? ' featured' : ''}`} href="/planos/">
+            <h3>{p.name}</h3>
+            <p class="plan-price">{p.monthly === 0 ? 'R$ 0' : `${brl(p.monthly, false)}/mês`}</p>
+            <p class="muted small" style="margin:0">{p.tagline}</p>
+          </a>
+        ))}
+      </div>
+      <p style="margin-top:20px"><a href="/planos/">Comparar os planos em detalhe →</a></p>
     </div>
   </section>
 
@@ -270,6 +288,16 @@ const recursos = [
   }
   .chips a:hover {
     border-color: var(--teal);
+  }
+  .plan.featured {
+    border-color: var(--teal);
+  }
+  .plan-price {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 6px;
+    font-variant-numeric: tabular-nums;
   }
   .faq {
     border: 1px solid var(--border);

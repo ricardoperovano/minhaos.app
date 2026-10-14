@@ -211,7 +211,7 @@ export const features: Feature[] = [
     limits: [
       'O fechamento não é automático: você escolhe o que entra e emite. Não há cobrança recorrente programada.',
       'Cada demonstrativo é de um único cliente.',
-      'O sistema não envia a cobrança sozinho: você compartilha o link por WhatsApp, e-mail ou outro meio.',
+      'No plano Grátis, o sistema não envia a cobrança sozinho: você compartilha o link por WhatsApp, e-mail ou outro meio. O envio por e-mail direto da plataforma, com lembretes automáticos de vencimento e atraso, faz parte dos planos Profissional e Negócios.',
       'Não calcula multa, juros ou descontos automaticamente.',
     ],
     faq: [
@@ -345,7 +345,7 @@ export const features: Feature[] = [
         h2: 'Como enviar o link',
         body: [],
         steps: [
-          'No demonstrativo emitido, abra a aba <strong>Compartilhamento</strong> e gere o link. A validade sugerida vem das suas configurações (de 1 a 365 dias, ou sem expiração), e você pode ajustá-la.',
+          'No demonstrativo emitido, abra a aba <strong>Compartilhamento</strong> e gere o link. A validade sugerida vem das suas configurações (de 1 a 365 dias, ou sem expiração), e você pode ajustá-la nos planos Profissional e Negócios; no plano Grátis a validade é fixa em 30 dias.',
           'Escolha como enviar: <strong>Copiar link</strong>, <strong>Compartilhar pelo WhatsApp</strong> (abre o WhatsApp com uma mensagem pronta; quem envia é você) ou o compartilhamento nativo do celular.',
           'Se quiser conferir o que o cliente verá, use <strong>Pré-visualizar como administrador</strong>, que mostra a mesma página sem contar como acesso.',
         ],
@@ -379,7 +379,7 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'Não envia mensagens automaticamente: o WhatsApp abre com o texto pronto, mas o envio é feito por você.',
+      'Não envia mensagens de WhatsApp automaticamente: o WhatsApp abre com o texto pronto, mas o envio é feito por você. O envio por e-mail com lembretes automáticos existe nos planos Profissional e Negócios.',
       'Os registros de acesso não provam identidade nem leitura.',
       '“Confirmar recebimento” confirma o recebimento do documento, não o pagamento.',
       'Não tem assinatura digital do cliente.',
@@ -403,7 +403,7 @@ export const features: Feature[] = [
       },
       {
         q: 'O link expira?',
-        a: 'Você decide. A validade padrão é configurável de 1 a 365 dias, ou sem expiração, e pode ser ajustada a cada link.',
+        a: 'Nos planos Profissional e Negócios, você decide: a validade padrão é configurável de 1 a 365 dias, ou sem expiração, e pode ser ajustada a cada link. No plano Grátis, os links valem 30 dias.',
       },
     ],
     guides: [
@@ -624,14 +624,14 @@ export const features: Feature[] = [
       {
         h2: 'Exportar em CSV e imprimir',
         body: [
-          'Cada relatório pode ser exportado em <strong>CSV</strong> pronto para abrir no Excel em português: separador ponto e vírgula, vírgula decimal e datas no formato dd/mm/aaaa. A exportação traz sempre o conjunto completo filtrado. Também é possível imprimir em A4, útil para entregar ao contador ou guardar.',
+          'Cada relatório pode ser exportado em <strong>CSV</strong> pronto para abrir no Excel em português: separador ponto e vírgula, vírgula decimal e datas no formato dd/mm/aaaa. A exportação traz sempre o conjunto completo filtrado e está disponível nos planos Profissional e Negócios. Em todos os planos é possível imprimir em A4, útil para entregar ao contador ou guardar.',
         ],
       },
     ],
     limits: [
       'Não é sistema contábil: não calcula impostos nem gera obrigações fiscais.',
       'Não registra despesas, então não substitui um fluxo de caixa completo nem um DRE.',
-      'Não integra com banco ou com o sistema do seu contador; a troca de dados é pelo CSV.',
+      'Não integra com banco ou com o sistema do seu contador; a troca de dados é pelo CSV ou, no plano Negócios, pela exportação completa e pela API com chave.',
     ],
     faq: [
       {
@@ -640,7 +640,7 @@ export const features: Feature[] = [
       },
       {
         q: 'Consigo mandar os relatórios para o meu contador?',
-        a: 'Sim. Exporte em CSV, que abre no Excel com acentos e números corretos, ou imprima em A4 e salve em PDF.',
+        a: 'Sim. Nos planos Profissional e Negócios, exporte em CSV, que abre no Excel com acentos e números corretos. Em qualquer plano, imprima em A4 e salve em PDF.',
       },
       {
         q: 'Os relatórios mostram as despesas do negócio?',

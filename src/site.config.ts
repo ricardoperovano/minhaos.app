@@ -22,6 +22,7 @@ export const links = {
 
 export const nav = [
   { href: '/funcionalidades/', label: 'Funcionalidades' },
+  { href: '/planos/', label: 'Planos' },
   { href: '/para/', label: 'Para quem é' },
   { href: '/guias/', label: 'Guias' },
   { href: '/ferramentas/', label: 'Ferramentas grátis' },

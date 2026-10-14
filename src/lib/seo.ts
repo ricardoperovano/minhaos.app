@@ -39,7 +39,7 @@ export const websiteLd = {
   publisher: { '@id': `${site.url}/#organization` },
 }
 
-/** Descreve o produto sem inventar preço, nota ou avaliações. */
+/** Descreve o produto; os preços vêm de src/lib/plans.ts (sem notas ou avaliações inventadas). */
 export const softwareLd = {
   '@type': 'SoftwareApplication',
   '@id': `${site.url}/#software`,
@@ -50,6 +50,14 @@ export const softwareLd = {
   inLanguage: 'pt-BR',
   description: site.description,
   publisher: { '@id': `${site.url}/#organization` },
+  offers: {
+    '@type': 'AggregateOffer',
+    lowPrice: '0.00',
+    highPrice: '99.00',
+    priceCurrency: 'BRL',
+    offerCount: 3,
+    url: `${site.url}/planos/`,
+  },
 }
 
 export function graph(...nodes: object[]) {
