@@ -1,0 +1,266 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Cta from '../components/Cta.astro'
+import Base from '../layouts/Base.astro'
+import { breadcrumbLd, faqLd, graph, organizationLd } from '../lib/seo'
+import { site } from '../site.config'
+
+interface Item {
+  q: string
+  a: string
+  /** Link opcional para aprofundar (só páginas do próprio site). */
+  link?: { href: string; label: string }
+}
+interface Grupo {
+  id: string
+  titulo: string
+  itens: Item[]
+}
+
+const grupos: Grupo[] = [
+  {
+    id: 'sobre-o-app',
+    titulo: 'O que o MinhaOS App faz',
+    itens: [
+      {
+        q: 'O que é o MinhaOS App?',
+        a: 'É um aplicativo web para prestadores de serviço — autônomos, MEI e pequenas empresas — registrarem os serviços que executam, fazerem o fechamento do mês por cliente e enviarem um demonstrativo de cobrança com link para o cliente consultar e confirmar que recebeu o documento.',
+      },
+      {
+        q: 'Para quem o MinhaOS App foi feito?',
+        a: 'Para quem cobra por hora, visita, diária, unidade ou serviço e precisa juntar vários atendimentos em uma cobrança: eletricistas, técnicos, encanadores, diaristas, jardineiros, consultores, professores particulares, designers e outros prestadores.',
+        link: { href: '/para/', label: 'Veja exemplos por profissão' },
+      },
+      {
+        q: 'Como funciona o registro de serviços?',
+        a: 'Cada serviço tem título, descrição e uma ou mais linhas de execução. Cada linha tem data, descrição, unidade (hora, unidade, diária, visita ou serviço), quantidade com até quatro casas decimais e valor unitário. O total da linha é quantidade × valor, arredondado em centavos. Há um campo de observação para o cliente e outro, separado, para observações internas.',
+        link: { href: '/funcionalidades/registro-de-servicos/', label: 'Registro de serviços' },
+      },
+      {
+        q: 'Como funciona o fechamento mensal?',
+        a: 'Você escolhe o cliente e o período, e o aplicativo mostra os lançamentos que ainda podem ser cobrados. Você seleciona e revisa. Um lançamento já faturado não pode ser cobrado de novo, e um rascunho de fechamento reserva os lançamentos selecionados para não entrarem em outra cobrança.',
+        link: { href: '/funcionalidades/fechamento-mensal/', label: 'Fechamento mensal' },
+      },
+      {
+        q: 'O demonstrativo de cobrança é uma nota fiscal?',
+        a: 'Não. O demonstrativo mostra ao cliente o que está sendo cobrado: número, cliente, período, data de emissão, vencimento, itens e total. Depois de emitido, ele não pode ser alterado. Você pode imprimir ou salvar em PDF (A4). A nota fiscal, quando for obrigatória, continua sendo emitida fora do aplicativo.',
+        link: { href: '/funcionalidades/demonstrativo-de-cobranca/', label: 'Demonstrativo de cobrança' },
+      },
+      {
+        q: 'O que o MinhaOS App não faz?',
+        a: 'Ele não emite nota fiscal nem NFS-e, não processa pagamentos, não gera boleto nem cobrança Pix, não é banco, não envia mensagens de WhatsApp automaticamente, não controla estoque e não tem agenda, assinatura digital nem certificado digital.',
+      },
+      {
+        q: 'Tem relatórios?',
+        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos e saldo atual, com exportação em CSV e impressão em A4. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido) e as pendências.',
+        link: { href: '/funcionalidades/relatorios/', label: 'Relatórios' },
+      },
+    ],
+  },
+  {
+    id: 'conta-e-cadastro',
+    titulo: 'Conta e cadastro',
+    itens: [
+      {
+        q: 'Como crio uma conta?',
+        a: 'Pelo botão "Criar conta" deste site, que leva à página de cadastro do aplicativo. Cada conta tem seu próprio cadastro de clientes, serviços, demonstrativos e recebimentos.',
+      },
+      {
+        q: 'Quanto custa? Quais são os planos?',
+        a: 'As informações sobre planos e condições de uso ficam no próprio aplicativo. Este site não publica preços para evitar informações desatualizadas.',
+      },
+      {
+        q: 'Que dados de clientes posso cadastrar?',
+        a: 'Pessoa física ou jurídica, contato, endereço e observações internas, que não aparecem para o cliente. Se estiver com pressa, dá para fazer um cadastro rápido só com o nome e completar depois.',
+      },
+      {
+        q: 'Os dados de uma conta aparecem para outra?',
+        a: 'Não. O MinhaOS App é multiempresa: cada conta tem seus próprios dados, separados dos dados das demais contas.',
+      },
+    ],
+  },
+  {
+    id: 'link-do-cliente',
+    titulo: 'Link do cliente, acessos e confirmação',
+    itens: [
+      {
+        q: 'O cliente precisa criar conta para ver o demonstrativo?',
+        a: 'Não. Você envia um link e o cliente abre o demonstrativo no navegador, sem cadastro. Pelo link ele pode imprimir, baixar as notas fiscais anexadas e clicar em "Confirmar recebimento".',
+        link: { href: '/funcionalidades/link-e-acessos/', label: 'Link e acessos' },
+      },
+      {
+        q: 'Como envio o link ao cliente?',
+        a: 'Você pode copiar o link, abrir o WhatsApp com uma mensagem pronta ou usar o compartilhamento do próprio celular. No caso do WhatsApp, quem envia a mensagem é você: o aplicativo só prepara o texto.',
+      },
+      {
+        q: 'O que significa "Confirmar recebimento"?',
+        a: 'Significa que o cliente confirmou ter recebido o documento. Não é confirmação de pagamento. O pagamento você registra separadamente, quando o dinheiro entrar.',
+      },
+      {
+        q: 'Consigo saber se o cliente abriu o demonstrativo?',
+        a: 'Você vê a primeira e a última visualização registradas e as sessões de acesso ao link. Esses registros indicam que o link foi acessado; eles não provam quem abriu nem que o conteúdo foi lido.',
+      },
+      {
+        q: 'O link fica disponível para sempre?',
+        a: 'O link pode ter prazo de expiração. Você também pode revogar um link, por exemplo se o enviou para a pessoa errada, e gerar um novo.',
+      },
+      {
+        q: 'O que o cliente vê pelo link?',
+        a: 'O demonstrativo de cobrança daquele período e as notas fiscais que você anexou a ele. O restante dos seus dados, como outros clientes e observações internas, não aparece.',
+      },
+    ],
+  },
+  {
+    id: 'notas-e-recebimentos',
+    titulo: 'Notas fiscais e recebimentos',
+    itens: [
+      {
+        q: 'Como funciona a nota fiscal anexada?',
+        a: 'Você emite a nota fiscal no sistema da sua prefeitura ou no Emissor Nacional da NFS-e, fora do MinhaOS App, e anexa o arquivo (PDF, XML ou imagem) ao demonstrativo. O cliente baixa a nota pelo mesmo link do demonstrativo.',
+        link: { href: '/funcionalidades/notas-fiscais-anexas/', label: 'Notas fiscais anexas' },
+      },
+      {
+        q: 'O MinhaOS App recebe pagamentos dos meus clientes?',
+        a: 'Não. Ele não processa pagamentos, não gera boleto nem Pix. O cliente paga como vocês combinarem, e você registra o recebimento no aplicativo.',
+      },
+      {
+        q: 'Como registro um pagamento?',
+        a: 'Manualmente, informando o valor e a forma: Pix, transferência, dinheiro, boleto, cartão ou outro. Dá para registrar pagamento parcial, acompanhar o saldo em aberto e os demonstrativos em atraso, e registrar estorno quando necessário.',
+        link: { href: '/funcionalidades/recebimentos-e-saldos/', label: 'Recebimentos e saldos' },
+      },
+      {
+        q: 'Recebo avisos sobre cobranças?',
+        a: 'Há notificações e e-mails para a primeira visualização do link, a confirmação de recebimento pelo cliente, demonstrativos vencidos e um lembrete de fechamento do mês. Você pode ajustar as preferências e descadastrar os e-mails.',
+      },
+    ],
+  },
+  {
+    id: 'celular',
+    titulo: 'Celular e instalação',
+    itens: [
+      {
+        q: 'Dá para usar no celular?',
+        a: 'Sim. O MinhaOS App funciona no navegador do celular e do computador e pode ser instalado na tela inicial do Android e do iPhone, abrindo como um aplicativo.',
+        link: { href: '/funcionalidades/aplicativo-no-celular/', label: 'Aplicativo no celular' },
+      },
+      {
+        q: 'Preciso baixar na loja de aplicativos?',
+        a: 'Não. A instalação é feita pelo próprio navegador, com a opção de adicionar à tela inicial. Depois disso, o MinhaOS App abre pelo ícone, como os demais aplicativos.',
+      },
+    ],
+  },
+  {
+    id: 'seguranca',
+    titulo: 'Segurança e privacidade',
+    itens: [
+      {
+        q: 'Quem vê os meus dados?',
+        a: 'Os dados ficam na sua conta, separados das demais contas. Seus clientes só veem, pelo link, o demonstrativo que você enviou e as notas anexadas a ele. Observações internas nunca aparecem para o cliente.',
+      },
+      {
+        q: 'Posso tirar meus dados do aplicativo?',
+        a: 'Os relatórios podem ser exportados em CSV, e os demonstrativos podem ser salvos em PDF. Assim você mantém uma cópia dos seus registros fora do aplicativo.',
+      },
+      {
+        q: 'Como falo com a equipe sobre privacidade ou outra dúvida?',
+        a: `Pelo e-mail ${site.contactEmail}. Use o mesmo canal para dúvidas sobre os dados da sua conta.`,
+      },
+    ],
+  },
+]
+
+const todas = grupos.flatMap((g) => g.itens)
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Perguntas frequentes', href: '/perguntas-frequentes/' },
+]
+const ld = graph(organizationLd, breadcrumbLd(crumbs), faqLd(todas))
+---
+
+<Base
+  title="Perguntas frequentes sobre o MinhaOS App"
+  description="Dúvidas sobre o MinhaOS App: o que faz e não faz, conta, link do cliente, confirmação de recebimento, notas anexadas, recebimentos e uso no celular."
+  path="/perguntas-frequentes/"
+  jsonLd={ld}
+>
+  <div class="container faq-page">
+    <Breadcrumbs items={crumbs} />
+    <h1>Perguntas frequentes</h1>
+    <p class="lead muted">
+      Respostas diretas sobre o que o MinhaOS App faz, o que ele não faz e como funciona o link que o seu cliente recebe. Não encontrou sua dúvida? Escreva para <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+    </p>
+
+    <nav aria-label="Temas" class="temas">
+      <ul>
+        {grupos.map((g) => <li><a href={`#${g.id}`}>{g.titulo}</a></li>)}
+      </ul>
+    </nav>
+
+    {
+      grupos.map((g) => (
+        <section aria-labelledby={g.id} class="grupo">
+          <h2 id={g.id}>{g.titulo}</h2>
+          {g.itens.map((f) => (
+            <details class="faq">
+              <summary>{f.q}</summary>
+              <div class="resp">
+                <p>{f.a}</p>
+                {f.link && (
+                  <p class="small">
+                    <a href={f.link.href}>{f.link.label} →</a>
+                  </p>
+                )}
+              </div>
+            </details>
+          ))}
+        </section>
+      ))
+    }
+
+    <p class="muted">
+      Para dúvidas sobre cobrança, nota fiscal e organização financeira, veja também os <a href="/guias/">guias para prestadores de serviço</a> e o <a href="/glossario/">glossário</a>.
+    </p>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .faq-page {
+    max-width: var(--measure);
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+  }
+  .temas ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 8px;
+    font-size: 15px;
+  }
+  .grupo {
+    margin-top: 40px;
+  }
+  .faq {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    background: var(--surface);
+  }
+  .faq summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .resp {
+    padding: 0 16px 4px;
+  }
+  .resp p {
+    margin: 0 0 12px;
+  }
+</style>

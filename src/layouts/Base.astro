@@ -1,0 +1,27 @@
+---
+import '@fontsource-variable/inter/wght.css'
+import '../styles/global.css'
+import Footer from '../components/Footer.astro'
+import Header from '../components/Header.astro'
+import Seo from '../components/Seo.astro'
+
+type SeoProps = Parameters<typeof Seo>[0]
+type Props = SeoProps
+const props = Astro.props
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <Seo {...props} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a href="#conteudo" class="skip">Pular para o conteúdo</a>
+    <Header />
+    <main id="conteudo">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

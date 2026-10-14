@@ -1,0 +1,290 @@
+---
+import { getCollection } from 'astro:content'
+import Cta from '../components/Cta.astro'
+import GuideList from '../components/GuideList.astro'
+import Base from '../layouts/Base.astro'
+import { faqLd, graph, organizationLd, softwareLd, websiteLd } from '../lib/seo'
+import { tools } from '../lib/tools'
+import { links, site } from '../site.config'
+
+const guias = await getCollection('guias')
+const pilares = guias.filter((g) => g.data.pillar).slice(0, 6)
+const profissoes = (await getCollection('profissoes')).sort((a, b) => a.data.plural.localeCompare(b.data.plural))
+
+const faq = [
+  { q: 'O MinhaOS App emite nota fiscal?', a: 'Não. O MinhaOS App organiza serviços e gera demonstrativos de cobrança. A nota fiscal continua sendo emitida no sistema da sua prefeitura ou no Emissor Nacional; depois você pode anexar o arquivo ao demonstrativo para o cliente baixar.' },
+  { q: 'O cliente precisa criar conta para ver o demonstrativo?', a: 'Não. Você envia um link e o cliente abre o demonstrativo no navegador, imprime ou salva em PDF e pode confirmar que recebeu, sem cadastro.' },
+  { q: 'Dá para usar no celular?', a: 'Sim. O MinhaOS App funciona no navegador e pode ser instalado na tela inicial do Android e do iPhone, abrindo como aplicativo.' },
+  { q: 'O MinhaOS App recebe pagamentos?', a: 'Não. Ele não processa pagamentos nem é banco. Você registra manualmente os recebimentos (Pix, transferência, dinheiro) e acompanha o saldo de cada demonstrativo.' },
+]
+const ld = graph(organizationLd, websiteLd, softwareLd, faqLd(faq))
+const passos = [
+  { n: '1', t: 'Registre o que executou', d: 'Cliente, descrição e uma linha por data, com quantidade (horas, visitas, diárias, unidades) e valor. O total é calculado na hora.' },
+  { n: '2', t: 'Feche o mês por cliente', d: 'Escolha o cliente e o período, selecione os lançamentos e revise. Nada é cobrado duas vezes: lançamento faturado sai da lista.' },
+  { n: '3', t: 'Envie o demonstrativo', d: 'O cliente recebe um link, consulta datas e valores, imprime e confirma o recebimento. Você vê quando o link foi acessado.' },
+]
+const recursos = [
+  { href: '/funcionalidades/registro-de-servicos/', t: 'Registro de serviços', d: 'Várias datas por serviço, quantidades fracionadas, unidade por linha.' },
+  { href: '/funcionalidades/fechamento-mensal/', t: 'Fechamento mensal', d: 'Seleção por cliente e período, sem duplicar lançamentos.' },
+  { href: '/funcionalidades/demonstrativo-de-cobranca/', t: 'Demonstrativo de cobrança', d: 'Documento claro, pronto para imprimir em A4 ou salvar em PDF.' },
+  { href: '/funcionalidades/link-e-acessos/', t: 'Link e acessos', d: 'Primeira e última visualização registradas e confirmação de recebimento.' },
+  { href: '/funcionalidades/recebimentos-e-saldos/', t: 'Recebimentos e saldos', d: 'Pagamentos parciais, saldo em aberto e documentos vencidos.' },
+  { href: '/funcionalidades/relatorios/', t: 'Relatórios', d: 'Executado, faturado e recebido por período, com exportação CSV.' },
+]
+---
+
+<Base title={`${site.name} — registro de serviços e cobrança para autônomos`} bareTitle description="Registre os serviços que você executa, faça o fechamento do mês por cliente e envie um demonstrativo de cobrança claro, com link e confirmação de recebimento." path="/" jsonLd={ld}>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Para autônomos, MEI e pequenas empresas de serviço</span>
+        <h1>Registre seus serviços, feche o mês e cobre com clareza</h1>
+        <p class="lead">O MinhaOS App junta o que você fez, para quem e quanto vale. No fim do mês, gera um demonstrativo profissional que o cliente abre por link — sem planilha, sem caderno, sem cobrança esquecida.</p>
+        <div class="cta-row">
+          <a href={links.signup} class="btn btn-primary">Criar conta</a>
+          <a href="/funcionalidades/" class="btn btn-secondary">Ver como funciona</a>
+        </div>
+        <p class="small">Funciona no navegador e pode ser instalado no celular.</p>
+      </div>
+      <figure class="doc" aria-label="Exemplo de demonstrativo de cobrança (dados fictícios)">
+        <div class="doc-head">
+          <div>
+            <p class="doc-provider">Oficina Exemplo Serviços Técnicos</p>
+            <p class="doc-sub">Demonstrativo DS-2026-0012 · outubro de 2026</p>
+          </div>
+          <span class="badge">Visualização registrada</span>
+        </div>
+        <table>
+          <thead><tr><th scope="col">Data</th><th scope="col">Serviço</th><th scope="col" class="r">Total</th></tr></thead>
+          <tbody>
+            <tr><td>06/10</td><td>Visita técnica · 1 visita</td><td class="r">R$ 150,00</td></tr>
+            <tr><td>08/10</td><td>Manutenção do quadro · 2,5 h × R$ 120,00</td><td class="r">R$ 300,00</td></tr>
+            <tr><td>15/10</td><td>Troca de disjuntores · 1,5 h × R$ 120,00</td><td class="r">R$ 180,00</td></tr>
+          </tbody>
+          <tfoot><tr><th scope="row" colspan="2">Total</th><td class="r">R$ 630,00</td></tr></tfoot>
+        </table>
+        <figcaption class="small">Exemplo com dados fictícios.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="center">Como funciona</h2>
+      <ol class="steps">
+        {passos.map((p) => <li class="card"><span class="num" aria-hidden="true">{p.n}</span><h3>{p.t}</h3><p class="muted" style="margin:0">{p.d}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section section-muted">
+    <div class="container">
+      <h2>O que você consegue fazer</h2>
+      <div class="grid grid-3" style="margin-top:24px">
+        {recursos.map((r) => <a class="card" href={r.href}><h3>{r.t}</h3><p class="muted small" style="margin:0">{r.d}</p></a>)}
+      </div>
+      <p class="small" style="margin-top:20px">O MinhaOS App não emite nota fiscal e não processa pagamentos. Você pode anexar a nota emitida no sistema oficial ao demonstrativo, para o cliente baixar.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2>Ferramentas grátis, sem cadastro</h2>
+      <div class="grid grid-2" style="margin-top:24px">
+        {Object.entries(tools).map(([k, t]) => <a class="card" href={`/ferramentas/${k}/`}><h3>{t.title}</h3><p class="muted small" style="margin:0">{t.description}</p></a>)}
+      </div>
+    </div>
+  </section>
+
+  {profissoes.length > 0 && (
+    <section class="section section-muted">
+      <div class="container">
+        <h2>Para quem presta serviço</h2>
+        <ul class="chips">
+          {profissoes.map((p) => <li><a href={`/para/${p.id}/`}>{p.data.plural}</a></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {pilares.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <h2>Guias para organizar e cobrar melhor</h2>
+        <div style="margin-top:24px"><GuideList items={pilares} /></div>
+        <p style="margin-top:20px"><a href="/guias/">Ver todos os guias →</a></p>
+      </div>
+    </section>
+  )}
+
+  <section class="section section-muted">
+    <div class="container prose" style="max-width:820px">
+      <h2>Perguntas frequentes</h2>
+      {faq.map((f) => <details class="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      <p><a href="/perguntas-frequentes/">Mais perguntas frequentes →</a></p>
+    </div>
+  </section>
+
+  <div class="container"><Cta /></div>
+</Base>
+
+<style>
+  .hero {
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding-block: 56px 64px;
+  }
+  .hero-grid {
+    display: grid;
+    gap: 40px;
+    align-items: center;
+  }
+  @media (min-width: 980px) {
+    .hero-grid {
+      grid-template-columns: 1.05fr 1fr;
+    }
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--text-2);
+    max-width: 58ch;
+  }
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 24px 0 12px;
+  }
+  .doc {
+    margin: 0;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 24px 64px rgb(15 23 42 / 0.1);
+  }
+  .doc-head {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+  .doc-provider {
+    font-weight: 650;
+    color: var(--navy);
+    margin: 0;
+  }
+  .doc-sub {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-3);
+  }
+  .badge {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--info);
+    background: var(--info-subtle);
+    border: 1px solid #bfdbfe;
+    border-radius: 999px;
+    padding: 2px 10px;
+    white-space: nowrap;
+  }
+  .doc table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+    font-variant-numeric: tabular-nums;
+  }
+  .doc th,
+  .doc td {
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .doc thead th {
+    color: var(--text-2);
+    font-weight: 600;
+    font-size: 13px;
+  }
+  .doc tfoot th,
+  .doc tfoot td {
+    border: 0;
+    font-weight: 650;
+    color: var(--navy);
+    font-size: 17px;
+  }
+  .r {
+    text-align: right !important;
+    white-space: nowrap;
+  }
+  .doc figcaption {
+    margin-top: 10px;
+  }
+  .center {
+    text-align: center;
+  }
+  .steps {
+    display: grid;
+    gap: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 28px 0 0;
+  }
+  @media (min-width: 860px) {
+    .steps {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+  .num {
+    display: inline-flex;
+    width: 34px;
+    height: 34px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: var(--navy);
+    color: var(--teal-bright);
+    font-weight: 700;
+  }
+  .steps h3 {
+    margin: 14px 0 6px;
+  }
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style: none;
+    padding: 0;
+    margin: 20px 0 0;
+  }
+  .chips a {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .chips a:hover {
+    border-color: var(--teal);
+  }
+  .faq {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    background: #fff;
+  }
+  .faq summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .faq p {
+    padding: 0 16px 14px;
+    margin: 0;
+  }
+</style>

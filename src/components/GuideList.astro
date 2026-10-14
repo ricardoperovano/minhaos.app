@@ -1,0 +1,21 @@
+---
+import type { CollectionEntry } from 'astro:content'
+import { clusters } from '../site.config'
+interface Props {
+  items: CollectionEntry<'guias'>[]
+  showCluster?: boolean
+}
+const { items, showCluster = true } = Astro.props
+---
+
+<div class="grid grid-2">
+  {
+    items.map((g) => (
+      <a class="card" href={`/guias/${g.id}/`}>
+        {showCluster && <span class="eyebrow">{clusters[g.data.cluster].title}</span>}
+        <h3>{g.data.h1}</h3>
+        <p class="muted small" style="margin:0">{g.data.description}</p>
+      </a>
+    ))
+  }
+</div>

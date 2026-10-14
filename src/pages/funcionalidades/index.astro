@@ -1,0 +1,101 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { features, naoFaz } from '../../lib/features'
+import { abs, breadcrumbLd, graph, organizationLd, softwareLd } from '../../lib/seo'
+
+const path = '/funcionalidades/'
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Funcionalidades', href: path },
+]
+const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
+  '@type': 'CollectionPage',
+  name: 'Funcionalidades do MinhaOS App',
+  url: abs(path),
+  inLanguage: 'pt-BR',
+  about: { '@id': softwareLd['@id'] },
+  hasPart: features.map((f) => ({ '@type': 'WebPage', name: f.h1, url: abs(`/funcionalidades/${f.slug}/`) })),
+})
+---
+
+<Base
+  title="Funcionalidades: registro, fechamento e cobrança"
+  description="Conheça as funcionalidades do MinhaOS App: registro de serviços por data, fechamento mensal, demonstrativo com link, notas anexas, recebimentos e relatórios."
+  path={path}
+  jsonLd={ld}
+>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <h1>Funcionalidades do MinhaOS App</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">
+      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. Tudo no navegador ou instalado no celular.
+    </p>
+
+    <ol class="flow" aria-label="Como funciona, em quatro passos">
+      <li><strong>Registre</strong> cada execução com data, quantidade e valor.</li>
+      <li><strong>Feche o mês</strong> do cliente escolhendo o que cobrar.</li>
+      <li><strong>Envie o link</strong> do demonstrativo e acompanhe os acessos.</li>
+      <li><strong>Registre o recebimento</strong> e veja o saldo em aberto.</li>
+    </ol>
+
+    <div class="grid grid-2" style="margin-top:32px">
+      {
+        features.map((f) => (
+          <a class="card" href={`/funcionalidades/${f.slug}/`}>
+            <h2 style="font-size:21px;margin:0 0 6px">{f.name}</h2>
+            <p class="muted" style="margin:0">{f.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <section id="nao-faz" class="callout" aria-labelledby="nao-faz-t" style="margin-top:48px;max-width:var(--measure)">
+      <h2 id="nao-faz-t" style="margin-top:0">O que o MinhaOS App não faz</h2>
+      <p>Para você decidir com clareza se ele serve para a sua rotina:</p>
+      <ul>{naoFaz.map((t) => <li>{t}</li>)}</ul>
+      <p style="margin:0">Quer entender a diferença entre os documentos? Leia <a href="/guias/recibo-ou-nota-fiscal/">recibo ou nota fiscal</a> e <a href="/guias/demonstrativo-de-cobranca/">o que é demonstrativo de cobrança</a>.</p>
+    </section>
+
+    <p style="margin-top:32px">Veja exemplos por profissão em <a href="/para/">para quem é</a>.</p>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .flow {
+    display: grid;
+    gap: 12px;
+    padding: 0;
+    margin: 28px 0 0;
+    list-style: none;
+    counter-reset: passo;
+  }
+  @media (min-width: 760px) {
+    .flow {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .flow li {
+    counter-increment: passo;
+    background: var(--teal-subtle);
+    border-radius: var(--radius-sm);
+    padding: 14px 16px;
+    font-size: 15px;
+  }
+  .flow li::before {
+    content: counter(passo);
+    display: block;
+    font-weight: 700;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+  .callout ul {
+    padding-left: 22px;
+  }
+  .callout li {
+    margin-bottom: 6px;
+  }
+</style>

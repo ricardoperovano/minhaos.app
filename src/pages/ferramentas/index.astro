@@ -1,0 +1,123 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../../lib/seo'
+import { tools, type ToolKey } from '../../lib/tools'
+
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+]
+const lista = (Object.keys(tools) as ToolKey[]).map((key) => ({ key, href: `/ferramentas/${key}/`, ...tools[key] }))
+const guiaDe: Record<ToolKey, { href: string; label: string }> = {
+  'calculadora-valor-hora': { href: '/guias/quanto-cobrar-por-hora/', label: 'Guia: quanto cobrar por hora' },
+  'mensagem-de-cobranca': { href: '/guias/mensagem-de-cobranca-whatsapp/', label: 'Guia: mensagem de cobrança pelo WhatsApp' },
+  'gerador-de-recibo': { href: '/guias/recibo-de-prestacao-de-servico/', label: 'Guia: recibo de prestação de serviço' },
+  'modelo-ordem-de-servico': { href: '/guias/como-fazer-ordem-de-servico/', label: 'Guia: como fazer ordem de serviço' },
+}
+
+const jsonLd = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'ItemList',
+  name: 'Ferramentas grátis para prestadores de serviço',
+  itemListElement: lista.map((t, i) => ({ '@type': 'ListItem', position: i + 1, name: t.title, url: abs(t.href) })),
+})
+---
+
+<Base
+  title="Ferramentas grátis para prestadores de serviço"
+  description="Calculadora de valor da hora, mensagem de cobrança, recibo e modelo de ordem de serviço. Grátis, sem cadastro e funcionando no seu navegador."
+  path="/ferramentas/"
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <Breadcrumbs items={crumbs} />
+    <h1>Ferramentas grátis para quem presta serviço</h1>
+    <p class="lead muted">
+      Calcule o valor da sua hora, monte mensagens de cobrança, gere recibos e ordens de serviço para imprimir ou salvar em PDF. Sem cadastro e
+      sem custo.
+    </p>
+    <p class="callout small privacy">
+      Todas as ferramentas funcionam 100% no seu navegador: nenhum dado que você digita é enviado para servidores ou fica salvo.
+    </p>
+
+    <ul class="grid grid-2 list" role="list">
+      {
+        lista.map((t) => (
+          <li class="card item">
+            <h2>
+              <a href={t.href}>{t.title}</a>
+            </h2>
+            <p class="muted">{t.description}</p>
+            <p class="small more">
+              <a href={guiaDe[t.key].href}>{guiaDe[t.key].label}</a>
+            </p>
+          </li>
+        ))
+      }
+    </ul>
+
+    <section class="prose why">
+      <h2>Feitas para a rotina de quem trabalha por conta própria</h2>
+      <p>
+        Cada ferramenta resolve uma tarefa que costuma tomar tempo de autônomos, MEIs e pequenas empresas de serviço: definir preço, cobrar sem
+        constrangimento e entregar documentos organizados. Abaixo de cada uma há explicações, exemplos e respostas para as dúvidas mais comuns.
+      </p>
+      <p>
+        Quer ir além? Os <a href="/guias/">guias</a> aprofundam cada tema, do <a href="/guias/como-cobrar-cliente/">como cobrar cliente</a> ao
+        <a href="/guias/controle-de-servicos-prestados/">controle de serviços prestados</a>.
+      </p>
+    </section>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+  }
+  .privacy {
+    max-width: 70ch;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    margin: 32px 0 0;
+  }
+  .item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.14s;
+  }
+  .item:hover,
+  .item:focus-within {
+    border-color: var(--teal);
+  }
+  .item h2 {
+    font-size: 21px;
+    margin: 0 0 8px;
+  }
+  .item h2 a {
+    color: var(--navy);
+    text-decoration: none;
+  }
+  .item h2 a:hover {
+    color: var(--teal-dark);
+    text-decoration: underline;
+  }
+  .item .muted {
+    flex: 1;
+  }
+  .more {
+    margin: 0;
+  }
+  .why {
+    margin-top: 48px;
+  }
+</style>

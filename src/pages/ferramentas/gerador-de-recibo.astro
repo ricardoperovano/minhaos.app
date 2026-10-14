@@ -1,0 +1,546 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd } from '../../lib/seo'
+import { tools } from '../../lib/tools'
+
+const slug = 'gerador-de-recibo'
+const path = `/ferramentas/${slug}/`
+const tool = tools[slug]
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+  { name: tool.title, href: path },
+]
+const formas = ['Pix', 'Transferência bancária', 'Dinheiro', 'Boleto', 'Cartão', 'Cheque']
+
+const faq = [
+  {
+    q: 'O que precisa ter em um recibo de prestação de serviço?',
+    a: 'Nome de quem recebeu e de quem pagou, valor em números e por extenso, a descrição do serviço a que o pagamento se refere, a forma de pagamento, a cidade e a data, e a assinatura de quem recebeu. CPF ou CNPJ das partes não são obrigatórios em todo recibo, mas ajudam a identificar quem é quem.',
+  },
+  {
+    q: 'Recibo substitui nota fiscal?',
+    a: 'Não. O recibo comprova que um pagamento foi feito, mas não é documento fiscal. Quando a emissão de nota fiscal é obrigatória para você e para aquele cliente, ela precisa ser emitida mesmo que você também entregue um recibo.',
+  },
+  {
+    q: 'Por que escrever o valor por extenso?',
+    a: 'O valor por extenso dificulta adulterações, como acrescentar um zero, e tira dúvidas de leitura. Números e extenso precisam dizer exatamente a mesma coisa, por isso esta ferramenta gera o texto automaticamente a partir do valor digitado.',
+  },
+  {
+    q: 'Como salvar o recibo em PDF?',
+    a: 'Clique em "Imprimir / salvar em PDF" e, na janela de impressão, escolha "Salvar como PDF" no campo de destino ou impressora. No celular, a opção aparece no menu de compartilhar ou de impressão do navegador.',
+  },
+  {
+    q: 'Recibo sem assinatura vale?',
+    a: 'A assinatura de quem recebeu é o que dá força ao recibo como comprovante. Se for enviar em PDF, você pode imprimir, assinar e digitalizar, ou combinar com o cliente outra forma de confirmação.',
+  },
+  {
+    q: 'Os dados do recibo ficam salvos?',
+    a: 'Não. O recibo é montado no seu navegador e nada é enviado a servidores. Guarde o PDF ou uma cópia impressa, porque ao recarregar a página os campos ficam em branco.',
+  },
+]
+
+const jsonLd = graph(
+  organizationLd,
+  {
+    '@type': 'WebApplication',
+    name: tool.title,
+    description: tool.description,
+    url: abs(path),
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+    publisher: { '@id': organizationLd['@id'] },
+  },
+  breadcrumbLd(crumbs),
+  faqLd(faq),
+)
+---
+
+<Base
+  title="Gerador de recibo de prestação de serviço grátis"
+  description="Gere um recibo de prestação de serviço com valor por extenso automático e salve em PDF ou imprima em A4. Grátis, sem cadastro e sem enviar dados."
+  path={path}
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <div class="no-print">
+      <Breadcrumbs items={crumbs} />
+      <h1>Gerador de recibo de prestação de serviço</h1>
+      <p class="lead muted">
+        Preencha os dados, confira a pré-visualização e imprima ou salve em PDF. O valor por extenso é escrito automaticamente.
+      </p>
+      <p class="small privacy">O recibo é montado no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
+    </div>
+
+    <div class="tool">
+      <form id="form" class="card no-print" novalidate aria-labelledby="form-title">
+        <h2 id="form-title" class="form-title">Dados do recibo</h2>
+
+        <fieldset>
+          <legend>Quem recebeu (prestador)</legend>
+          <div class="field">
+            <label for="prest">Nome ou razão social</label>
+            <input id="prest" autocomplete="name" />
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="prestDoc">CPF ou CNPJ (opcional)</label>
+              <input id="prestDoc" inputmode="numeric" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="prestContato">Telefone ou e-mail (opcional)</label>
+              <input id="prestContato" autocomplete="off" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Quem pagou (cliente)</legend>
+          <div class="row-2">
+            <div class="field">
+              <label for="pag">Nome ou razão social</label>
+              <input id="pag" autocomplete="off" />
+            </div>
+            <div class="field">
+              <label for="pagDoc">CPF ou CNPJ (opcional)</label>
+              <input id="pagDoc" inputmode="numeric" autocomplete="off" />
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Pagamento</legend>
+          <div class="row-2">
+            <div class="field">
+              <label for="valor">Valor (R$)</label>
+              <input id="valor" inputmode="decimal" autocomplete="off" placeholder="Ex.: 1.250,00" aria-describedby="extenso valor-err" />
+              <p id="valor-err" class="err" hidden></p>
+            </div>
+            <div class="field">
+              <label for="forma">Forma de pagamento</label>
+              <select id="forma">
+                <option value="">Não informar</option>
+                {formas.map((f) => <option>{f}</option>)}
+              </select>
+            </div>
+          </div>
+          <p class="extenso-box" aria-live="polite"><span class="small">Por extenso: </span><output id="extenso" for="valor">—</output></p>
+          <div class="field">
+            <label for="ref">Referente a</label>
+            <textarea id="ref" rows="2" placeholder="Ex.: manutenção elétrica no apartamento 12, em 10/10/2026"></textarea>
+          </div>
+          <div class="row-2">
+            <div class="field">
+              <label for="cidade">Cidade</label>
+              <input id="cidade" autocomplete="address-level2" />
+            </div>
+            <div class="field">
+              <label for="data">Data</label>
+              <input id="data" type="date" />
+            </div>
+          </div>
+          <div class="field">
+            <label for="numero">Número do recibo (opcional)</label>
+            <input id="numero" inputmode="numeric" autocomplete="off" />
+          </div>
+        </fieldset>
+      </form>
+
+      <section class="preview-wrap" aria-labelledby="prev-title">
+        <h2 id="prev-title" class="form-title no-print">Pré-visualização</h2>
+        <div id="recibo" class="recibo">
+          <div class="r-head">
+            <p class="r-title">Recibo<span id="r-num"></span></p>
+            <p class="r-valor tabular" id="r-valor">R$ ______</p>
+          </div>
+          <p class="r-body">
+            <span id="r-verbo">Recebi</span> de <strong id="r-pag">______________________</strong><span id="r-pagdoc"></span> a importância de
+            <strong id="r-valor2">R$ ______</strong> (<span id="r-ext">______________________________</span>), referente a
+            <span id="r-ref">______________________________</span><span id="r-forma"></span>.
+          </p>
+          <p class="r-body" id="r-quit">Para clareza, firmo o presente recibo, dando quitação do valor acima.</p>
+          <p class="r-data" id="r-data">______________, ____ de ____________ de ______.</p>
+          <div class="r-sign">
+            <div class="line" aria-hidden="true"></div>
+            <p><strong id="r-prest">Nome de quem recebeu</strong></p>
+            <p id="r-prestdoc" class="r-small"></p>
+            <p id="r-contato" class="r-small"></p>
+          </div>
+        </div>
+        <div class="actions no-print">
+          <button type="button" id="imprimir" class="btn btn-primary">Imprimir / salvar em PDF</button>
+          <button type="button" id="limpar" class="btn btn-secondary">Limpar campos</button>
+        </div>
+        <p class="callout callout-warning small no-print">
+          Recibo comprova um pagamento, mas não substitui a nota fiscal quando ela é obrigatória. Veja a diferença em
+          <a href="/guias/recibo-ou-nota-fiscal/">recibo ou nota fiscal</a>.
+        </p>
+      </section>
+    </div>
+
+    <article class="prose content no-print">
+      <h2>Como usar o gerador de recibo</h2>
+      <ol>
+        <li><strong>Preencha os dados de quem recebeu</strong>, ou seja, você. CPF ou CNPJ e contato são opcionais, mas tornam o documento mais completo.</li>
+        <li><strong>Informe quem pagou</strong>, o valor e a forma de pagamento. O valor por extenso aparece logo abaixo, escrito automaticamente.</li>
+        <li><strong>Descreva o serviço</strong> no campo "Referente a". Seja específico: o que foi feito, onde e quando. "Serviços diversos" não ajuda ninguém numa conferência futura.</li>
+        <li><strong>Confira a pré-visualização</strong> e clique em "Imprimir / salvar em PDF". Só o recibo é impresso, em folha A4, sem menus nem textos do site.</li>
+        <li><strong>Assine.</strong> Imprima e assine à mão, ou salve em PDF e combine com o cliente como ele prefere receber.</li>
+      </ol>
+      <p>Campos deixados em branco aparecem como linhas. Assim, você também pode imprimir um recibo em branco para preencher à mão.</p>
+
+      <h2>O que um recibo de prestação de serviço deve conter</h2>
+      <p>Não existe um modelo único obrigatório para recibo entre particulares, mas um bom recibo responde, sem ambiguidade, a cinco perguntas:</p>
+      <ul>
+        <li><strong>Quem recebeu e quem pagou</strong>: nomes completos e, de preferência, CPF ou CNPJ.</li>
+        <li><strong>Quanto</strong>: valor em algarismos e por extenso.</li>
+        <li><strong>Por quê</strong>: a descrição do serviço, com data ou período.</li>
+        <li><strong>Como</strong>: a forma de pagamento (Pix, dinheiro, transferência).</li>
+        <li><strong>Quando e onde</strong>: cidade e data, com a assinatura de quem recebeu.</li>
+      </ul>
+      <p>Para modelos de texto, situações especiais (pagamento parcial, sinal, parcelas) e erros comuns, leia o guia <a href="/guias/recibo-de-prestacao-de-servico/">recibo de prestação de serviço</a>.</p>
+
+      <h2>Valor por extenso: como a ferramenta escreve</h2>
+      <p>A conversão segue as regras usuais do português do Brasil, até R$ 999.999.999,99. Alguns exemplos:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Valor</th><th scope="col">Por extenso</th></tr></thead>
+          <tbody>
+            <tr><td class="tabular">R$ 0,50</td><td>cinquenta centavos</td></tr>
+            <tr><td class="tabular">R$ 1,00</td><td>um real</td></tr>
+            <tr><td class="tabular">R$ 1.001,01</td><td>mil e um reais e um centavo</td></tr>
+            <tr><td class="tabular">R$ 21.000,00</td><td>vinte e um mil reais</td></tr>
+            <tr><td class="tabular">R$ 101.010,10</td><td>cento e um mil e dez reais e dez centavos</td></tr>
+            <tr><td class="tabular">R$ 1.000.000,00</td><td>um milhão de reais</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Repare em dois detalhes: escreve-se "mil", e não "um mil", e usa-se "de reais" depois de milhão redondo. O "e" aparece antes do último
+        grupo quando ele é menor que cem ou uma centena redonda (mil e cem, mil e um). As regras completas estão no guia
+        <a href="/guias/valor-por-extenso/">como escrever valor por extenso</a>.
+      </p>
+
+      <h2>Recibo, nota fiscal e demonstrativo: cada um no seu papel</h2>
+      <p>
+        O <strong>recibo</strong> comprova que você recebeu um pagamento. A <strong>nota fiscal</strong> é o documento fiscal da prestação de
+        serviço, com regras próprias de emissão para cada tipo de contribuinte. O <strong>demonstrativo de cobrança</strong> mostra o que está sendo
+        cobrado antes do pagamento, com itens, período e vencimento. Para entender quando a nota é obrigatória, veja
+        <a href="/guias/recibo-ou-nota-fiscal/">recibo ou nota fiscal</a> e, se você é MEI, <a href="/guias/nota-fiscal-de-servico-mei/">nota fiscal de serviço do MEI</a>.
+      </p>
+      <p>
+        Se você cobra clientes recorrentes no fim do mês, o MinhaOS App gera o demonstrativo de cobrança a partir dos serviços lançados e permite
+        anexar a nota fiscal emitida fora do sistema para o cliente baixar pelo mesmo link.
+      </p>
+
+      <h2>Dicas para não ter dor de cabeça</h2>
+      <ul>
+        <li>Emita o recibo só depois de confirmar o pagamento na conta, principalmente em transferências e Pix agendados.</li>
+        <li>Numere os recibos em sequência e guarde uma cópia de cada um, digital ou impressa.</li>
+        <li>Em pagamento parcial, deixe claro no campo "Referente a" que se trata de parte do valor e qual saldo continua em aberto.</li>
+        <li>Não rasure. Se errar, faça um recibo novo e inutilize o anterior.</li>
+      </ul>
+
+      <h2>Perguntas frequentes</h2>
+      {
+        faq.map((f) => (
+          <>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </>
+        ))
+      }
+    </article>
+
+    <Cta title="Do serviço lançado ao demonstrativo" text="Registre o que executou, feche o mês por cliente e acompanhe recebimentos e saldos em aberto, inclusive pagamentos parciais." />
+  </div>
+</Base>
+
+<script>
+  import { brl, dateLongBR, parseScaled, todayISO, valorPorExtenso } from './_shared'
+
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T
+  const form = $<HTMLFormElement>('form')
+  const val = (id: string) => ($(id) as HTMLInputElement | HTMLTextAreaElement).value.trim()
+  const set = (id: string, text: string) => {
+    $<HTMLElement>(id).textContent = text
+  }
+  const LINHA = '______________________________'
+
+  function atualizar() {
+    // valor
+    const raw = val('valor')
+    const cents = raw === '' ? null : parseScaled(raw, 2)
+    const max = 99_999_999_999n
+    const bad = raw !== '' && (cents === null || cents > max || cents === 0n)
+    const input = $('valor')
+    const err = $<HTMLElement>('valor-err')
+    if (bad) {
+      input.setAttribute('aria-invalid', 'true')
+      err.textContent =
+        cents !== null && cents > max ? 'O valor máximo é R$ 999.999.999,99.' : 'Valor inválido. Use vírgula para os centavos, por exemplo 1.250,00.'
+    } else input.removeAttribute('aria-invalid')
+    err.hidden = !bad
+    const ok = !bad && cents !== null
+    const ext = ok ? valorPorExtenso(cents) : ''
+    set('extenso', ok ? ext : '—')
+    set('r-valor', ok ? brl(cents) : 'R$ ______')
+    set('r-valor2', ok ? brl(cents) : 'R$ ______')
+    set('r-ext', ok ? ext : LINHA)
+
+    // partes
+    const prestDoc = val('prestDoc')
+    const cnpj = prestDoc.replace(/\D/g, '').length === 14
+    set('r-verbo', cnpj ? 'Recebemos' : 'Recebi')
+    set('r-quit', `Para clareza, ${cnpj ? 'firmamos' : 'firmo'} o presente recibo, dando quitação do valor acima.`)
+    set('r-pag', val('pag') || '______________________')
+    set('r-pagdoc', val('pagDoc') ? `, ${docLabel(val('pagDoc'))} ${val('pagDoc')},` : ',')
+    set('r-ref', val('ref') || LINHA)
+    set('r-forma', val('forma') ? `, paga por meio de ${val('forma') === 'Pix' ? 'Pix' : val('forma').toLowerCase()}` : '')
+    set('r-num', val('numero') ? ` nº ${val('numero')}` : '')
+    set('r-prest', val('prest') || 'Nome de quem recebeu')
+    set('r-prestdoc', prestDoc ? `${docLabel(prestDoc)}: ${prestDoc}` : '')
+    set('r-contato', val('prestContato') ? `Contato: ${val('prestContato')}` : '')
+
+    const cidade = val('cidade')
+    const data = dateLongBR(val('data'))
+    set('r-data', `${cidade || '______________'}, ${data || '____ de ____________ de ______'}.`)
+  }
+
+  /** CPF tem 11 dígitos; CNPJ, 14. Outros formatos ficam como "CPF/CNPJ". */
+  function docLabel(doc: string) {
+    const n = doc.replace(/\D/g, '').length
+    return n === 11 ? 'CPF' : n === 14 ? 'CNPJ' : 'CPF/CNPJ'
+  }
+
+  $('data').value = todayISO()
+  form.addEventListener('input', atualizar)
+  form.addEventListener('change', atualizar)
+  form.addEventListener('submit', (e) => e.preventDefault())
+  $<HTMLButtonElement>('imprimir').addEventListener('click', () => window.print())
+  $<HTMLButtonElement>('limpar').addEventListener('click', () => {
+    form.reset()
+    $('data').value = todayISO()
+    atualizar()
+    $('prest').focus()
+  })
+  atualizar()
+</script>
+
+<style>
+  /* <button> não herda a fonte do site por padrão */
+  button {
+    font-family: inherit;
+  }
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+    margin-bottom: 8px;
+  }
+  .privacy {
+    margin-bottom: 28px;
+  }
+  .tool {
+    display: grid;
+    gap: 24px;
+    align-items: start;
+  }
+  @media (min-width: 980px) {
+    .tool {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .preview-wrap {
+      position: sticky;
+      top: 88px;
+    }
+  }
+  .form-title {
+    font-size: 20px;
+    margin: 0 0 12px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 12px;
+    min-width: 0;
+  }
+  legend {
+    font-weight: 650;
+    color: var(--navy);
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .field {
+    margin-bottom: 14px;
+    min-width: 0;
+  }
+  .row-2 {
+    display: grid;
+    gap: 0 14px;
+  }
+  @media (min-width: 560px) {
+    .row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  input,
+  select,
+  textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 8px 12px;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+  }
+  textarea {
+    resize: vertical;
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--warning);
+    border-width: 2px;
+  }
+  .err {
+    font-size: 14px;
+    color: var(--warning);
+    font-weight: 600;
+    margin: 4px 0 0;
+  }
+  .extenso-box {
+    background: var(--teal-subtle);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin: -4px 0 14px;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+  .extenso-box output {
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0;
+  }
+
+  /* Recibo (tela e impressão) */
+  .recibo {
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    padding: 28px 24px;
+    color: var(--navy);
+    font-size: 16px;
+    line-height: 1.7;
+    box-shadow: var(--shadow);
+    overflow-wrap: anywhere;
+  }
+  .r-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 8px 16px;
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+  }
+  .r-title {
+    font-size: 26px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin: 0;
+  }
+  .r-valor {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+    border: 1px solid var(--navy);
+    border-radius: 6px;
+    padding: 2px 12px;
+  }
+  .r-body {
+    text-align: justify;
+    hyphens: auto;
+  }
+  .r-data {
+    margin-top: 28px;
+    text-align: right;
+  }
+  .r-sign {
+    margin: 56px auto 0;
+    max-width: 340px;
+    text-align: center;
+  }
+  .r-sign .line {
+    border-top: 1px solid var(--navy);
+    margin-bottom: 6px;
+  }
+  .r-sign p {
+    margin: 0;
+  }
+  .r-small {
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .content {
+    margin-top: 48px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  @media print {
+    @page {
+      size: A4;
+      margin: 18mm;
+    }
+    .page {
+      padding: 0;
+      max-width: none;
+    }
+    .tool {
+      display: block;
+    }
+    .preview-wrap {
+      position: static;
+    }
+    .recibo {
+      border: 1px solid var(--navy);
+      box-shadow: none;
+      border-radius: 0;
+      padding: 12mm 14mm;
+      font-size: 12.5pt;
+      color: var(--navy);
+      break-inside: avoid;
+    }
+    .r-head,
+    .r-valor,
+    .r-sign .line {
+      border-color: var(--navy);
+    }
+    .r-small {
+      color: var(--navy);
+    }
+  }
+</style>

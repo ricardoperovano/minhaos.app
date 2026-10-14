@@ -1,0 +1,103 @@
+---
+import { clusters, links, site } from '../site.config'
+import { getCollection } from 'astro:content'
+const profissoes = (await getCollection('profissoes')).sort((a, b) => a.data.profissao.localeCompare(b.data.profissao))
+const year = new Date().getFullYear()
+---
+
+<footer class="site-footer">
+  <div class="container cols">
+    <div class="brand">
+      <img src="/brand/logo-horizontal-white.svg" alt={site.name} width="173" height="30" />
+      <p>Registro de serviços, fechamento do mês e demonstrativos de cobrança para quem trabalha por conta própria.</p>
+      <a href={links.signup} class="btn btn-light">Criar conta</a>
+    </div>
+    <nav aria-label="Guias">
+      <p class="h">Guias</p>
+      <ul>
+        {Object.entries(clusters).map(([k, c]) => <li><a href={`/guias/tema/${k}/`}>{c.title}</a></li>)}
+        <li><a href="/glossario/">Glossário</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Ferramentas e produto">
+      <p class="h">Ferramentas grátis</p>
+      <ul>
+        <li><a href="/ferramentas/calculadora-valor-hora/">Calculadora de valor da hora</a></li>
+        <li><a href="/ferramentas/mensagem-de-cobranca/">Mensagem de cobrança</a></li>
+        <li><a href="/ferramentas/gerador-de-recibo/">Gerador de recibo</a></li>
+        <li><a href="/ferramentas/modelo-ordem-de-servico/">Modelo de ordem de serviço</a></li>
+      </ul>
+      <p class="h">Produto</p>
+      <ul>
+        <li><a href="/funcionalidades/">Funcionalidades</a></li>
+        <li><a href="/perguntas-frequentes/">Perguntas frequentes</a></li>
+        <li><a href="/sobre/">Sobre</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Profissões">
+      <p class="h">Para quem é</p>
+      <ul>
+        {profissoes.map((p) => <li><a href={`/para/${p.id}/`}>{p.data.plural}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+  <div class="container legal">
+    <p>© {year} {site.name}. O MinhaOS App organiza serviços e demonstrativos de cobrança; não emite nota fiscal nem processa pagamentos.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--navy);
+    color: #cbd5e1;
+    padding-top: 56px;
+    margin-top: 0;
+  }
+  .cols {
+    display: grid;
+    gap: 36px;
+  }
+  @media (min-width: 860px) {
+    .cols {
+      grid-template-columns: 1.4fr 1fr 1.2fr 1fr;
+    }
+  }
+  .brand p {
+    margin: 16px 0 20px;
+    font-size: 15px;
+    max-width: 34ch;
+  }
+  .h {
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    margin: 0 0 10px;
+  }
+  ul {
+    list-style: none;
+    margin: 0 0 22px;
+    padding: 0;
+  }
+  li {
+    margin-bottom: 6px;
+  }
+  a:not(.btn) {
+    color: #cbd5e1;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  a:not(.btn):hover {
+    color: #fff;
+    text-decoration: underline;
+  }
+  .legal {
+    border-top: 1px solid #1e293b;
+    margin-top: 24px;
+    padding-block: 20px;
+    font-size: 13px;
+    color: #94a3b8;
+  }
+  .legal p {
+    margin: 0;
+  }
+</style>

@@ -1,0 +1,21 @@
+---
+import { getCollection } from 'astro:content'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { breadcrumbLd, graph, organizationLd } from '../../lib/seo'
+const items = (await getCollection('profissoes')).sort((a, b) => a.data.plural.localeCompare(b.data.plural))
+const crumbs = [{ name: 'Início', href: '/' }, { name: 'Para quem é', href: '/para/' }]
+---
+
+<Base title="Para quem é: prestadores de serviço" description="O MinhaOS App serve para quem cobra por hora, visita, diária ou serviço: técnicos, eletricistas, consultores, designers, diaristas e pequenas empresas." path="/para/" jsonLd={graph(organizationLd, breadcrumbLd(crumbs))}>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <h1>Para quem trabalha prestando serviço</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">Se você executa um trabalho, registra horas, visitas, diárias ou serviços e precisa cobrar no fim do mês, o MinhaOS App foi feito para a sua rotina.</p>
+    <div class="grid grid-3" style="margin-top:32px">
+      {items.map((p) => <a class="card" href={`/para/${p.id}/`}><h2 style="font-size:20px;margin:0 0 6px">{p.data.plural}</h2><p class="muted small" style="margin:0">{p.data.description}</p></a>)}
+    </div>
+    <Cta />
+  </div>
+</Base>

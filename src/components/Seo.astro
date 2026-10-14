@@ -1,0 +1,54 @@
+---
+import { site } from '../site.config'
+import { abs } from '../lib/seo'
+
+interface Props {
+  title: string
+  description: string
+  /** Caminho canônico (com barra final). Padrão: URL atual. */
+  path?: string
+  image?: string
+  type?: 'website' | 'article'
+  noindex?: boolean
+  jsonLd?: object
+  published?: Date
+  modified?: Date
+  /** Título completo sem sufixo (home). */
+  bareTitle?: boolean
+}
+const { title, description, path, image = '/og/default.png', type = 'website', noindex = false, jsonLd, published, modified, bareTitle = false } = Astro.props
+const canonical = abs(path ?? Astro.url.pathname)
+const fullTitle = bareTitle ? title : `${title} | ${site.shortName}`
+const ogImage = abs(image)
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex ? <meta name="robots" content="noindex, follow" /> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
+<meta name="theme-color" content={site.themeColor} />
+<link rel="icon" href="/favicon.ico" sizes="32x32" />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="/apple-touch-icon-180.png" />
+<link rel="alternate" type="application/rss+xml" title={`Guias do ${site.name}`} href={abs('/rss.xml')} />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<meta property="og:locale" content={site.locale} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={title} />
+{published && <meta property="article:published_time" content={published.toISOString()} />}
+{modified && <meta property="article:modified_time" content={modified.toISOString()} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+{jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}

@@ -1,0 +1,87 @@
+---
+import { getCollection, render } from 'astro:content'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import GuideList from '../../components/GuideList.astro'
+import Base from '../../layouts/Base.astro'
+import { brl, lineCents } from '../../lib/money'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd, softwareLd } from '../../lib/seo'
+import { links } from '../../site.config'
+
+export async function getStaticPaths() {
+  return (await getCollection('profissoes')).map((entry) => ({ params: { slug: entry.id }, props: { entry } }))
+}
+const { entry } = Astro.props
+const d = entry.data
+const { Content } = await render(entry)
+const path = `/para/${entry.id}/`
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Para quem é', href: '/para/' },
+  { name: d.plural, href: path },
+]
+const guias = await getCollection('guias')
+const related = d.related.map((s) => guias.find((g) => g.id === s)).filter((g): g is NonNullable<typeof g> => !!g)
+const linhas = d.exemplo.itens.map((i) => ({ ...i, total: lineCents(i.quantidade, i.valorUnitario) }))
+const total = linhas.reduce((s, l) => s + l.total, 0)
+const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
+  '@type': 'WebPage',
+  name: d.h1,
+  url: abs(path),
+  inLanguage: 'pt-BR',
+  about: { '@id': softwareLd['@id'] },
+  audience: { '@type': 'BusinessAudience', name: d.plural },
+}, ...(d.faq.length ? [faqLd(d.faq)] : []))
+---
+
+<Base title={d.title} description={d.description} path={path} jsonLd={ld} modified={d.updatedAt}>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <span class="eyebrow">Para {d.plural.toLowerCase()}</span>
+    <h1>{d.h1}</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">{d.description}</p>
+    <p><a href={links.signup} class="btn btn-primary">Criar conta</a></p>
+
+    <div class="prose" style="margin-top:32px"><Content /></div>
+
+    <section aria-labelledby="exemplo" style="margin-top:40px">
+      <h2 id="exemplo">Exemplo de demonstrativo para {d.profissao.toLowerCase()}</h2>
+      <p class="muted">Dados fictícios. Cada linha é uma data com quantidade explícita; o total é calculado automaticamente.</p>
+      <div class="card" style="overflow-x:auto">
+        <p style="margin:0 0 12px"><strong>Cliente:</strong> {d.exemplo.cliente}</p>
+        <table class="demo">
+          <thead><tr><th scope="col">Data</th><th scope="col">Serviço</th><th scope="col" class="r">Qtd.</th><th scope="col" class="r">Valor unit.</th><th scope="col" class="r">Total</th></tr></thead>
+          <tbody>
+            {linhas.map((l) => <tr><td>{l.data}</td><td>{l.descricao}</td><td class="r">{l.quantidade.replace('.', ',')} {l.unidade}</td><td class="r">{brl(Math.round(Number(l.valorUnitario) * 100))}</td><td class="r">{brl(l.total)}</td></tr>)}
+          </tbody>
+          <tfoot><tr><th scope="row" colspan="4" class="r">Total do demonstrativo</th><td class="r"><strong>{brl(total)}</strong></td></tr></tfoot>
+        </table>
+      </div>
+    </section>
+
+    {d.faq.length > 0 && (
+      <section aria-labelledby="faq" class="prose" style="margin-top:40px">
+        <h2 id="faq">Perguntas frequentes</h2>
+        {d.faq.map((f) => <details class="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section aria-labelledby="guias" style="margin-top:40px">
+        <h2 id="guias">Guias úteis para {d.plural.toLowerCase()}</h2>
+        <GuideList items={related} />
+      </section>
+    )}
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .demo { width: 100%; border-collapse: collapse; font-size: 15px; font-variant-numeric: tabular-nums; min-width: 560px; }
+  .demo th, .demo td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; }
+  .demo thead th { background: var(--surface-muted); color: var(--text-2); font-weight: 600; }
+  .demo .r { text-align: right; white-space: nowrap; }
+  .faq { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 10px; }
+  .faq summary { cursor: pointer; padding: 14px 16px; font-weight: 600; color: var(--navy); }
+  .faq p { padding: 0 16px 14px; margin: 0; }
+</style>

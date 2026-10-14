@@ -1,0 +1,593 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd } from '../../lib/seo'
+import { tools } from '../../lib/tools'
+
+const slug = 'mensagem-de-cobranca'
+const path = `/ferramentas/${slug}/`
+const tool = tools[slug]
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+  { name: tool.title, href: path },
+]
+
+const situacoes = [
+  { v: 'antes', l: 'Lembrete antes do vencimento' },
+  { v: 'dia', l: 'No dia do vencimento' },
+  { v: 'atraso3', l: '3 dias de atraso' },
+  { v: 'atraso7', l: '7 dias de atraso' },
+  { v: 'atraso15', l: '15 dias de atraso' },
+  { v: 'atraso30', l: '30 dias de atraso ou mais' },
+  { v: 'parcial', l: 'Pagamento parcial (saldo em aberto)' },
+  { v: 'sumido', l: 'Cliente sumido (sem resposta)' },
+]
+const formas = ['Pix', 'Transferência bancária', 'Boleto', 'Dinheiro', 'Cartão']
+
+const faq = [
+  {
+    q: 'Como cobrar um cliente pelo WhatsApp sem ser chato?',
+    a: 'Seja direto e específico: diga o valor, a que serviço se refere, a data de vencimento e como pagar. Um tom neutro, sem ironia nem cobrança em público, preserva a relação. Mandar um lembrete antes do vencimento reduz bastante a necessidade de cobrar depois.',
+  },
+  {
+    q: 'Quantos dias depois do vencimento devo cobrar?',
+    a: 'Um primeiro contato leve entre 1 e 3 dias de atraso costuma resolver esquecimentos. Se não houver resposta, volte a falar por volta de 7 dias, depois 15 e 30 dias, aumentando a firmeza a cada etapa e pedindo uma data concreta de pagamento.',
+  },
+  {
+    q: 'A ferramenta envia a mensagem para o cliente?',
+    a: 'Não. Ela só monta o texto. O botão "Abrir no WhatsApp" abre o aplicativo com a mensagem pronta; você escolhe o contato, revisa e decide se envia. Nada é enviado automaticamente.',
+  },
+  {
+    q: 'Posso incluir multa e juros na mensagem de cobrança?',
+    a: 'Só cobre multa e juros se eles estiverem combinados por escrito, no contrato ou no orçamento aprovado, e informe como chegou ao valor. As regras de juros legais mudaram recentemente; veja o guia sobre multa e juros por atraso antes de aplicar.',
+  },
+  {
+    q: 'O que fazer quando o cliente para de responder?',
+    a: 'Tente outro canal (ligação, e-mail), registre as tentativas com data e mantenha o tom respeitoso. Se o valor justificar, formalize a cobrança por escrito e procure orientação sobre os caminhos possíveis no guia sobre cliente que não paga.',
+  },
+  {
+    q: 'Meus dados ficam salvos na ferramenta?',
+    a: 'Não. O texto é montado no seu navegador e nada do que você digita é enviado a servidores. Ao recarregar a página, os campos ficam em branco.',
+  },
+]
+
+const jsonLd = graph(
+  organizationLd,
+  {
+    '@type': 'WebApplication',
+    name: tool.title,
+    description: tool.description,
+    url: abs(path),
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+    publisher: { '@id': organizationLd['@id'] },
+  },
+  breadcrumbLd(crumbs),
+  faqLd(faq),
+)
+---
+
+<Base
+  title="Gerador de mensagem de cobrança para WhatsApp"
+  description="Gere mensagens de cobrança educadas para WhatsApp: lembrete, vencimento, atraso, pagamento parcial e cliente sumido. Grátis e sem cadastro."
+  path={path}
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <Breadcrumbs items={crumbs} />
+    <h1>Gerador de mensagem de cobrança</h1>
+    <p class="lead muted">
+      Escolha a situação e o tom, preencha os dados e receba um texto claro e educado para copiar ou abrir no WhatsApp. Você revisa e envia
+      quando quiser.
+    </p>
+    <p class="small privacy">O texto é montado no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
+
+    <div class="tool">
+      <form id="form" class="card" novalidate aria-labelledby="form-title">
+        <h2 id="form-title" class="form-title">Dados da cobrança</h2>
+        <div class="field">
+          <label for="situacao">Situação</label>
+          <select id="situacao" name="situacao">
+            {situacoes.map((s) => <option value={s.v}>{s.l}</option>)}
+          </select>
+        </div>
+        <fieldset class="field tom">
+          <legend>Tom da mensagem</legend>
+          <div class="radios">
+            <label class="radio"><input type="radio" name="tom" value="cordial" checked /> Cordial</label>
+            <label class="radio"><input type="radio" name="tom" value="formal" /> Formal</label>
+          </div>
+        </fieldset>
+        <div class="row-2">
+          <div class="field">
+            <label for="cliente">Nome do cliente</label>
+            <input id="cliente" name="cliente" autocomplete="off" placeholder="Ex.: Ana" />
+          </div>
+          <div class="field">
+            <label for="nome">Seu nome ou empresa</label>
+            <input id="nome" name="nome" autocomplete="name" />
+          </div>
+        </div>
+        <div class="field">
+          <label for="doc">Descrição ou nº do documento</label>
+          <input id="doc" name="doc" autocomplete="off" placeholder="Ex.: demonstrativo nº 42 – serviços de setembro" aria-describedby="doc-hint" />
+          <p id="doc-hint" class="hint">Aparece entre parênteses depois do valor. Em branco: "serviços prestados".</p>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="valor">Valor (R$)</label>
+            <input id="valor" name="valor" inputmode="decimal" autocomplete="off" placeholder="Ex.: 1.250,00" aria-describedby="valor-err" />
+            <p id="valor-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="venc">Vencimento</label>
+            <input id="venc" name="venc" type="date" />
+          </div>
+        </div>
+        <div class="field" id="pago-wrap" hidden>
+          <label for="pago">Valor já recebido (R$)</label>
+          <input id="pago" name="pago" inputmode="decimal" autocomplete="off" placeholder="Ex.: 500,00" aria-describedby="pago-err" />
+          <p id="pago-err" class="err" hidden></p>
+        </div>
+        <div class="row-2">
+          <div class="field">
+            <label for="forma">Forma de pagamento</label>
+            <select id="forma" name="forma">
+              <option value="">Não informar</option>
+              {formas.map((f) => <option>{f}</option>)}
+            </select>
+          </div>
+          <div class="field">
+            <label for="dados">Dados para pagamento</label>
+            <input id="dados" name="dados" autocomplete="off" placeholder="Ex.: chave Pix" aria-describedby="dados-hint" />
+            <p id="dados-hint" class="hint">Opcional. Chave Pix, banco e conta etc.</p>
+          </div>
+        </div>
+        <div class="field">
+          <label for="link">Link do documento (opcional)</label>
+          <input id="link" name="link" type="url" inputmode="url" autocomplete="off" placeholder="https://" />
+        </div>
+      </form>
+
+      <section class="card result" aria-labelledby="res-title">
+        <h2 id="res-title" class="form-title">Mensagem</h2>
+        <label for="msg" class="small">Você pode editar o texto antes de copiar.</label>
+        <textarea id="msg" rows="14" spellcheck="true"></textarea>
+        <p id="faltando" class="small" hidden>Os trechos entre colchetes ainda precisam ser preenchidos.</p>
+        <div class="actions">
+          <button type="button" id="copiar" class="btn btn-primary">Copiar texto</button>
+          <a id="whats" class="btn btn-secondary" href="https://wa.me/" target="_blank" rel="noopener">Abrir no WhatsApp<span class="sr-only"> (abre em nova aba)</span></a>
+        </div>
+        <p class="small">O WhatsApp abre com o texto pronto. Você escolhe o contato, revisa e decide se envia.</p>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
+
+    <article class="prose content">
+      <h2>Como usar o gerador de mensagem de cobrança</h2>
+      <ol>
+        <li><strong>Escolha a situação.</strong> Do lembrete antes do vencimento até o cliente que parou de responder. Cada etapa tem um texto diferente, um pouco mais firme que o anterior.</li>
+        <li><strong>Escolha o tom.</strong> O cordial funciona para clientes com quem você fala no dia a dia. O formal combina com empresas, condomínios e contatos com o setor financeiro.</li>
+        <li><strong>Preencha os dados.</strong> Nome do cliente, seu nome, a que se refere a cobrança, valor, vencimento e como pagar. O link é opcional: use-o se o cliente puder consultar o documento online.</li>
+        <li><strong>Revise e envie.</strong> Copie o texto ou abra no WhatsApp. A mensagem nunca é enviada sozinha: quem decide é você.</li>
+      </ol>
+      <p>Valores aparecem no formato brasileiro (R$ 1.250,00) e datas como 10/11/2026. Campos vazios aparecem entre colchetes, para você não mandar um texto incompleto por engano.</p>
+
+      <h2>O que uma boa mensagem de cobrança precisa ter</h2>
+      <p>A maioria dos atrasos de pequeno valor é esquecimento ou desorganização do cliente, e não má-fé. Por isso, a mensagem que funciona é a que facilita o pagamento:</p>
+      <ul>
+        <li><strong>Referência clara:</strong> que serviço ou documento está sendo cobrado. "Aquele valor" gera dúvida; "demonstrativo nº 42, serviços de setembro" não.</li>
+        <li><strong>Valor exato e vencimento.</strong> Evita a resposta "quanto era mesmo?".</li>
+        <li><strong>Como pagar.</strong> Chave Pix ou dados bancários na própria mensagem economizam uma troca de mensagens.</li>
+        <li><strong>Saída para o cliente.</strong> "Se já pagou, me envie o comprovante" ou "se houver algum problema com o serviço, me avise" abrem conversa em vez de criar atrito.</li>
+        <li><strong>Próximo passo.</strong> A partir do segundo contato, peça uma data de pagamento. Prazo concreto é o que tira a cobrança do lugar.</li>
+      </ul>
+      <p>Mais exemplos prontos e variações estão no guia <a href="/guias/mensagem-de-cobranca-whatsapp/">mensagem de cobrança pelo WhatsApp</a>.</p>
+
+      <h2>A sequência de cobrança, etapa por etapa</h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Quando</th><th scope="col">Objetivo</th><th scope="col">Tom</th></tr></thead>
+          <tbody>
+            <tr><td>2 a 3 dias antes</td><td>Lembrar, sem cobrar</td><td>Leve, informativo</td></tr>
+            <tr><td>No vencimento</td><td>Facilitar o pagamento (dados à mão)</td><td>Leve</td></tr>
+            <tr><td>3 dias de atraso</td><td>Checar se foi esquecimento</td><td>Neutro, sem acusação</td></tr>
+            <tr><td>7 dias de atraso</td><td>Pedir previsão de pagamento</td><td>Direto</td></tr>
+            <tr><td>15 dias de atraso</td><td>Combinar data ou parcelamento</td><td>Firme</td></tr>
+            <tr><td>30 dias ou mais</td><td>Formalizar e definir prazo de resposta</td><td>Firme e formal</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        O lembrete antes do vencimento é a etapa mais barata e mais esquecida. Ele evita constrangimento dos dois lados, porque ninguém está em
+        atraso ainda. Veja como montar uma rotina no guia <a href="/guias/lembrete-de-pagamento/">lembrete de pagamento</a>.
+      </p>
+
+      <h2>Exemplo de mensagem gerada</h2>
+      <p>Situação "7 dias de atraso", tom cordial, com dados fictícios:</p>
+      <blockquote>
+        <p>
+          Olá, Ana, tudo bem?<br />O pagamento de R$ 1.250,00 (demonstrativo nº 42 – serviços de setembro) está em aberto desde
+          10/10/2026. Consegue me passar uma previsão de quando ele será feito?<br />Forma de pagamento: Pix (chave: e-mail do prestador).<br />Se
+          houver alguma dúvida sobre o serviço ou o valor, me fale para resolvermos.
+        </p>
+      </blockquote>
+
+      <h2>Cuidados ao cobrar</h2>
+      <ul>
+        <li>Cobre sempre em conversa privada. Nunca exponha o cliente em grupo, rede social ou na frente de terceiros, e não use ameaças.</li>
+        <li>Guarde o histórico: datas das mensagens, respostas e promessas de pagamento. Ele ajuda se for preciso formalizar a cobrança.</li>
+        <li>Multa e juros só se estiverem combinados por escrito. Antes de calcular, leia o guia sobre <a href="/guias/multa-e-juros-por-atraso/">multa e juros por atraso</a>.</li>
+        <li>Se o cliente sumiu de vez, veja os próximos passos em <a href="/guias/como-cobrar-cliente-que-nao-paga/">como cobrar cliente que não paga</a>.</li>
+      </ul>
+      <p>
+        Quem cobra vários clientes por mês ganha tempo enviando um documento com link: no MinhaOS App, o demonstrativo de cobrança tem um
+        <a href="/funcionalidades/link-e-acessos/">link para o cliente consultar</a>, e você vê quando ele foi aberto, o que ajuda a escolher o
+        momento do próximo contato.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      {
+        faq.map((f) => (
+          <>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </>
+        ))
+      }
+    </article>
+
+    <Cta title="Cobre com um documento claro" text="Feche o mês por cliente e compartilhe um demonstrativo de cobrança com link, sem precisar redigir tudo de novo a cada mês." />
+  </div>
+</Base>
+
+<script>
+  import { brl, copyText, dateBR, parseScaled } from './_shared'
+
+  const form = document.getElementById('form') as HTMLFormElement
+  const $ = <T extends HTMLElement = HTMLInputElement>(id: string) => document.getElementById(id) as T
+  const msg = $<HTMLTextAreaElement>('msg')
+  const whats = $<HTMLAnchorElement>('whats')
+  const status = $('status')
+
+  function money(id: string): bigint | null | 'invalid' {
+    const input = $(id)
+    const err = $(`${id}-err`)
+    const raw = input.value.trim()
+    const v = raw === '' ? null : parseScaled(raw, 2)
+    const bad = raw !== '' && v === null
+    if (bad) input.setAttribute('aria-invalid', 'true')
+    else input.removeAttribute('aria-invalid')
+    err.hidden = !bad
+    err.textContent = bad ? 'Valor inválido. Use números com vírgula para os centavos, por exemplo 1.250,00.' : ''
+    return bad ? 'invalid' : v
+  }
+
+  interface Dados {
+    cli: string
+    nome: string
+    doc: string
+    valor: string
+    venc: string
+    pago: string
+    saldo: string
+    pagamento: string
+    link: string
+  }
+
+  type Tom = 'cordial' | 'formal'
+
+  const blocos = (...partes: string[]) => partes.filter(Boolean).join('\n\n')
+
+  function montar(sit: string, tom: Tom, d: Dados): string {
+    const ref = `${d.valor} (${d.doc})`
+    const extra = [d.pagamento, d.link].filter(Boolean).join('\n')
+    const f = tom === 'formal'
+    const ola = f ? `Prezado(a) ${d.cli},` : `Olá, ${d.cli}! Tudo bem?`
+    const fim = f ? `Atenciosamente,\n${d.nome}` : d.nome
+    switch (sit) {
+      case 'antes':
+        return blocos(
+          ola,
+          f
+            ? `Lembramos que o pagamento de ${ref} tem vencimento em ${d.venc}.`
+            : `Passando para lembrar que o pagamento de ${ref} vence em ${d.venc}.`,
+          extra,
+          f ? 'Caso o pagamento já esteja programado, por favor desconsidere esta mensagem. Permanecemos à disposição para qualquer esclarecimento.' : 'Se já estiver programado, pode desconsiderar. Qualquer dúvida, é só me chamar.',
+          fim,
+        )
+      case 'dia':
+        return blocos(
+          ola,
+          f
+            ? `Informamos que hoje, ${d.venc}, vence o pagamento de ${ref}.`
+            : `Hoje (${d.venc}) é o dia do vencimento do pagamento de ${ref}.`,
+          extra,
+          f ? 'Caso o pagamento já tenha sido realizado, pedimos a gentileza de enviar o comprovante.' : 'Se já tiver pago, me envie o comprovante para eu dar baixa aqui. Agradeço a parceria!',
+          fim,
+        )
+      case 'atraso3':
+        return blocos(
+          ola,
+          f
+            ? `Não identificamos até o momento o pagamento de ${ref} com vencimento em ${d.venc}.`
+            : `Não localizei aqui o pagamento de ${ref} que venceu em ${d.venc}. Pode ser que tenha passado despercebido.`,
+          extra,
+          f ? 'Caso o pagamento já tenha sido efetuado, por favor desconsidere esta mensagem e nos envie o comprovante.' : 'Se já pagou, me mande o comprovante, por favor, que eu confiro.',
+          fim,
+        )
+      case 'atraso7':
+        return blocos(
+          f ? ola : `Olá, ${d.cli}, tudo bem?`,
+          f
+            ? `O pagamento de ${ref}, vencido em ${d.venc}, permanece em aberto. Solicitamos, por gentileza, a previsão de pagamento.`
+            : `O pagamento de ${ref} está em aberto desde ${d.venc}. Consegue me passar uma previsão de quando ele será feito?`,
+          extra,
+          f ? 'Se houver qualquer divergência sobre o serviço ou o valor, estamos à disposição para esclarecer.' : 'Se houver alguma dúvida sobre o serviço ou o valor, me fale para resolvermos.',
+          fim,
+        )
+      case 'atraso15':
+        return blocos(
+          f ? ola : `Olá, ${d.cli}.`,
+          f
+            ? `Retomamos o contato sobre o pagamento de ${ref} vencido em ${d.venc}, para o qual ainda não recebemos retorno.`
+            : `Voltando a falar sobre o pagamento de ${ref} vencido em ${d.venc}. Ainda não tive retorno das mensagens anteriores.`,
+          f
+            ? 'Solicitamos que nos informe uma data para a quitação. Caso necessário, podemos avaliar uma proposta de parcelamento.'
+            : 'Preciso combinar uma data para o pagamento. Se pagar tudo de uma vez estiver difícil, podemos conversar sobre dividir.',
+          extra,
+          f ? fim : `Aguardo seu retorno.\n${d.nome}`,
+        )
+      case 'atraso30':
+        return blocos(
+          f ? ola : `Olá, ${d.cli}.`,
+          f
+            ? `O pagamento de ${ref} encontra-se em atraso desde ${d.venc}, há mais de 30 dias, sem que tenhamos recebido retorno sobre as comunicações anteriores.`
+            : `O pagamento de ${ref} está em atraso desde ${d.venc}, há mais de 30 dias, e eu preciso regularizar essa pendência.`,
+          f
+            ? 'Solicitamos resposta até o final desta semana, com uma data para pagamento ou uma proposta de acordo. Na ausência de retorno, precisaremos avaliar outras medidas de cobrança.'
+            : 'Peço que me responda até o fim desta semana com uma data para pagamento ou uma proposta de acordo. Sem retorno, vou precisar avaliar outras formas de cobrança.',
+          extra,
+          fim,
+        )
+      case 'parcial':
+        return blocos(
+          ola,
+          f
+            ? `Confirmamos o recebimento de ${d.pago}, referente ao pagamento parcial de ${ref}. Permanece em aberto o saldo de ${d.saldo}, com vencimento em ${d.venc}.`
+            : `Recebi ${d.pago}, agradeço! Esse valor é parte do pagamento de ${ref}. Ficou um saldo de ${d.saldo} em aberto, com vencimento em ${d.venc}.`,
+          extra,
+          f ? 'Caso deseje combinar outra data para o saldo, por favor nos informe.' : 'Se preferir combinar outra data para o restante, é só me avisar.',
+          fim,
+        )
+      case 'sumido':
+      default:
+        return blocos(
+          ola,
+          f
+            ? `Tentamos contato algumas vezes sobre o pagamento de ${ref} vencido em ${d.venc}, sem retorno até o momento.`
+            : `Tentei falar com você algumas vezes sobre o pagamento de ${ref} vencido em ${d.venc}, e não tive retorno. Quero só confirmar se está tudo bem e se minhas mensagens chegaram.`,
+          f
+            ? 'Pedimos, por gentileza, que nos indique o melhor horário ou outro canal para tratarmos do assunto.'
+            : 'Se preferir, me diga o melhor horário para conversarmos ou outro contato para resolvermos isso.',
+          extra,
+          fim,
+        )
+    }
+  }
+
+  function atualizar() {
+    const sit = $<HTMLSelectElement>('situacao').value
+    const tom = (form.querySelector<HTMLInputElement>('input[name="tom"]:checked')?.value ?? 'cordial') as Tom
+    $('pago-wrap').hidden = sit !== 'parcial'
+
+    const valor = money('valor')
+    const pago = sit === 'parcial' ? money('pago') : null
+    const pagoErr = $('pago-err')
+    let saldo: bigint | null = null
+    if (typeof valor === 'bigint' && typeof pago === 'bigint') {
+      if (pago >= valor) {
+        $('pago').setAttribute('aria-invalid', 'true')
+        pagoErr.hidden = false
+        pagoErr.textContent = 'O valor recebido precisa ser menor que o valor total.'
+      } else saldo = valor - pago
+    }
+
+    const txt = (id: string, ph: string) => $(id).value.trim() || `[${ph}]`
+    const forma = $<HTMLSelectElement>('forma').value
+    const dados = $('dados').value.trim()
+    const link = $('link').value.trim()
+    const venc = dateBR($('venc').value)
+    const d: Dados = {
+      cli: txt('cliente', 'nome do cliente'),
+      nome: txt('nome', 'seu nome'),
+      doc: $('doc').value.trim() || 'serviços prestados',
+      valor: typeof valor === 'bigint' ? brl(valor) : '[valor]',
+      venc: venc || '[data de vencimento]',
+      pago: typeof pago === 'bigint' ? brl(pago) : '[valor recebido]',
+      saldo: saldo !== null ? brl(saldo) : '[saldo]',
+      pagamento: forma ? `Forma de pagamento: ${forma}${dados ? ` (${dados})` : ''}.` : dados ? `Dados para pagamento: ${dados}.` : '',
+      link: link ? `Documento: ${link}` : '',
+    }
+    const texto = montar(sit, tom, d)
+    msg.value = texto
+    $('faltando').hidden = !/\[[^\]]+\]/.test(texto)
+    syncWhats()
+    status.textContent = ''
+  }
+
+  function syncWhats() {
+    whats.href = `https://wa.me/?text=${encodeURIComponent(msg.value)}`
+  }
+
+  form.addEventListener('input', atualizar)
+  form.addEventListener('change', atualizar)
+  form.addEventListener('submit', (e) => e.preventDefault())
+  msg.addEventListener('input', syncWhats)
+
+  $<HTMLButtonElement>('copiar').addEventListener('click', async () => {
+    const ok = await copyText(msg.value, msg)
+    status.textContent = ok ? 'Texto copiado. Cole no aplicativo de sua preferência.' : 'Não foi possível copiar automaticamente. O texto foi selecionado: use Ctrl+C ou "Copiar" do seu aparelho.'
+    if (!ok) {
+      msg.focus()
+      msg.select()
+    }
+  })
+
+  atualizar()
+</script>
+
+<style>
+  /* <button> não herda a fonte do site por padrão */
+  button {
+    font-family: inherit;
+  }
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+    margin-bottom: 8px;
+  }
+  .privacy {
+    margin-bottom: 28px;
+  }
+  .tool {
+    display: grid;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .tool {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+    .result {
+      position: sticky;
+      top: 88px;
+    }
+  }
+  .form-title {
+    font-size: 20px;
+    margin: 0 0 12px;
+  }
+  .field {
+    margin-bottom: 14px;
+    min-width: 0;
+  }
+  .row-2 {
+    display: grid;
+    gap: 0 14px;
+  }
+  @media (min-width: 560px) {
+    .row-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  label,
+  legend {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+    padding: 0;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 14px;
+  }
+  .radios {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  label.radio {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 14px;
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    margin: 0;
+  }
+  label.radio:has(input:checked) {
+    border-color: var(--teal);
+    background: var(--teal-subtle);
+    font-weight: 650;
+  }
+  label.radio:has(input:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .radio input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--teal);
+    margin: 0;
+  }
+  input:not([type='radio']),
+  select,
+  textarea {
+    width: 100%;
+    min-height: 46px;
+    padding: 8px 12px;
+    font: inherit;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+  }
+  textarea {
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    margin-top: 4px;
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--warning);
+    border-width: 2px;
+  }
+  .hint {
+    font-size: 14px;
+    color: var(--text-3);
+    margin: 4px 0 0;
+    line-height: 1.45;
+  }
+  .err {
+    font-size: 14px;
+    color: var(--warning);
+    font-weight: 600;
+    margin: 4px 0 0;
+  }
+  .result label.small {
+    font-weight: 400;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 14px 0 8px;
+  }
+  .status {
+    min-height: 1.5em;
+    margin: 0;
+    font-weight: 600;
+    color: var(--success);
+  }
+  .content {
+    margin-top: 48px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+</style>

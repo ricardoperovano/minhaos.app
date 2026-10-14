@@ -1,0 +1,138 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Cta from '../components/Cta.astro'
+import Base from '../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../lib/seo'
+import { site } from '../site.config'
+
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Sobre', href: '/sobre/' },
+]
+const description =
+  'Sobre o MinhaOS App: o problema que ele resolve para prestadores de serviço, os princípios que guiam o produto, o que ele não faz e como entrar em contato.'
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'AboutPage',
+  name: `Sobre o ${site.name}`,
+  url: abs('/sobre/'),
+  description,
+  inLanguage: 'pt-BR',
+  about: { '@id': `${site.url}/#organization` },
+  publisher: { '@id': `${site.url}/#organization` },
+})
+
+const principios = [
+  {
+    t: 'Clareza para os dois lados',
+    d: 'O prestador vê o que executou, o que falta cobrar, o que foi cobrado e o que entrou. O cliente vê cada data, quantidade e valor do que está pagando, sem precisar pedir explicação.',
+  },
+  {
+    t: 'Os dados são do prestador',
+    d: 'Cada conta tem seus próprios dados, separados das demais. Relatórios podem ser exportados em CSV e demonstrativos salvos em PDF, para você manter uma cópia fora do aplicativo. Observações internas nunca aparecem para o cliente.',
+  },
+  {
+    t: 'Honestidade sobre o que o produto faz',
+    d: 'Dizemos com a mesma clareza o que o aplicativo faz e o que não faz. Um demonstrativo não é nota fiscal; uma confirmação de recebimento do documento não é pagamento; um registro de acesso ao link não prova quem leu.',
+  },
+  {
+    t: 'Regras que evitam erro',
+    d: 'Totais calculados em centavos, lançamento faturado que não entra em outra cobrança, demonstrativo que não muda depois de emitido. Regras simples que poupam discussão com o cliente.',
+  },
+]
+
+const naoFaz = [
+  'não emite nota fiscal nem NFS-e (você emite no sistema da prefeitura ou no Emissor Nacional e anexa o arquivo ao demonstrativo);',
+  'não processa pagamentos, não gera boleto nem cobrança Pix e não é banco;',
+  'não envia mensagens de WhatsApp automaticamente (ele prepara a mensagem; quem envia é você);',
+  'não controla estoque;',
+  'não tem agenda, assinatura digital nem certificado digital.',
+]
+---
+
+<Base title={`Sobre o ${site.name}`} description={description} path="/sobre/" jsonLd={ld}>
+  <div class="container sobre">
+    <Breadcrumbs items={crumbs} />
+    <h1>Sobre o {site.name}</h1>
+    <p class="lead muted">
+      O {site.name} é um aplicativo web para prestadores de serviço — autônomos, MEI e pequenas empresas — registrarem o que executam, fecharem o mês por cliente e cobrarem com um documento claro.
+    </p>
+
+    <section aria-labelledby="problema">
+      <h2 id="problema">O problema que resolvemos</h2>
+      <p>
+        Quem presta serviço costuma trabalhar para o mesmo cliente várias vezes no mês: uma visita aqui, duas horas ali, uma diária no fim da semana. Na hora de cobrar, os registros estão espalhados entre caderno, planilha, mensagens e memória. Algum atendimento fica de fora, outro é cobrado duas vezes, e o cliente recebe um valor total sem saber de onde ele veio.
+      </p>
+      <p>
+        O {site.name} junta essas pontas. Você registra cada execução com data, unidade, quantidade e valor. No fim do período, seleciona o que vai cobrar daquele cliente e emite um demonstrativo de cobrança com todos os itens. O cliente abre o demonstrativo por um link, sem criar conta, pode imprimir, baixar as notas fiscais que você anexou e confirmar que recebeu o documento. Você acompanha os acessos ao link, registra os pagamentos e vê o que ainda está em aberto.
+      </p>
+      <p>
+        O aplicativo funciona no navegador e pode ser instalado na tela inicial do Android e do iPhone, para registrar o serviço ainda no local do cliente.
+      </p>
+      <p><a href="/funcionalidades/">Conheça as funcionalidades →</a></p>
+    </section>
+
+    <section aria-labelledby="principios">
+      <h2 id="principios">Nossos princípios</h2>
+      <div class="grid grid-2">
+        {
+          principios.map((p) => (
+            <div class="card">
+              <h3>{p.t}</h3>
+              <p class="muted">{p.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section aria-labelledby="nao-faz">
+      <h2 id="nao-faz">O que o {site.name} não faz</h2>
+      <p>Preferimos que você saiba antes de criar a conta. O {site.name}:</p>
+      <ul>
+        {naoFaz.map((i) => <li>{i}</li>)}
+      </ul>
+      <p>
+        Ele organiza serviços, cobranças e recebimentos. Para nota fiscal, impostos e questões legais, conte com os canais oficiais e com o seu contador.
+      </p>
+    </section>
+
+    <section aria-labelledby="conteudo">
+      <h2 id="conteudo">Sobre os guias deste site</h2>
+      <p>
+        Os <a href="/guias/">guias</a> e as <a href="/ferramentas/">ferramentas gratuitas</a> foram escritos para serem úteis mesmo para quem nunca usar o aplicativo. Nos temas fiscais e legais, citamos as fontes oficiais consultadas e indicamos a data das regras. Regras mudam: confirme sempre com um contador ou advogado antes de decidir.
+      </p>
+    </section>
+
+    <section aria-labelledby="contato">
+      <h2 id="contato">Contato</h2>
+      <p>
+        Dúvidas, sugestões, correções nos guias ou assuntos sobre os dados da sua conta: escreva para <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.
+      </p>
+      <p>Veja também as <a href="/perguntas-frequentes/">perguntas frequentes</a>.</p>
+    </section>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .sobre {
+    max-width: var(--measure);
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+  }
+  section {
+    margin-top: 40px;
+  }
+  .card h3 {
+    margin-top: 0;
+  }
+  .card p {
+    margin: 0;
+  }
+  ul {
+    padding-left: 22px;
+  }
+</style>

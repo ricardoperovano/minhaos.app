@@ -1,0 +1,170 @@
+---
+import { Picture } from 'astro:assets'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { features, featureBySlug, type Feature } from '../../lib/features'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd, softwareLd } from '../../lib/seo'
+
+export function getStaticPaths() {
+  return features.map((f) => ({ params: { slug: f.slug }, props: { feature: f } }))
+}
+interface Props {
+  feature: Feature
+}
+const { feature: f } = Astro.props
+const path = `/funcionalidades/${f.slug}/`
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Funcionalidades', href: '/funcionalidades/' },
+  { name: f.name, href: path },
+]
+const related = f.related.map(featureBySlug).filter((x): x is Feature => !!x)
+const ld = graph(
+  organizationLd,
+  softwareLd,
+  breadcrumbLd(crumbs),
+  {
+    '@type': 'WebPage',
+    name: f.h1,
+    description: f.description,
+    url: abs(path),
+    inLanguage: 'pt-BR',
+    about: { '@id': softwareLd['@id'] },
+  },
+  faqLd(f.faq),
+)
+const imgWidths = (mobile?: boolean) => (mobile ? [320, 480, 780] : [480, 800, 1160, 1600])
+const imgSizes = (mobile?: boolean) => (mobile ? '(min-width: 760px) 360px, 90vw' : '(min-width: 1200px) 1100px, 94vw')
+---
+
+<Base title={f.title} description={f.description} path={path} jsonLd={ld}>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <span class="eyebrow">Funcionalidade</span>
+    <h1>{f.h1}</h1>
+    <div class="prose lead">
+      {f.intro.map((p) => <p set:html={p} />)}
+    </div>
+
+    <figure class:list={['shot', { 'shot-mobile': f.image.mobile }]}>
+      <Picture
+        src={f.image.src}
+        alt={f.image.alt}
+        formats={['avif', 'webp']}
+        widths={imgWidths(f.image.mobile)}
+        sizes={imgSizes(f.image.mobile)}
+        loading="eager"
+        fetchpriority="high"
+      />
+      <figcaption class="small">{f.image.caption}</figcaption>
+    </figure>
+
+    <div class="prose">
+      {
+        f.sections.map((s) => (
+          <section>
+            <h2>{s.h2}</h2>
+            {s.body.map((p) => <p set:html={p} />)}
+            {s.steps && <ol>{s.steps.map((li) => <li set:html={li} />)}</ol>}
+            {s.bullets && <ul>{s.bullets.map((li) => <li set:html={li} />)}</ul>}
+            {s.image && (
+              <figure class:list={['shot', { 'shot-mobile': s.image.mobile }]}>
+                <Picture
+                  src={s.image.src}
+                  alt={s.image.alt}
+                  formats={['avif', 'webp']}
+                  widths={imgWidths(s.image.mobile)}
+                  sizes={imgSizes(s.image.mobile)}
+                  loading="lazy"
+                />
+                <figcaption class="small">{s.image.caption}</figcaption>
+              </figure>
+            )}
+          </section>
+        ))
+      }
+
+      <section class="callout" aria-labelledby="limites">
+        <h2 id="limites" style="margin-top:0">O que esta funcionalidade não faz</h2>
+        <ul>{f.limits.map((l) => <li>{l}</li>)}</ul>
+        <p class="small" style="margin:0">Veja também <a href="/funcionalidades/#nao-faz">o que o MinhaOS App não faz</a>.</p>
+      </section>
+
+      <section aria-labelledby="faq">
+        <h2 id="faq">Perguntas frequentes</h2>
+        {f.faq.map((q) => <details class="faq"><summary>{q.q}</summary><p>{q.a}</p></details>)}
+      </section>
+    </div>
+
+    <section aria-labelledby="guias" style="margin-top:40px">
+      <h2 id="guias">Guias relacionados</h2>
+      <ul class="links">
+        {f.guides.map((g) => <li><a href={`/guias/${g.slug}/`}>{g.label}</a></li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="outras" style="margin-top:40px">
+      <h2 id="outras">Outras funcionalidades</h2>
+      <div class="grid grid-3">
+        {
+          related.map((r) => (
+            <a class="card" href={`/funcionalidades/${r.slug}/`}>
+              <h3 style="font-size:19px;margin:0 0 6px">{r.name}</h3>
+              <p class="muted small" style="margin:0">{r.summary}</p>
+            </a>
+          ))
+        }
+      </div>
+      <p style="margin-top:18px"><a href="/funcionalidades/">Ver todas as funcionalidades</a></p>
+    </section>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .lead p {
+    font-size: 19px;
+    color: var(--text-2);
+  }
+  .shot {
+    margin: 32px 0;
+  }
+  .shot :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    background: var(--surface-muted);
+  }
+  .shot-mobile {
+    max-width: 360px;
+  }
+  .shot figcaption {
+    margin-top: 10px;
+  }
+  .links {
+    display: grid;
+    gap: 8px;
+    padding-left: 20px;
+    margin: 0;
+  }
+  .faq {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+  }
+  .faq summary {
+    cursor: pointer;
+    padding: 14px 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .faq p {
+    padding: 0 16px 14px;
+    margin: 0;
+  }
+</style>

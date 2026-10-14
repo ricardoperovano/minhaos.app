@@ -1,0 +1,46 @@
+---
+import { getCollection } from 'astro:content'
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import GuideList from '../../components/GuideList.astro'
+import Base from '../../layouts/Base.astro'
+import { breadcrumbLd, graph, organizationLd, abs } from '../../lib/seo'
+import { clusters, type ClusterKey } from '../../site.config'
+
+const guias = (await getCollection('guias')).sort((a, b) => +b.data.updatedAt - +a.data.updatedAt)
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Guias', href: '/guias/' },
+]
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'CollectionPage',
+  name: 'Guias para prestadores de serviço',
+  url: abs('/guias/'),
+  inLanguage: 'pt-BR',
+  hasPart: guias.map((g) => ({ '@type': 'Article', headline: g.data.h1, url: abs(`/guias/${g.id}/`) })),
+})
+---
+
+<Base title="Guias para prestadores de serviço" description="Guias práticos sobre ordem de serviço, cobrança, orçamento, recibo, nota fiscal e organização financeira para autônomos, MEI e pequenas empresas." path="/guias/" jsonLd={ld}>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <h1>Guias para quem presta serviço</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">Do orçamento ao recebimento: como registrar o que você fez, cobrar com clareza e manter as contas organizadas — sem planilha bagunçada e sem constrangimento.</p>
+    {
+      (Object.keys(clusters) as ClusterKey[]).map((k) => {
+        const items = guias.filter((g) => g.data.cluster === k)
+        return items.length ? (
+          <section aria-labelledby={`t-${k}`} style="margin-top:48px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+              <h2 id={`t-${k}`} style="margin:0 0 6px">{clusters[k].title}</h2>
+              <a href={`/guias/tema/${k}/`}>Ver tudo sobre {clusters[k].title.toLowerCase()} →</a>
+            </div>
+            <p class="muted" style="margin-bottom:18px">{clusters[k].description}</p>
+            <GuideList items={items.slice(0, 6)} showCluster={false} />
+          </section>
+        ) : null
+      })
+    }
+    <Cta />
+  </div>
+</Base>

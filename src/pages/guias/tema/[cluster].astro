@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content'
+import Breadcrumbs from '../../../components/Breadcrumbs.astro'
+import Cta from '../../../components/Cta.astro'
+import GuideList from '../../../components/GuideList.astro'
+import Base from '../../../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../../../lib/seo'
+import { clusters, type ClusterKey } from '../../../site.config'
+
+export function getStaticPaths() {
+  return (Object.keys(clusters) as ClusterKey[]).map((cluster) => ({ params: { cluster } }))
+}
+const key = Astro.params.cluster as ClusterKey
+const c = clusters[key]
+const items = (await getCollection('guias')).filter((g) => g.data.cluster === key).sort((a, b) => Number(b.data.pillar) - Number(a.data.pillar) || +b.data.updatedAt - +a.data.updatedAt)
+const path = `/guias/tema/${key}/`
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Guias', href: '/guias/' },
+  { name: c.title, href: path },
+]
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'CollectionPage',
+  name: `${c.title}: guias`,
+  url: abs(path),
+  inLanguage: 'pt-BR',
+  hasPart: items.map((g) => ({ '@type': 'Article', headline: g.data.h1, url: abs(`/guias/${g.id}/`) })),
+})
+---
+
+<Base title={`${c.title}: guias práticos`} description={`${c.description} Guias completos com exemplos, modelos e perguntas frequentes para prestadores de serviço.`.slice(0, 160)} path={path} jsonLd={ld}>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <span class="eyebrow">Guias</span>
+    <h1>{c.title}</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">{c.description}</p>
+    <div style="margin-top:32px"><GuideList items={items} showCluster={false} /></div>
+    <Cta />
+  </div>
+</Base>

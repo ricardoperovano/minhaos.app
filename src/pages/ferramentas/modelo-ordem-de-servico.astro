@@ -1,0 +1,955 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd } from '../../lib/seo'
+import { tools } from '../../lib/tools'
+
+const slug = 'modelo-ordem-de-servico'
+const path = `/ferramentas/${slug}/`
+const tool = tools[slug]
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+  { name: tool.title, href: path },
+]
+const unidades = ['hora', 'unidade', 'diária', 'visita', 'serviço', 'metro', 'm²', 'kg']
+const secoes = [
+  { key: 'serv', titulo: 'Serviços executados', item: 'serviço', linhas: 3 },
+  { key: 'mat', titulo: 'Materiais e peças', item: 'material', linhas: 2 },
+] as const
+
+const faq = [
+  {
+    q: 'O que deve ter em uma ordem de serviço?',
+    a: 'Número, data, dados do prestador e do cliente, endereço do atendimento, o pedido ou problema relatado, os serviços executados com quantidade e valor, os materiais usados, o total, as condições (prazo e garantia) e as assinaturas do técnico e do cliente.',
+  },
+  {
+    q: 'Posso imprimir o modelo em branco para preencher à mão?',
+    a: 'Sim. Use o botão "Imprimir em branco": ele gera uma folha A4 com os campos vazios e linhas extras para serviços e materiais, sem apagar o que você já digitou na tela.',
+  },
+  {
+    q: 'Como salvar a ordem de serviço em PDF?',
+    a: 'Preencha os campos e clique em "Imprimir / salvar em PDF". Na janela de impressão, escolha "Salvar como PDF" como destino. No celular, a opção fica no menu de impressão ou de compartilhar do navegador.',
+  },
+  {
+    q: 'Como numerar as ordens de serviço?',
+    a: 'Use uma sequência única e contínua, sem pular nem repetir números, por exemplo 0001, 0002, 0003, ou com o ano na frente (2026-0001). O importante é conseguir localizar qualquer OS pelo número depois.',
+  },
+  {
+    q: 'A ordem de serviço precisa ser assinada pelo cliente?',
+    a: 'Não há um formato obrigatório para OS entre particulares, mas a assinatura do cliente registra que ele concordou com o pedido ou recebeu o serviço. Ela costuma evitar discussões sobre o que foi feito e quanto foi combinado.',
+  },
+  {
+    q: 'Os dados ficam salvos na ferramenta?',
+    a: 'Não. Tudo é calculado no seu navegador e nada é enviado a servidores. Salve em PDF ou imprima antes de fechar a página, porque os campos não ficam guardados.',
+  },
+]
+
+const jsonLd = graph(
+  organizationLd,
+  {
+    '@type': 'WebApplication',
+    name: tool.title,
+    description: tool.description,
+    url: abs(path),
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+    publisher: { '@id': organizationLd['@id'] },
+  },
+  breadcrumbLd(crumbs),
+  faqLd(faq),
+)
+---
+
+<Base
+  title="Modelo de ordem de serviço para preencher e imprimir"
+  description="Modelo de ordem de serviço grátis: preencha online com total automático, salve em PDF ou imprima em branco em A4 para preencher à mão."
+  path={path}
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <div class="no-print">
+      <Breadcrumbs items={crumbs} />
+      <h1>Modelo de ordem de serviço</h1>
+      <p class="lead muted">
+        Preencha a ordem de serviço na tela, com total calculado automaticamente, e salve em PDF. Ou imprima o modelo em branco para preencher à
+        mão no atendimento.
+      </p>
+      <p class="small privacy">Tudo acontece no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
+      <div class="actions">
+        <button type="button" class="btn btn-primary js-print">Imprimir / salvar em PDF</button>
+        <button type="button" class="btn btn-secondary" id="print-blank">Imprimir em branco</button>
+      </div>
+    </div>
+
+    <form id="os" class="os card" novalidate aria-label="Ordem de serviço">
+      <header class="os-head">
+        <div class="os-brand">
+          <p class="os-title">Ordem de serviço</p>
+          <div class="field">
+            <label for="prest">Prestador / empresa</label>
+            <input id="prest" autocomplete="organization" />
+          </div>
+          <div class="field">
+            <label for="prestContato">Contato do prestador</label>
+            <input id="prestContato" autocomplete="off" />
+          </div>
+        </div>
+        <div class="os-meta">
+          <div class="field">
+            <label for="num">Nº da OS</label>
+            <input id="num" inputmode="numeric" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="data">Data</label>
+            <input id="data" type="date" />
+            <span class="print-date" aria-hidden="true">____/____/________</span>
+          </div>
+        </div>
+      </header>
+
+      <fieldset class="block">
+        <legend>Cliente</legend>
+        <div class="grid-os">
+          <div class="field">
+            <label for="cliente">Nome / razão social</label>
+            <input id="cliente" autocomplete="off" />
+          </div>
+          <div class="field">
+            <label for="contato">Telefone / e-mail</label>
+            <input id="contato" autocomplete="off" />
+          </div>
+          <div class="field span-2">
+            <label for="endereco">Endereço do atendimento</label>
+            <input id="endereco" autocomplete="off" />
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="block field">
+        <label for="pedido" class="legend-like">Pedido / problema relatado</label>
+        <textarea id="pedido" rows="3"></textarea>
+      </div>
+
+      {
+        secoes.map((s) => (
+          <section class="block" aria-labelledby={`${s.key}-title`}>
+            <h2 id={`${s.key}-title`} class="legend-like">
+              {s.titulo}
+            </h2>
+            <table class="items" data-section={s.key} data-item={s.item}>
+              <thead>
+                <tr>
+                  <th scope="col" class="c-n">#</th>
+                  <th scope="col" class="c-desc">Descrição</th>
+                  <th scope="col" class="c-qtd">Qtd.</th>
+                  <th scope="col" class="c-un">Unid.</th>
+                  <th scope="col" class="c-vu">Valor unit. (R$)</th>
+                  <th scope="col" class="c-tot">Total</th>
+                  <th scope="col" class="c-x no-print">
+                    <span class="sr-only">Remover</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.from({ length: s.linhas }, () => (
+                  <tr class="row">
+                    <td class="c-n" data-label="#" />
+                    <td class="c-desc" data-label="Descrição">
+                      <input class="i-desc" autocomplete="off" />
+                    </td>
+                    <td class="c-qtd" data-label="Qtd.">
+                      <input class="i-qtd" inputmode="decimal" autocomplete="off" aria-describedby={`${s.key}-err`} />
+                    </td>
+                    <td class="c-un" data-label="Unid.">
+                      <input class="i-un" list="unidades" autocomplete="off" />
+                    </td>
+                    <td class="c-vu" data-label="Valor unit.">
+                      <input class="i-vu" inputmode="decimal" autocomplete="off" aria-describedby={`${s.key}-err`} />
+                    </td>
+                    <td class="c-tot tabular" data-label="Total">
+                      <output class="o-tot" />
+                    </td>
+                    <td class="c-x no-print">
+                      <button type="button" class="rm">
+                        <span aria-hidden="true">×</span>
+                        <span class="sr-only rm-label">Remover linha</span>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <th scope="row" colspan="5" class="sub-label">
+                    Subtotal
+                  </th>
+                  <td class="c-tot tabular">
+                    <output class="o-sub" />
+                  </td>
+                  <td class="no-print" />
+                </tr>
+              </tfoot>
+            </table>
+            <p id={`${s.key}-err`} class="err" aria-live="polite" />
+            <button type="button" class="btn btn-secondary add no-print" data-target={s.key}>
+              Adicionar {s.item}
+            </button>
+          </section>
+        ))
+      }
+
+      <datalist id="unidades">
+        {unidades.map((u) => <option value={u} />)}
+      </datalist>
+
+      <p class="total-geral tabular">
+        <span>Total geral</span>
+        <output id="total" aria-live="polite">R$ 0,00</output>
+      </p>
+
+      <div class="grid-os block">
+        <div class="field">
+          <label for="obs" class="legend-like">Observações</label>
+          <textarea id="obs" rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label for="garantia" class="legend-like">Prazo de execução e garantia</label>
+          <textarea id="garantia" rows="3" placeholder="Ex.: garantia de 90 dias para a mão de obra"></textarea>
+        </div>
+      </div>
+
+      <div class="signs">
+        <div class="sign">
+          <div class="line" aria-hidden="true"></div>
+          <p>Assinatura do técnico / prestador</p>
+        </div>
+        <div class="sign">
+          <div class="line" aria-hidden="true"></div>
+          <p>Assinatura do cliente</p>
+          <p class="sign-date">Data: ____/____/________</p>
+        </div>
+      </div>
+    </form>
+
+    <div class="actions no-print bottom-actions">
+      <button type="button" class="btn btn-primary js-print">Imprimir / salvar em PDF</button>
+      <button type="button" class="btn btn-secondary" id="limpar">Limpar tudo</button>
+    </div>
+
+    <article class="prose content no-print">
+      <h2>Como usar o modelo de ordem de serviço</h2>
+      <ol>
+        <li><strong>Identifique a OS.</strong> Preencha seu nome ou o da empresa, o número da ordem e a data. A numeração sequencial é o que permite encontrar a OS depois.</li>
+        <li><strong>Preencha os dados do cliente</strong> e o endereço onde o serviço foi feito.</li>
+        <li><strong>Registre o pedido</strong> com as palavras do cliente: "ar-condicionado pingando na sala", "tomada da cozinha sem energia". Isso mostra o que foi solicitado antes de qualquer diagnóstico.</li>
+        <li><strong>Lance serviços e materiais</strong>, um por linha, com quantidade, unidade (hora, visita, unidade, diária, metro) e valor unitário. O total da linha, os subtotais e o total geral são calculados sozinhos, com arredondamento correto em centavos. Use "Adicionar" para mais linhas e "×" para remover.</li>
+        <li><strong>Defina condições:</strong> prazo de execução e garantia do serviço, além de observações como "cliente forneceu o material" ou "retorno agendado".</li>
+        <li><strong>Imprima ou salve em PDF</strong> e colha as assinaturas. A impressão sai em A4, só com a OS, sem menus do site.</li>
+      </ol>
+      <p>
+        Prefere papel? O botão "Imprimir em branco" gera o mesmo modelo vazio, com linhas extras, sem apagar o que estiver digitado. Quantidades
+        aceitam até 4 casas decimais (por exemplo, 1,5 hora ou 2,75 metros).
+      </p>
+
+      <h2>Para que serve a ordem de serviço</h2>
+      <p>
+        A ordem de serviço (OS) é o registro do que o cliente pediu, do que foi feito e de quanto custou. Ela organiza a execução, serve de base para
+        a cobrança e ajuda a resolver discussões futuras, como "esse serviço não estava incluído" ou "a garantia ainda vale?". Quem atende muitos
+        clientes no mês usa a OS também para não esquecer de cobrar uma visita ou um material.
+      </p>
+      <p>
+        Para entender a diferença entre OS, orçamento, recibo e nota fiscal, veja <a href="/guias/o-que-e-ordem-de-servico/">o que é ordem de serviço</a>.
+        O passo a passo detalhado, com exemplos de preenchimento por tipo de serviço, está em
+        <a href="/guias/como-fazer-ordem-de-servico/">como fazer ordem de serviço</a>.
+      </p>
+
+      <h2>Exemplo de preenchimento</h2>
+      <p>Uma OS fictícia de manutenção elétrica residencial:</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Item</th><th scope="col">Qtd.</th><th scope="col">Unid.</th><th scope="col">Valor unit.</th><th scope="col">Total</th></tr></thead>
+          <tbody>
+            <tr><td>Visita técnica e diagnóstico</td><td>1</td><td>visita</td><td>R$ 120,00</td><td>R$ 120,00</td></tr>
+            <tr><td>Troca de disjuntores do quadro</td><td>1,5</td><td>hora</td><td>R$ 95,00</td><td>R$ 142,50</td></tr>
+            <tr><td>Disjuntor bipolar 32 A (material)</td><td>2</td><td>unidade</td><td>R$ 48,90</td><td>R$ 97,80</td></tr>
+            <tr><th scope="row" colspan="4">Total geral</th><td><strong>R$ 360,30</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Repare que a descrição diz o que foi feito, e não só "serviço elétrico". Se o cliente questionar o valor daqui a dois meses, a OS responde
+        sozinha.
+      </p>
+
+      <h2>Boas práticas que evitam retrabalho</h2>
+      <ul>
+        <li><strong>Numere em sequência</strong> e nunca reaproveite números. Ideias de controle em <a href="/guias/numeracao-e-controle-de-ordens-de-servico/">numeração e controle de ordens de serviço</a>.</li>
+        <li><strong>Peça a assinatura do cliente</strong> na abertura (concordância com o pedido) ou no fim (serviço recebido). Veja quando e como em <a href="/guias/ordem-de-servico-assinada-pelo-cliente/">ordem de serviço assinada pelo cliente</a>.</li>
+        <li><strong>Separe serviço de material.</strong> Fica claro o que é mão de obra e o que é peça, o que facilita garantia e reembolso.</li>
+        <li><strong>Escreva a garantia</strong> com prazo e o que ela cobre. "Garantia de 90 dias para a mão de obra" é diferente de garantia da peça, que segue o fabricante.</li>
+        <li><strong>Guarde uma cópia</strong>: PDF numa pasta por cliente ou foto da via assinada.</li>
+      </ul>
+
+      <h2>Quando o papel deixa de dar conta</h2>
+      <p>
+        Com poucas OS por mês, o modelo impresso ou em PDF funciona bem. Quando você precisa somar várias OS de um mesmo cliente para cobrar no fim do
+        mês, vale migrar para um controle digital (veja <a href="/guias/ordem-de-servico-digital/">ordem de serviço digital</a>). No MinhaOS App,
+        cada serviço tem linhas com data, unidade, quantidade e valor, como neste modelo, e entra no
+        <a href="/funcionalidades/fechamento-mensal/">fechamento mensal</a> do cliente sem risco de ser cobrado duas vezes.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      {
+        faq.map((f) => (
+          <>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </>
+        ))
+      }
+    </article>
+
+    <Cta title="Registre serviços e feche o mês por cliente" text="Lance cada serviço com quantidade e valor unitário e gere um demonstrativo de cobrança com link para o cliente." />
+  </div>
+</Base>
+
+<script>
+  import { brl, dateBR, lineTotal, parseScaled, todayISO } from './_shared'
+
+  const form = document.getElementById('os') as HTMLFormElement
+  const tables = [...form.querySelectorAll<HTMLTableElement>('table.items')]
+  const totalEl = document.getElementById('total') as HTMLOutputElement
+  const dataInput = document.getElementById('data') as HTMLInputElement
+
+  /** Atualiza números das linhas e rótulos acessíveis (ex.: "Quantidade do serviço 2"). */
+  function renumber(table: HTMLTableElement) {
+    const item = table.dataset.item ?? 'item'
+    table.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((tr, i) => {
+      const n = i + 1
+      ;(tr.querySelector('.c-n') as HTMLElement).textContent = String(n)
+      const lab: Array<[string, string]> = [
+        ['.i-desc', `Descrição do ${item} ${n}`],
+        ['.i-qtd', `Quantidade do ${item} ${n}`],
+        ['.i-un', `Unidade do ${item} ${n}`],
+        ['.i-vu', `Valor unitário do ${item} ${n}, em reais`],
+      ]
+      for (const [sel, text] of lab) tr.querySelector(sel)?.setAttribute('aria-label', text)
+      tr.querySelector('.o-tot')?.setAttribute('aria-label', `Total do ${item} ${n}`)
+      const rm = tr.querySelector('.rm-label')
+      if (rm) rm.textContent = `Remover ${item} ${n}`
+    })
+  }
+
+  function setInvalid(el: HTMLElement, bad: boolean) {
+    if (bad) el.setAttribute('aria-invalid', 'true')
+    else el.removeAttribute('aria-invalid')
+  }
+
+  function calcTable(table: HTMLTableElement): bigint {
+    let sub = 0n
+    const errors: string[] = []
+    const item = table.dataset.item ?? 'item'
+    table.querySelectorAll<HTMLTableRowElement>('tbody tr').forEach((tr, i) => {
+      const qIn = tr.querySelector('.i-qtd') as HTMLInputElement
+      const vIn = tr.querySelector('.i-vu') as HTMLInputElement
+      const out = tr.querySelector('.o-tot') as HTMLOutputElement
+      const qRaw = qIn.value.trim()
+      const vRaw = vIn.value.trim()
+      const q = qRaw === '' ? null : parseScaled(qRaw, 4)
+      const v = vRaw === '' ? null : parseScaled(vRaw, 2)
+      const qBad = qRaw !== '' && q === null
+      const vBad = vRaw !== '' && v === null
+      setInvalid(qIn, qBad)
+      setInvalid(vIn, vBad)
+      if (qBad) errors.push(`${item} ${i + 1}: quantidade inválida (até 4 casas decimais, ex.: 1,5)`)
+      if (vBad) errors.push(`${item} ${i + 1}: valor unitário inválido (ex.: 95,00)`)
+      if (q !== null && v !== null) {
+        const t = lineTotal(q, v)
+        sub += t
+        out.textContent = brl(t)
+      } else out.textContent = ''
+    })
+    ;(table.querySelector('.o-sub') as HTMLOutputElement).textContent = brl(sub)
+    const err = document.getElementById(`${table.dataset.section}-err`) as HTMLElement
+    const msg = errors.length ? `Corrija: ${errors.join('; ')}.` : ''
+    if (err.textContent !== msg) err.textContent = msg
+    return sub
+  }
+
+  const printDate = form.querySelector('.print-date') as HTMLElement
+  function syncDate() {
+    printDate.textContent = dateBR(dataInput.value) || '____/____/________'
+  }
+
+  function calc() {
+    syncDate()
+    const total = tables.reduce((acc, t) => acc + calcTable(t), 0n)
+    totalEl.textContent = brl(total)
+  }
+
+  function grow(t: HTMLTextAreaElement) {
+    t.style.height = 'auto'
+    t.style.height = `${t.scrollHeight + 2}px`
+  }
+
+  function addRow(table: HTMLTableElement, focus = true) {
+    const body = table.tBodies[0]
+    const tpl = body.rows[0] ?? (table.querySelector('tbody tr') as HTMLTableRowElement)
+    const tr = tpl.cloneNode(true) as HTMLTableRowElement
+    tr.querySelectorAll('input').forEach((i) => {
+      i.value = ''
+      i.removeAttribute('aria-invalid')
+    })
+    tr.querySelectorAll('output').forEach((o) => (o.textContent = ''))
+    body.append(tr)
+    renumber(table)
+    calc()
+    if (focus) (tr.querySelector('.i-desc') as HTMLInputElement).focus()
+    return tr
+  }
+
+  // Guarda uma linha-modelo para quando todas forem removidas
+  const templates = new Map(tables.map((t) => [t, t.tBodies[0].rows[0].cloneNode(true) as HTMLTableRowElement]))
+
+  form.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button')
+    if (!btn) return
+    if (btn.classList.contains('rm')) {
+      const tr = btn.closest('tr') as HTMLTableRowElement
+      const table = btn.closest('table') as HTMLTableElement
+      const body = table.tBodies[0]
+      const idx = tr.sectionRowIndex
+      tr.remove()
+      if (body.rows.length === 0) body.append(templates.get(table)!.cloneNode(true))
+      renumber(table)
+      calc()
+      // foco vai para a linha que ficou no lugar (ou a anterior)
+      const next = body.rows[Math.min(idx, body.rows.length - 1)]
+      ;(next.querySelector('.rm') as HTMLButtonElement).focus()
+    } else if (btn.classList.contains('add')) {
+      const table = form.querySelector<HTMLTableElement>(`table[data-section="${btn.dataset.target}"]`)!
+      addRow(table)
+    }
+  })
+
+  form.addEventListener('input', (e) => {
+    const t = e.target as HTMLElement
+    if (t instanceof HTMLTextAreaElement) grow(t)
+    calc()
+  })
+  form.addEventListener('submit', (e) => e.preventDefault())
+  dataInput.addEventListener('change', syncDate)
+
+  document.querySelectorAll('.js-print').forEach((b) => b.addEventListener('click', () => window.print()))
+
+  // Impressão em branco: clona a OS sem valores, com linhas extras, e imprime só o clone.
+  document.getElementById('print-blank')!.addEventListener('click', () => {
+    const clone = form.cloneNode(true) as HTMLFormElement
+    clone.removeAttribute('id')
+    clone.classList.add('os-blank')
+    clone.setAttribute('aria-hidden', 'true')
+    clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'))
+    clone.querySelectorAll('label[for]').forEach((el) => el.removeAttribute('for'))
+    clone.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>('input, textarea').forEach((el) => {
+      el.value = ''
+      el.removeAttribute('placeholder')
+      el.removeAttribute('style')
+    })
+    clone.querySelectorAll('output').forEach((o) => (o.textContent = ''))
+    clone.querySelectorAll('.print-date').forEach((o) => (o.textContent = '____/____/________'))
+    clone.querySelectorAll('.err').forEach((o) => (o.textContent = ''))
+    clone.querySelectorAll<HTMLTableElement>('table.items').forEach((t) => {
+      const body = t.tBodies[0]
+      const want = t.dataset.section === 'serv' ? 7 : 4
+      while (body.rows.length > want) body.rows[body.rows.length - 1].remove()
+      while (body.rows.length < want) body.append(body.rows[0].cloneNode(true))
+      ;[...body.rows].forEach((r, i) => ((r.querySelector('.c-n') as HTMLElement).textContent = String(i + 1)))
+    })
+    form.after(clone)
+    document.documentElement.classList.add('print-blank')
+    const cleanup = () => {
+      document.documentElement.classList.remove('print-blank')
+      clone.remove()
+      window.removeEventListener('afterprint', cleanup)
+    }
+    window.addEventListener('afterprint', cleanup)
+    window.print()
+    // Navegadores que não disparam afterprint (window.print é bloqueante na maioria)
+    window.setTimeout(cleanup, 1000)
+  })
+
+  document.getElementById('limpar')!.addEventListener('click', () => {
+    if (!window.confirm('Apagar todos os campos da ordem de serviço?')) return
+    form.reset()
+    tables.forEach((t) => {
+      const body = t.tBodies[0]
+      while (body.rows.length > 1) body.rows[body.rows.length - 1].remove()
+      const want = t.dataset.section === 'serv' ? 3 : 2
+      while (body.rows.length < want) addRow(t, false)
+      renumber(t)
+    })
+    form.querySelectorAll('textarea').forEach((t) => t.removeAttribute('style'))
+    dataInput.value = todayISO()
+    calc()
+    ;(document.getElementById('prest') as HTMLInputElement).focus()
+  })
+
+  dataInput.value = todayISO()
+  tables.forEach(renumber)
+  calc()
+</script>
+
+<style>
+  /* <button> não herda a fonte do site por padrão */
+  button {
+    font-family: inherit;
+  }
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+    margin-bottom: 8px;
+  }
+  .privacy {
+    margin-bottom: 16px;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 0 0 24px;
+  }
+  .bottom-actions {
+    margin-top: 20px;
+  }
+  .os {
+    padding: 24px;
+  }
+  :global(.os-blank) {
+    display: none;
+  }
+  .os-head {
+    display: grid;
+    gap: 8px 24px;
+    border-bottom: 2px solid var(--navy);
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+  }
+  @media (min-width: 640px) {
+    .os-head {
+      grid-template-columns: 1fr 220px;
+    }
+  }
+  .os-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin: 0 0 8px;
+  }
+  .block {
+    margin: 0 0 18px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    min-width: 0;
+  }
+  legend,
+  .legend-like {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin: 0 0 8px;
+    padding: 0;
+    letter-spacing: 0;
+  }
+  .grid-os {
+    display: grid;
+    gap: 0 16px;
+  }
+  @media (min-width: 640px) {
+    .grid-os {
+      grid-template-columns: 1fr 1fr;
+    }
+    .span-2 {
+      grid-column: span 2;
+    }
+  }
+  .field {
+    margin-bottom: 12px;
+    min-width: 0;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-2);
+    margin-bottom: 2px;
+  }
+  input,
+  textarea {
+    width: 100%;
+    min-height: 44px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 16px;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+  }
+  textarea {
+    resize: vertical;
+    overflow: hidden;
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--warning);
+    border-width: 2px;
+  }
+  .err {
+    font-size: 14px;
+    color: var(--warning);
+    font-weight: 600;
+    margin: 6px 0;
+  }
+  .err:empty {
+    display: none;
+  }
+
+  /* Tabela de itens */
+  .items {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+  }
+  .items th {
+    text-align: left;
+    font-size: 13px;
+    color: var(--text-2);
+    font-weight: 600;
+    padding: 6px 4px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .items td {
+    padding: 4px;
+    vertical-align: middle;
+  }
+  .items .c-n {
+    width: 28px;
+    color: var(--text-3);
+    text-align: center;
+  }
+  .items .c-qtd {
+    width: 84px;
+  }
+  .items .c-un {
+    width: 110px;
+  }
+  .items .c-vu {
+    width: 130px;
+  }
+  .items .c-tot {
+    width: 120px;
+    text-align: right;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .items .c-x {
+    width: 52px;
+  }
+  .items tfoot th,
+  .items tfoot td {
+    border-top: 1px solid var(--border-strong);
+    border-bottom: 0;
+    padding-top: 8px;
+  }
+  .sub-label {
+    text-align: right !important;
+  }
+  .rm {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .rm:hover {
+    background: var(--surface-muted);
+    color: var(--navy);
+  }
+  .add {
+    margin-top: 8px;
+  }
+
+  /* Celular: cada linha vira um bloco com rótulos */
+  @media screen and (max-width: 720px) {
+    .items thead {
+      display: none;
+    }
+    .items,
+    .items tbody,
+    .items tfoot {
+      display: block;
+    }
+    .items tbody tr {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 6px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px;
+      margin-bottom: 10px;
+      position: relative;
+    }
+    .items tbody td {
+      display: block;
+      width: auto !important;
+      padding: 0;
+    }
+    .items tbody td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-2);
+    }
+    .items tbody .c-n {
+      grid-column: 1 / 3;
+      text-align: left;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .items tbody .c-n::before {
+      display: inline;
+      content: 'Linha ';
+      font-size: inherit;
+      color: inherit;
+    }
+    .items tbody .c-desc {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .items tbody .c-x {
+      grid-column: 3;
+      grid-row: 1;
+      justify-self: end;
+    }
+    .items tbody .c-x::before {
+      content: none;
+    }
+    .items tbody .c-tot {
+      text-align: left;
+      grid-column: 1 / -1;
+    }
+    .items tbody .c-tot::before {
+      display: inline;
+      margin-right: 6px;
+    }
+    .items tfoot tr {
+      display: flex;
+      justify-content: space-between;
+    }
+    .items tfoot td:last-child {
+      display: none;
+    }
+  }
+
+  .total-geral {
+    display: flex;
+    justify-content: flex-end;
+    align-items: baseline;
+    gap: 16px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--navy);
+    border-top: 2px solid var(--navy);
+    padding-top: 10px;
+    margin: 4px 0 18px;
+  }
+  .signs {
+    display: grid;
+    gap: 40px 32px;
+    margin-top: 48px;
+  }
+  @media (min-width: 640px) {
+    .signs {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .sign {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-2);
+  }
+  .sign .line {
+    border-top: 1px solid var(--navy);
+    margin-bottom: 6px;
+  }
+  .sign p {
+    margin: 0;
+  }
+  .sign-date {
+    margin-top: 14px !important;
+  }
+  .print-date {
+    display: none;
+  }
+  .content {
+    margin-top: 48px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  /* Impressão A4: só a OS, campos viram linhas de preenchimento */
+  @media print {
+    @page {
+      size: A4;
+      margin: 12mm;
+    }
+    .page {
+      padding: 0;
+      max-width: none;
+    }
+    :global(html.print-blank) #os {
+      display: none;
+    }
+    :global(html.print-blank) :global(.os-blank) {
+      display: block;
+    }
+    .os,
+    :global(.os-blank) {
+      border: 0;
+      box-shadow: none;
+      padding: 0;
+      font-size: 10pt;
+      line-height: 1.35;
+      color: var(--navy);
+    }
+    .os-head {
+      grid-template-columns: 1fr 50mm;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .os-title {
+      font-size: 16pt;
+      margin: 0 0 2px;
+    }
+    .grid-os {
+      grid-template-columns: 1fr 1fr;
+    }
+    .span-2 {
+      grid-column: span 2;
+    }
+    .field {
+      margin-bottom: 3px;
+    }
+    label {
+      font-size: 8pt;
+      margin: 0;
+      color: var(--text-2);
+    }
+    input,
+    textarea {
+      border: 0;
+      border-bottom: 1px solid var(--text-3);
+      border-radius: 0;
+      min-height: 0;
+      height: 6.5mm;
+      padding: 1px 0;
+      font-size: 10pt;
+      background: none;
+      color: var(--navy);
+    }
+    input[type='date'] {
+      display: none;
+    }
+    .print-date {
+      display: block;
+      height: 6.5mm;
+      padding: 1px 0;
+      border-bottom: 1px solid var(--text-3);
+    }
+    input::placeholder,
+    textarea::placeholder {
+      color: transparent;
+    }
+    textarea {
+      border: 1px solid var(--text-3);
+      padding: 3px 5px;
+      height: auto;
+      min-height: 14mm;
+      resize: none;
+    }
+    .items {
+      font-size: 9.5pt;
+    }
+    .items th {
+      padding: 2px 4px;
+      font-size: 8pt;
+    }
+    .items td {
+      padding: 0 4px;
+      border-bottom: 1px solid var(--border-strong);
+    }
+    .items input {
+      border: 0;
+      height: 6mm;
+      font-size: 9.5pt;
+    }
+    .items .c-qtd {
+      width: 16mm;
+    }
+    .items .c-un {
+      width: 22mm;
+    }
+    .items .c-vu {
+      width: 24mm;
+    }
+    .items .c-tot {
+      width: 26mm;
+    }
+    .items tfoot th,
+    .items tfoot td {
+      padding-top: 2px;
+    }
+    .items tr {
+      break-inside: avoid;
+    }
+    .legend-like,
+    legend {
+      font-size: 10.5pt;
+      margin-bottom: 2px;
+    }
+    .block {
+      margin-bottom: 6px;
+    }
+    .total-geral {
+      font-size: 12pt;
+      padding-top: 4px;
+      margin: 2px 0 8px;
+    }
+    .signs {
+      grid-template-columns: 1fr 1fr;
+      margin-top: 16mm;
+      break-inside: avoid;
+    }
+    .sign-date {
+      margin-top: 6px !important;
+    }
+  }
+</style>

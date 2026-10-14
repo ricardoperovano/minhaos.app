@@ -1,0 +1,523 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd } from '../../lib/seo'
+import { tools } from '../../lib/tools'
+
+const slug = 'calculadora-valor-hora'
+const path = `/ferramentas/${slug}/`
+const tool = tools[slug]
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+  { name: tool.title, href: path },
+]
+
+const faq = [
+  {
+    q: 'Como calcular o valor da hora de trabalho de um autônomo?',
+    a: 'Some quanto você quer levar para casa por mês e os custos fixos do trabalho, acrescente impostos e uma margem para imprevistos, e divida pelo número de horas que você realmente consegue cobrar no mês. O ponto principal é usar horas faturáveis, e não todas as horas em que você está trabalhando.',
+  },
+  {
+    q: 'O que são horas faturáveis?',
+    a: 'São as horas que entram na conta do cliente. Deslocamento, orçamento, atendimento no WhatsApp, compra de material, estudo e burocracia ocupam tempo, mas normalmente não são cobrados à parte. Para muitos autônomos, algo entre 60% e 75% do tempo é faturável; meça o seu por algumas semanas.',
+  },
+  {
+    q: 'Devo cobrar exatamente o valor que a calculadora mostrou?',
+    a: 'Não necessariamente. O resultado é o mínimo para cobrir sua meta, seus custos e seus impostos. O preço final também depende do mercado, da sua experiência, da urgência e do tipo de cliente. Abaixo desse mínimo, você trabalha no prejuízo ou abre mão da sua meta.',
+  },
+  {
+    q: 'Sou MEI. O que coloco no campo de impostos?',
+    a: 'O MEI paga um valor mensal fixo (o DAS), e não uma porcentagem do faturamento. Nesse caso, some o DAS aos custos fixos e deixe o campo de impostos em zero, ou use apenas o percentual de outros tributos que se apliquem a você. Na dúvida, confirme com um contador.',
+  },
+  {
+    q: 'Como transformo o valor da hora em diária ou preço por serviço?',
+    a: 'A calculadora já mostra a diária de 8 horas e a meia diária de 4 horas. Para um serviço fechado, estime quantas horas ele consome, incluindo deslocamento e retrabalho provável, multiplique pelo valor da hora e some o material.',
+  },
+  {
+    q: 'Os dados que eu digito ficam salvos em algum lugar?',
+    a: 'Não. O cálculo é feito no seu próprio navegador e nenhum número é enviado para servidores. Se você fechar ou recarregar a página, os campos voltam aos valores de exemplo.',
+  },
+]
+
+const jsonLd = graph(
+  organizationLd,
+  {
+    '@type': 'WebApplication',
+    name: tool.title,
+    description: tool.description,
+    url: abs(path),
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+    publisher: { '@id': organizationLd['@id'] },
+  },
+  breadcrumbLd(crumbs),
+  faqLd(faq),
+)
+---
+
+<Base
+  title="Calculadora de valor da hora para autônomos"
+  description="Calcule grátis quanto cobrar por hora: considera custos, impostos, férias e horas faturáveis. Mostra a conta passo a passo. Sem cadastro."
+  path={path}
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <Breadcrumbs items={crumbs} />
+    <h1>Calculadora de valor da hora</h1>
+    <p class="lead muted">
+      Descubra o valor mínimo da sua hora de trabalho a partir do que você quer ganhar, dos seus custos, dos impostos e das horas que você
+      realmente consegue cobrar. Grátis, sem cadastro.
+    </p>
+    <p class="small privacy">O cálculo roda inteiro no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
+
+    <div class="tool">
+      <form id="calc" class="card form" novalidate aria-labelledby="form-title">
+        <h2 id="form-title" class="form-title">Seus números</h2>
+
+        <fieldset>
+          <legend>Dinheiro (por mês)</legend>
+          <div class="field">
+            <label for="renda">Renda líquida que você quer por mês (R$)</label>
+            <input id="renda" name="renda" inputmode="decimal" autocomplete="off" value="5.000,00" aria-describedby="renda-hint renda-err" />
+            <p id="renda-hint" class="hint">O que sobra para você, depois de pagar tudo.</p>
+            <p id="renda-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="custos">Custos fixos do trabalho por mês (R$)</label>
+            <input id="custos" name="custos" inputmode="decimal" autocomplete="off" value="1.200,00" aria-describedby="custos-hint custos-err" />
+            <p id="custos-hint" class="hint">Celular, internet, combustível, ferramentas, contador, DAS do MEI etc.</p>
+            <p id="custos-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="impostos">Impostos sobre o faturamento (%)</label>
+            <input id="impostos" name="impostos" inputmode="decimal" autocomplete="off" value="6" aria-describedby="impostos-hint impostos-err" />
+            <p id="impostos-hint" class="hint">Use a alíquota indicada pelo seu contador. MEI: 0 (o DAS entra nos custos).</p>
+            <p id="impostos-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="margem">Margem para imprevistos e inadimplência (%)</label>
+            <input id="margem" name="margem" inputmode="decimal" autocomplete="off" value="5" aria-describedby="margem-hint margem-err" />
+            <p id="margem-hint" class="hint">Cliente que atrasa ou não paga, retrabalho, mês fraco.</p>
+            <p id="margem-err" class="err" hidden></p>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend>Tempo</legend>
+          <div class="row-2">
+            <div class="field">
+              <label for="dias">Dias de trabalho por semana</label>
+              <input id="dias" name="dias" inputmode="decimal" autocomplete="off" value="5" aria-describedby="dias-err" />
+              <p id="dias-err" class="err" hidden></p>
+            </div>
+            <div class="field">
+              <label for="horas">Horas por dia</label>
+              <input id="horas" name="horas" inputmode="decimal" autocomplete="off" value="8" aria-describedby="horas-err" />
+              <p id="horas-err" class="err" hidden></p>
+            </div>
+          </div>
+          <div class="field">
+            <label for="folga">Semanas de folga por ano (férias e feriados)</label>
+            <input id="folga" name="folga" inputmode="decimal" autocomplete="off" value="4" aria-describedby="folga-hint folga-err" />
+            <p id="folga-hint" class="hint">Feriados nacionais somam perto de 2 semanas; some as suas férias.</p>
+            <p id="folga-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="faturavel">Parte do tempo que dá para cobrar (%)</label>
+            <input id="faturavel" name="faturavel" inputmode="decimal" autocomplete="off" value="70" aria-describedby="faturavel-hint faturavel-err" />
+            <p id="faturavel-hint" class="hint">O resto vai para deslocamento, orçamento, mensagens e burocracia.</p>
+            <p id="faturavel-err" class="err" hidden></p>
+          </div>
+        </fieldset>
+        <button type="reset" class="btn btn-secondary">Voltar aos valores de exemplo</button>
+      </form>
+
+      <section class="card result" aria-labelledby="res-title">
+        <h2 id="res-title" class="form-title">Resultado</h2>
+        <div id="res-ok">
+          <p class="big-label">Valor mínimo da sua hora</p>
+          <p class="big tabular" id="r-hora">—</p>
+          <dl class="kpis tabular">
+            <div><dt>Diária (8 horas)</dt><dd id="r-diaria">—</dd></div>
+            <div><dt>Meia diária (4 horas)</dt><dd id="r-meia">—</dd></div>
+            <div><dt>Faturamento necessário por mês</dt><dd id="r-fat">—</dd></div>
+            <div><dt>Horas faturáveis por mês</dt><dd id="r-horas">—</dd></div>
+          </dl>
+          <details class="steps" open>
+            <summary>Como chegamos nesse valor</summary>
+            <ol id="r-steps" class="tabular"></ol>
+          </details>
+        </div>
+        <p id="res-erro" class="callout callout-warning" hidden></p>
+        <p id="live" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+      </section>
+    </div>
+
+    <article class="prose content">
+      <h2>Como usar a calculadora de valor da hora</h2>
+      <p>
+        A pergunta "quanto cobrar por hora" quase sempre é respondida olhando para o preço do concorrente. O problema é que o concorrente tem outros
+        custos, outra agenda e, muitas vezes, também não fez a conta. Esta calculadora parte do caminho inverso: do quanto você precisa receber para
+        a conta fechar.
+      </p>
+      <ol>
+        <li><strong>Renda líquida desejada.</strong> Quanto você quer que sobre por mês para as suas despesas pessoais. Seja realista: inclua um valor para guardar, já que autônomo não tem 13º salário nem férias remuneradas.</li>
+        <li><strong>Custos fixos do trabalho.</strong> Tudo o que você paga para conseguir trabalhar, mesmo num mês sem clientes: plano de celular, internet, combustível médio, manutenção do carro ou da moto, ferramentas (divididas pela vida útil), softwares, contador, DAS do MEI, previdência. O guia <a href="/guias/custos-esquecidos-no-preco/">custos esquecidos no preço</a> lista os que mais passam despercebidos.</li>
+        <li><strong>Impostos.</strong> Se você emite nota com alíquota sobre o faturamento, informe o percentual que seu contador indicar. Se é MEI, o imposto mensal é fixo: coloque o DAS nos custos e deixe este campo em zero.</li>
+        <li><strong>Margem para imprevistos.</strong> Uma parte do que você fatura não chega ao caixa: cliente que atrasa muito, que não paga, serviço refeito sem cobrança. Uma margem pequena evita que esses casos comam a sua renda.</li>
+        <li><strong>Agenda.</strong> Dias por semana, horas por dia e semanas de folga no ano. Feriados nacionais ocupam perto de duas semanas; some as férias que você pretende tirar.</li>
+        <li><strong>Percentual faturável.</strong> A parte do tempo que vira cobrança. Se você trabalha 8 horas por dia, mas passa 2 horas no trânsito e respondendo orçamentos, só 6 horas (75%) são faturáveis.</li>
+      </ol>
+      <p>O resultado é recalculado a cada número que você digita. Use vírgula para os centavos (por exemplo, 1.250,50).</p>
+
+      <h2>A fórmula do valor da hora</h2>
+      <p>A conta tem duas partes: quanto você precisa faturar por mês e quantas horas você consegue cobrar no mês.</p>
+      <ol>
+        <li><strong>Faturamento necessário</strong> = (renda líquida + custos fixos) ÷ (1 − impostos) ÷ (1 − margem).</li>
+        <li><strong>Horas faturáveis por mês</strong> = (52 semanas − semanas de folga) × dias por semana × horas por dia × percentual faturável ÷ 12.</li>
+        <li><strong>Valor mínimo da hora</strong> = faturamento necessário ÷ horas faturáveis por mês.</li>
+      </ol>
+      <p>
+        Dividir por (1 − imposto), em vez de somar o percentual, é o que garante que o imposto seja calculado sobre o faturamento, e não sobre a sua
+        renda. Somar 6% a R$ 6.200 dá R$ 6.572; mas 6% de R$ 6.572 são R$ 394,32, e sobrariam só R$ 6.177,68. Dividindo, o valor fica correto.
+        A margem segue a mesma lógica. Os valores são arredondados ao centavo apenas no final.
+      </p>
+
+      <h2>Exemplo com números</h2>
+      <p>Uma profissional fictícia quer R$ 5.000,00 líquidos por mês e tem R$ 1.200,00 de custos fixos. Ela usa 6% de impostos e 5% de margem, trabalha 5 dias por semana, 8 horas por dia, tira 4 semanas de folga no ano e consegue cobrar 70% do tempo.</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Etapa</th><th scope="col">Conta</th><th scope="col">Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>Renda + custos</td><td>5.000,00 + 1.200,00</td><td>R$ 6.200,00</td></tr>
+            <tr><td>Com impostos</td><td>6.200,00 ÷ 0,94</td><td>R$ 6.595,74</td></tr>
+            <tr><td>Com margem</td><td>6.595,74 ÷ 0,95</td><td>R$ 6.942,89</td></tr>
+            <tr><td>Horas faturáveis</td><td>48 × 5 × 8 × 0,70 ÷ 12</td><td>112 horas</td></tr>
+            <tr><td>Valor da hora</td><td>6.942,89 ÷ 112</td><td>R$ 61,99</td></tr>
+            <tr><td>Diária de 8 horas</td><td>61,99 × 8</td><td>R$ 495,92</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        Repare no peso do tempo faturável: com 100% das horas cobradas, a hora cairia para cerca de R$ 43. É por isso que quem calcula dividindo a
+        renda por 160 ou 176 horas acaba cobrando pouco e trabalhando mais do que planejou.
+      </p>
+
+      <h2>Como interpretar o resultado</h2>
+      <p>
+        O valor mostrado é um <strong>piso</strong>: abaixo dele, a meta de renda não fecha. Acima dele entram fatores de mercado, como experiência,
+        especialização, urgência, horário fora do comercial e o tamanho do cliente. Se o piso ficar muito acima do que o seu mercado aceita, a
+        calculadora está mostrando um problema real, e as saídas costumam ser estas:
+      </p>
+      <ul>
+        <li>aumentar o percentual faturável (agrupar visitas por região, cobrar deslocamento, cobrar orçamento técnico);</li>
+        <li>reduzir custos fixos que não trazem retorno;</li>
+        <li>mudar a forma de cobrança, por diária ou por projeto, como explicamos em <a href="/guias/cobrar-por-hora-diaria-ou-projeto/">cobrar por hora, diária ou projeto</a>;</li>
+        <li>rever a meta de renda para um prazo de transição.</li>
+      </ul>
+      <p>
+        Refaça a conta sempre que um custo mudar ou pelo menos uma vez por ano, antes de <a href="/guias/como-reajustar-o-preco-dos-servicos/">reajustar o preço dos serviços</a>.
+        Para entender cada componente em detalhes, leia o guia completo <a href="/guias/quanto-cobrar-por-hora/">quanto cobrar por hora</a>.
+      </p>
+
+      <h2>Do valor da hora ao orçamento</h2>
+      <p>
+        Com o valor da hora em mãos, um orçamento fica mais simples: estime as horas do serviço (incluindo deslocamento, preparação e uma folga para
+        imprevistos), multiplique pelo valor da hora e some materiais com a sua margem de compra. O guia
+        <a href="/guias/como-fazer-orcamento-de-servico/">como fazer orçamento de serviço</a> mostra o passo a passo.
+      </p>
+      <p>
+        Depois, o desafio passa a ser registrar as horas e visitas que você executou para cobrar tudo no fim do mês. O MinhaOS App guarda cada
+        lançamento com quantidade e valor unitário e monta o fechamento por cliente, mas uma planilha bem organizada também resolve no começo.
+      </p>
+
+      <h2>Perguntas frequentes</h2>
+      {
+        faq.map((f) => (
+          <>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </>
+        ))
+      }
+    </article>
+
+    <Cta title="Registre as horas que você cobra" text="Lance horas, visitas e diárias por cliente e feche o mês com um demonstrativo de cobrança que o cliente consulta por link." />
+  </div>
+</Base>
+
+<script>
+  import { brl, decimalBR, divRound, parseScaled } from './_shared'
+
+  const form = document.getElementById('calc') as HTMLFormElement
+  const $ = (id: string) => document.getElementById(id) as HTMLElement
+
+  interface Rule {
+    id: string
+    min: number
+    max: number
+    /** mínimo é exclusivo (o valor precisa ser maior que min) */
+    gt?: boolean
+    msg: string
+  }
+  // Todos os valores são lidos com 2 casas decimais (centavos, centésimos de % ou de hora).
+  const rules: Rule[] = [
+    { id: 'renda', min: 0, max: 10_000_000, gt: true, msg: 'Informe um valor maior que zero, por exemplo 5.000,00.' },
+    { id: 'custos', min: 0, max: 10_000_000, msg: 'Informe um valor igual ou maior que zero.' },
+    { id: 'impostos', min: 0, max: 60, msg: 'Informe uma porcentagem entre 0 e 60.' },
+    { id: 'margem', min: 0, max: 50, msg: 'Informe uma porcentagem entre 0 e 50.' },
+    { id: 'dias', min: 0, max: 7, gt: true, msg: 'Informe de 0,5 a 7 dias.' },
+    { id: 'horas', min: 0, max: 24, gt: true, msg: 'Informe de 0,5 a 24 horas.' },
+    { id: 'folga', min: 0, max: 51, msg: 'Informe de 0 a 51 semanas.' },
+    { id: 'faturavel', min: 0, max: 100, gt: true, msg: 'Informe uma porcentagem maior que 0 e até 100.' },
+  ]
+
+  function read(rule: Rule): bigint | null {
+    const input = $(rule.id) as HTMLInputElement
+    const v = parseScaled(input.value, 2)
+    const lo = BigInt(rule.min * 100)
+    const hi = BigInt(rule.max * 100)
+    const ok = v !== null && v <= hi && (rule.gt ? v > lo : v >= lo)
+    const err = $(`${rule.id}-err`)
+    if (ok) {
+      input.removeAttribute('aria-invalid')
+      err.hidden = true
+      err.textContent = ''
+      return v
+    }
+    input.setAttribute('aria-invalid', 'true')
+    err.textContent = input.value.trim() === '' ? 'Campo obrigatório. ' + rule.msg : rule.msg
+    err.hidden = false
+    return null
+  }
+
+  const pct = (v: bigint) => `${decimalBR(v, 2)}%`
+  const num = (v: bigint) => decimalBR(v, 2)
+
+  let liveTimer: number | undefined
+
+  function calc() {
+    const vals = rules.map(read)
+    const okAll = vals.every((v) => v !== null)
+    const fail = (msg: string) => {
+      $('res-ok').hidden = true
+      $('res-erro').hidden = false
+      $('res-erro').textContent = msg
+      $('live').textContent = ''
+    }
+    if (!okAll) return fail('Corrija os campos destacados para ver o resultado.')
+    const [renda, custos, imp, mar, dias, horas, folga, fat] = vals as bigint[]
+    const base = renda + custos // centavos
+    const dImp = 10000n - imp // (1 − imposto) × 10000
+    const dMar = 10000n - mar
+    const semanas = 5200n - folga // semanas trabalhadas × 100
+    // horas faturáveis/mês = semanas × dias × horas × (fat% ÷ 100) ÷ 12
+    // semanas, dias e horas estão em centésimos (10^2 cada); fat em centésimos de % (10^4 como fração) → escala 10^10
+    const hNum = semanas * dias * horas * fat
+    const hMes = hNum / 12n // escala 10^10
+    if (hMes < 10_000_000_000n) return fail('Com esses números sobra menos de 1 hora faturável por mês. Revise dias, horas, semanas de folga e a parte do tempo que dá para cobrar.')
+    $('res-ok').hidden = false
+    $('res-erro').hidden = true
+    // faturamento exato = base × 10^8 / (dImp × dMar)
+    const fatCents = divRound(base * 100_000_000n, dImp * dMar)
+    const comImp = divRound(base * 10000n, dImp)
+    // hora = base × 10^8 / (dImp × dMar)  ÷  (hNum / (12 × 10^10))
+    const horaCents = divRound(base * 100_000_000n * 12n * 10_000_000_000n, dImp * dMar * hNum)
+
+    $('r-hora').textContent = brl(horaCents)
+    $('r-diaria').textContent = brl(horaCents * 8n)
+    $('r-meia').textContent = brl(horaCents * 4n)
+    $('r-fat').textContent = brl(fatCents)
+    $('r-horas').textContent = `${decimalBR(hMes, 10, 1)} h`
+
+    const steps = [
+      `Renda + custos: ${brl(renda)} + ${brl(custos)} = <strong>${brl(base)}</strong>`,
+      `Com impostos: ${brl(base)} ÷ (1 − ${pct(imp)}) = ${brl(comImp)}`,
+      `Com margem: ${brl(comImp)} ÷ (1 − ${pct(mar)}) = <strong>${brl(fatCents)}</strong> por mês`,
+      `Semanas trabalhadas: 52 − ${num(folga)} = ${num(semanas)}`,
+      `Horas faturáveis por mês: ${num(semanas)} × ${num(dias)} dias × ${num(horas)} h × ${pct(fat)} ÷ 12 = <strong>${decimalBR(hMes, 10, 2)} h</strong>`,
+      `Valor da hora: ${brl(fatCents)} ÷ ${decimalBR(hMes, 10, 2)} h = <strong>${brl(horaCents)}</strong>`,
+    ]
+    const ol = $('r-steps')
+    ol.replaceChildren(
+      ...steps.map((s) => {
+        const li = document.createElement('li')
+        li.innerHTML = s // conteúdo gerado só a partir de números formatados
+        return li
+      }),
+    )
+
+    // anúncio discreto, só depois que a pessoa para de digitar
+    window.clearTimeout(liveTimer)
+    liveTimer = window.setTimeout(() => {
+      $('live').textContent = `Valor mínimo da hora: ${brl(horaCents)}.`
+    }, 900)
+  }
+
+  form.addEventListener('input', calc)
+  form.addEventListener('reset', () => window.setTimeout(calc, 0))
+  form.addEventListener('submit', (e) => e.preventDefault())
+  calc()
+</script>
+
+<style>
+  /* <button> não herda a fonte do site por padrão */
+  button {
+    font-family: inherit;
+  }
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+    margin-bottom: 8px;
+  }
+  .privacy {
+    margin-bottom: 28px;
+  }
+  .tool {
+    display: grid;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .tool {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    }
+    .result {
+      position: sticky;
+      top: 88px;
+    }
+  }
+  .form-title {
+    font-size: 20px;
+    margin: 0 0 12px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 12px;
+    min-width: 0;
+  }
+  legend {
+    font-weight: 650;
+    color: var(--navy);
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .field {
+    margin-bottom: 14px;
+  }
+  .row-2 {
+    display: grid;
+    gap: 0 14px;
+    grid-template-columns: 1fr 1fr;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  input {
+    width: 100%;
+    min-height: 46px;
+    padding: 8px 12px;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--warning);
+    border-width: 2px;
+  }
+  .hint {
+    font-size: 14px;
+    color: var(--text-3);
+    margin: 4px 0 0;
+    line-height: 1.45;
+  }
+  .err {
+    font-size: 14px;
+    color: var(--warning);
+    font-weight: 600;
+    margin: 4px 0 0;
+  }
+  .result {
+    background: var(--teal-subtle);
+    border-color: var(--teal);
+  }
+  .big-label {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .big {
+    font-size: clamp(34px, 7vw, 46px);
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 0 0 16px;
+    line-height: 1.1;
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 0 0 16px;
+  }
+  .kpis div {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .kpis dt {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.35;
+  }
+  .kpis dd {
+    margin: 2px 0 0;
+    font-size: 19px;
+    font-weight: 650;
+    color: var(--navy);
+  }
+  .steps summary {
+    cursor: pointer;
+    font-weight: 600;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    color: var(--navy);
+  }
+  .steps ol {
+    padding-left: 20px;
+    margin: 4px 0 0;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+  .steps li {
+    margin-bottom: 6px;
+  }
+  .content {
+    margin-top: 48px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  @media (max-width: 400px) {
+    .kpis {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

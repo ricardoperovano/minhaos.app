@@ -1,0 +1,439 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Cta from '../components/Cta.astro'
+import Base from '../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../lib/seo'
+
+interface Termo {
+  /** Âncora estável (não altere depois de publicado). */
+  id: string
+  nome: string
+  /** Definição em texto puro (também vai para o JSON-LD). */
+  def: string
+  /** Guia, ferramenta ou página relacionada (somente slugs existentes no mapa do site). */
+  link?: { href: string; label: string }
+}
+
+// Termos fiscais e legais conferidos em fontes oficiais em outubro de 2026
+// (Receita Federal, gov.br/MEMP, gov.br/NFS-e, Planalto: CC arts. 389/406 na redação da Lei 14.905/2024,
+// CDC arts. 40, 43 e 52, Lei 9.492/1997, Lei 10.192/2001, LC 123/2006).
+const termos: Termo[] = [
+  {
+    id: 'aditivo',
+    nome: 'Aditivo (termo aditivo)',
+    def: 'Documento que altera um contrato já assinado — por exemplo, para incluir serviços, mudar prazo ou valor. Deve ser aceito pelas duas partes e fica vinculado ao contrato original.',
+    link: { href: '/guias/contrato-de-prestacao-de-servico/', label: 'Contrato de prestação de serviço' },
+  },
+  {
+    id: 'boleto',
+    nome: 'Boleto bancário',
+    def: 'Documento de cobrança emitido por banco ou instituição de pagamento, com valor, vencimento e código de barras. Pode trazer multa e juros para pagamento após o vencimento, conforme as instruções do emissor.',
+  },
+  {
+    id: 'cnae',
+    nome: 'CNAE',
+    def: 'Classificação Nacional de Atividades Econômicas: códigos padronizados que identificam as atividades de uma empresa no CNPJ. A atividade registrada influencia o regime tributário possível, como a permissão para ser MEI.',
+    link: { href: '/guias/mei-prestador-de-servico/', label: 'MEI prestador de serviço' },
+  },
+  {
+    id: 'cnpj',
+    nome: 'CNPJ',
+    def: 'Cadastro Nacional da Pessoa Jurídica, administrado pela Receita Federal. É o número que identifica uma empresa, inclusive o MEI, em notas fiscais, contratos e cobranças.',
+  },
+  {
+    id: 'conciliacao',
+    nome: 'Conciliação',
+    def: 'Conferência entre o que foi registrado (cobranças, recebimentos, despesas) e o que de fato entrou ou saiu da conta bancária. Serve para identificar pagamentos não identificados, valores em duplicidade e cobranças esquecidas.',
+    link: { href: '/guias/fluxo-de-caixa-para-autonomo/', label: 'Fluxo de caixa para autônomo' },
+  },
+  {
+    id: 'contrato-de-prestacao-de-servico',
+    nome: 'Contrato de prestação de serviço',
+    def: 'Acordo que define o que será feito, prazo, preço, forma de pagamento e responsabilidades de prestador e cliente. Pode ser escrito ou verbal, mas o escrito facilita provar o que foi combinado.',
+    link: { href: '/guias/contrato-de-prestacao-de-servico/', label: 'Contrato de prestação de serviço' },
+  },
+  {
+    id: 'correcao-monetaria',
+    nome: 'Correção monetária',
+    def: 'Atualização de um valor para repor a perda causada pela inflação. Quando o índice não foi combinado nem está em lei específica, o Código Civil (art. 389, na redação da Lei 14.905/2024) manda aplicar o IPCA.',
+    link: { href: '/guias/multa-e-juros-por-atraso/', label: 'Multa e juros por atraso' },
+  },
+  {
+    id: 'custo-fixo',
+    nome: 'Custo fixo',
+    def: 'Gasto que se repete independentemente da quantidade de serviços no mês, como celular, internet, softwares, contador e o DAS do MEI. Precisa estar embutido no preço mesmo nos meses fracos.',
+    link: { href: '/guias/custos-esquecidos-no-preco/', label: 'Custos esquecidos no preço' },
+  },
+  {
+    id: 'custo-variavel',
+    nome: 'Custo variável',
+    def: 'Gasto que cresce com o volume de trabalho, como combustível, material de consumo e taxas de cartão. Pode ser incluído no valor-hora pela média ou cobrado à parte em cada serviço.',
+    link: { href: '/guias/custos-esquecidos-no-preco/', label: 'Custos esquecidos no preço' },
+  },
+  {
+    id: 'das',
+    nome: 'DAS',
+    def: 'Documento de Arrecadação do Simples Nacional, a guia usada para pagar os tributos do Simples. No caso do MEI (DAS-MEI), o valor é fixo por mês: em 2026, R$ 81,05 de INSS (5% do salário mínimo), mais R$ 5,00 de ISS para serviços e R$ 1,00 de ICMS para comércio e indústria, quando contribuinte.',
+    link: { href: '/guias/mei-prestador-de-servico/', label: 'MEI prestador de serviço' },
+  },
+  {
+    id: 'demonstrativo-de-cobranca',
+    nome: 'Demonstrativo de cobrança',
+    def: 'Documento que lista os serviços executados em um período, com datas, quantidades, valores, total e vencimento, para o cliente conferir antes de pagar. Não é nota fiscal e não substitui a nota quando ela é exigida.',
+    link: { href: '/guias/demonstrativo-de-cobranca/', label: 'Demonstrativo de cobrança' },
+  },
+  {
+    id: 'depreciacao',
+    nome: 'Depreciação (desgaste)',
+    def: 'Perda de valor de ferramentas e equipamentos com o uso e o tempo. Na precificação, estima-se dividindo o preço de reposição pela vida útil em meses e incluindo o resultado nos custos.',
+    link: { href: '/guias/custos-esquecidos-no-preco/', label: 'Custos esquecidos no preço' },
+  },
+  {
+    id: 'diaria',
+    nome: 'Diária',
+    def: 'Forma de cobrança por dia de trabalho dedicado a um cliente. Deve ter horário de início e fim definidos, além de regra para meia diária e hora extra.',
+    link: { href: '/guias/cobrar-por-hora-diaria-ou-projeto/', label: 'Cobrar por hora, diária ou projeto' },
+  },
+  {
+    id: 'escopo',
+    nome: 'Escopo',
+    def: 'Descrição exata do que será entregue em um serviço ou projeto — e do que não está incluído. Escopo vago é a principal causa de trabalho extra não cobrado.',
+    link: { href: '/guias/cobrar-por-hora-diaria-ou-projeto/', label: 'Cobrar por hora, diária ou projeto' },
+  },
+  {
+    id: 'estorno',
+    nome: 'Estorno',
+    def: 'Desfazimento de um lançamento ou pagamento registrado — por exemplo, um recebimento lançado por engano ou um valor devolvido ao cliente. O registro original é anulado e o saldo volta a refletir a situação real.',
+  },
+  {
+    id: 'fatura',
+    nome: 'Fatura',
+    def: 'Documento comercial que relaciona o que foi vendido ou prestado, os valores e o vencimento. No uso comum, também é sinônimo de conta a pagar enviada ao cliente.',
+    link: { href: '/guias/demonstrativo-de-cobranca/', label: 'Demonstrativo de cobrança' },
+  },
+  {
+    id: 'faturamento',
+    nome: 'Faturamento',
+    def: 'Soma dos valores cobrados dos clientes em um período, antes de descontar custos e impostos. Não é o mesmo que lucro nem que dinheiro recebido.',
+    link: { href: '/guias/controle-de-servicos-prestados/', label: 'Controle de serviços prestados' },
+  },
+  {
+    id: 'fechamento-mensal',
+    nome: 'Fechamento mensal',
+    def: 'Rotina de reunir, no fim do mês, os serviços prestados a cada cliente e transformá-los em uma cobrança única, conferindo o que ainda não foi faturado.',
+    link: { href: '/guias/fechamento-mensal-de-servicos/', label: 'Fechamento mensal de serviços' },
+  },
+  {
+    id: 'fluxo-de-caixa',
+    nome: 'Fluxo de caixa',
+    def: 'Registro das entradas e saídas de dinheiro ao longo do tempo, com o saldo resultante. Mostra se haverá dinheiro para pagar as contas nas datas certas.',
+    link: { href: '/guias/fluxo-de-caixa-para-autonomo/', label: 'Fluxo de caixa para autônomo' },
+  },
+  {
+    id: 'horas-faturaveis',
+    nome: 'Horas faturáveis',
+    def: 'Horas de trabalho que de fato viram cobrança. Excluem deslocamento não cobrado, orçamentos, mensagens, compras e tarefas administrativas.',
+    link: { href: '/guias/quanto-cobrar-por-hora/', label: 'Quanto cobrar por hora' },
+  },
+  {
+    id: 'inadimplencia',
+    nome: 'Inadimplência',
+    def: 'Situação de quem não paga uma dívida no vencimento. Para o prestador, também é o percentual do faturamento que não é recebido, que deve ser considerado no preço.',
+    link: { href: '/guias/como-cobrar-cliente-que-nao-paga/', label: 'Como cobrar cliente que não paga' },
+  },
+  {
+    id: 'ipca',
+    nome: 'IPCA',
+    def: 'Índice Nacional de Preços ao Consumidor Amplo, calculado pelo IBGE. É o índice oficial de inflação do país, muito usado como referência para reajustes e, por lei, para correção monetária quando outro índice não foi combinado.',
+    link: { href: '/guias/como-reajustar-o-preco-dos-servicos/', label: 'Como reajustar o preço dos serviços' },
+  },
+  {
+    id: 'iss',
+    nome: 'ISS',
+    def: 'Imposto Sobre Serviços, de competência municipal, com alíquota definida por cada município. O MEI prestador paga um valor fixo de ISS dentro do DAS. Com a reforma tributária, o ISS será substituído gradualmente pelo IBS.',
+    link: { href: '/guias/nota-fiscal-de-servico-mei/', label: 'Nota fiscal de serviço do MEI' },
+  },
+  {
+    id: 'juros-de-mora',
+    nome: 'Juros de mora',
+    def: 'Juros cobrados pelo atraso no pagamento, proporcionais ao tempo. Quando não foram combinados, aplica-se a taxa legal do Código Civil (art. 406, na redação da Lei 14.905/2024): Selic menos o IPCA, considerada zero se der negativa.',
+    link: { href: '/guias/multa-e-juros-por-atraso/', label: 'Multa e juros por atraso' },
+  },
+  {
+    id: 'lembrete-de-pagamento',
+    nome: 'Lembrete de pagamento',
+    def: 'Aviso enviado ao cliente antes ou logo após o vencimento, lembrando valor e data. Reduz atrasos por esquecimento sem tom de cobrança.',
+    link: { href: '/guias/lembrete-de-pagamento/', label: 'Lembrete de pagamento' },
+  },
+  {
+    id: 'margem',
+    nome: 'Margem',
+    def: 'Valor acrescentado ao preço além da renda desejada e dos custos, para formar reserva, absorver imprevistos e gerar lucro ao negócio.',
+    link: { href: '/guias/quanto-cobrar-por-hora/', label: 'Quanto cobrar por hora' },
+  },
+  {
+    id: 'mei',
+    nome: 'MEI (Microempreendedor Individual)',
+    def: 'Empresário individual formalizado com faturamento anual de até R$ 81 mil (limite vigente em outubro de 2026), em atividade permitida para a categoria. Paga os tributos em valor fixo mensal pelo DAS-MEI.',
+    link: { href: '/guias/mei-prestador-de-servico/', label: 'MEI prestador de serviço' },
+  },
+  {
+    id: 'multa-moratoria',
+    nome: 'Multa moratória (multa de mora)',
+    def: 'Penalidade de valor fixo ou percentual cobrada uma única vez pelo atraso, quando prevista no contrato ou na cobrança. Nas relações de consumo, o Código de Defesa do Consumidor limita a multa de mora a 2% do valor da prestação (art. 52, § 1º).',
+    link: { href: '/guias/multa-e-juros-por-atraso/', label: 'Multa e juros por atraso' },
+  },
+  {
+    id: 'negativacao',
+    nome: 'Negativação',
+    def: 'Inclusão do nome do devedor em cadastro de inadimplentes de birôs de crédito. O Código de Defesa do Consumidor exige que o consumidor seja comunicado por escrito da abertura do registro quando não o solicitou (art. 43, § 2º).',
+    link: { href: '/guias/como-cobrar-cliente-que-nao-paga/', label: 'Como cobrar cliente que não paga' },
+  },
+  {
+    id: 'nfs-e',
+    nome: 'NFS-e',
+    def: 'Nota Fiscal de Serviço eletrônica, documento fiscal digital que registra uma prestação de serviço. Desde 1º de setembro de 2023, o MEI prestador de serviços deve emiti-la pelo sistema nacional; para tomador pessoa física, a emissão é facultativa.',
+    link: { href: '/guias/nfs-e-padrao-nacional/', label: 'NFS-e padrão nacional' },
+  },
+  {
+    id: 'nota-fiscal',
+    nome: 'Nota fiscal',
+    def: 'Documento fiscal oficial que registra uma venda ou prestação de serviço e serve de base para a apuração de impostos. É emitida em sistema autorizado pelo fisco; recibo e demonstrativo não a substituem.',
+    link: { href: '/guias/recibo-ou-nota-fiscal/', label: 'Recibo ou nota fiscal' },
+  },
+  {
+    id: 'orcamento',
+    nome: 'Orçamento',
+    def: 'Proposta de preço e condições apresentada antes do serviço. Para o consumidor, o CDC exige orçamento prévio com mão de obra, materiais, condições de pagamento e datas, válido por 10 dias se não houver prazo escrito (art. 40).',
+    link: { href: '/guias/como-fazer-orcamento-de-servico/', label: 'Como fazer orçamento de serviço' },
+  },
+  {
+    id: 'ordem-de-servico',
+    nome: 'Ordem de serviço (OS)',
+    def: 'Documento que registra um serviço autorizado: cliente, o que será feito, quem executa, datas e, depois, o que foi realizado. Serve para organizar a execução e comprovar o trabalho.',
+    link: { href: '/guias/o-que-e-ordem-de-servico/', label: 'O que é ordem de serviço' },
+  },
+  {
+    id: 'pagamento-parcial',
+    nome: 'Pagamento parcial',
+    def: 'Recebimento de apenas parte do valor cobrado. O restante continua como saldo em aberto até ser quitado ou renegociado.',
+    link: { href: '/guias/como-cobrar-cliente/', label: 'Como cobrar cliente' },
+  },
+  {
+    id: 'pix',
+    nome: 'Pix',
+    def: 'Meio de pagamento instantâneo criado pelo Banco Central, disponível a qualquer hora, inclusive fins de semana. Pode ser feito por chave, QR Code ou dados bancários.',
+  },
+  {
+    id: 'pro-labore',
+    nome: 'Pró-labore',
+    def: 'Remuneração paga ao sócio ou titular pelo trabalho que ele realiza na empresa, diferente da distribuição de lucros. Sobre ele costumam incidir encargos previdenciários; confirme as regras do seu caso com um contador.',
+    link: { href: '/guias/separar-financas-pessoais-e-da-empresa/', label: 'Separar finanças pessoais e da empresa' },
+  },
+  {
+    id: 'protesto',
+    nome: 'Protesto',
+    def: 'Ato formal e solene, feito em cartório de protesto, pelo qual se prova a inadimplência e o descumprimento de obrigação originada em títulos e outros documentos de dívida (Lei 9.492/1997, art. 1º).',
+    link: { href: '/guias/como-cobrar-cliente-que-nao-paga/', label: 'Como cobrar cliente que não paga' },
+  },
+  {
+    id: 'reajuste',
+    nome: 'Reajuste',
+    def: 'Atualização periódica do preço para acompanhar custos ou inflação. Em contratos com cláusula de reajuste por índice, a Lei 10.192/2001 considera nula a correção com periodicidade inferior a um ano.',
+    link: { href: '/guias/como-reajustar-o-preco-dos-servicos/', label: 'Como reajustar o preço dos serviços' },
+  },
+  {
+    id: 'recibo',
+    nome: 'Recibo',
+    def: 'Documento em que quem recebe um pagamento declara o valor, a data, quem pagou e a que se refere. Comprova o pagamento, mas não é documento fiscal.',
+    link: { href: '/guias/recibo-de-prestacao-de-servico/', label: 'Recibo de prestação de serviço' },
+  },
+  {
+    id: 'saldo-em-aberto',
+    nome: 'Saldo em aberto',
+    def: 'Valor que o cliente ainda deve: o total cobrado menos o que já foi pago. Fica em atraso quando o vencimento passa sem quitação.',
+    link: { href: '/guias/como-cobrar-cliente/', label: 'Como cobrar cliente' },
+  },
+  {
+    id: 'simples-nacional',
+    nome: 'Simples Nacional',
+    def: 'Regime tributário simplificado para microempresas e empresas de pequeno porte (LC 123/2006), com tributos recolhidos em guia única (DAS). A alíquota depende do anexo da atividade e da receita bruta dos últimos 12 meses.',
+    link: { href: '/guias/quanto-cobrar-por-hora/', label: 'Quanto cobrar por hora' },
+  },
+  {
+    id: 'sinal',
+    nome: 'Sinal (adiantamento)',
+    def: 'Parte do valor paga antes de o serviço começar, geralmente para cobrir material e reservar a agenda. O valor e as condições de devolução devem estar escritos no orçamento ou no contrato.',
+    link: { href: '/guias/como-fazer-orcamento-de-servico/', label: 'Como fazer orçamento de serviço' },
+  },
+  {
+    id: 'tomador',
+    nome: 'Tomador de serviço',
+    def: 'Quem contrata e recebe o serviço — o cliente. O termo aparece na nota fiscal de serviço, em oposição ao prestador.',
+    link: { href: '/guias/nfs-e-padrao-nacional/', label: 'NFS-e padrão nacional' },
+  },
+  {
+    id: 'validade-do-orcamento',
+    nome: 'Validade do orçamento',
+    def: 'Prazo durante o qual o prestador mantém o preço e as condições propostas. Se não houver prazo escrito e o cliente for consumidor, o CDC fixa dez dias a partir do recebimento.',
+    link: { href: '/guias/modelo-de-orcamento-de-servico/', label: 'Modelo de orçamento de serviço' },
+  },
+  {
+    id: 'valor-hora',
+    nome: 'Valor-hora',
+    def: 'Preço mínimo de uma hora de trabalho, calculado somando renda desejada, custos, impostos e margem e dividindo pelas horas faturáveis do ano.',
+    link: { href: '/guias/quanto-cobrar-por-hora/', label: 'Quanto cobrar por hora' },
+  },
+  {
+    id: 'valor-por-extenso',
+    nome: 'Valor por extenso',
+    def: 'Valor escrito em palavras (por exemplo, "mil e duzentos reais") ao lado dos números, usado em recibos e contratos para evitar rasuras e dúvidas.',
+    link: { href: '/guias/valor-por-extenso/', label: 'Valor por extenso' },
+  },
+  {
+    id: 'vencimento',
+    nome: 'Vencimento',
+    def: 'Data-limite para o pagamento sem atraso. Depois dela, podem incidir multa, juros e correção, se combinados ou previstos em lei.',
+    link: { href: '/guias/prazo-de-pagamento-para-prestador/', label: 'Prazo de pagamento para prestador' },
+  },
+]
+
+const ordenados = [...termos].sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'))
+const letraDe = (nome: string) => nome.normalize('NFD').replace(/[̀-ͯ]/g, '').charAt(0).toUpperCase()
+const grupos = new Map<string, Termo[]>()
+for (const t of ordenados) {
+  const l = letraDe(t.nome)
+  grupos.set(l, [...(grupos.get(l) ?? []), t])
+}
+const letras = [...grupos.keys()]
+
+const path = '/glossario/'
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Glossário', href: path },
+]
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'DefinedTermSet',
+  '@id': `${abs(path)}#glossario`,
+  name: 'Glossário do prestador de serviço',
+  url: abs(path),
+  inLanguage: 'pt-BR',
+  hasDefinedTerm: ordenados.map((t) => ({
+    '@type': 'DefinedTerm',
+    name: t.nome,
+    description: t.def,
+    url: abs(`${path}#${t.id}`),
+    inDefinedTermSet: { '@id': `${abs(path)}#glossario` },
+  })),
+})
+---
+
+<Base
+  title="Glossário do prestador de serviço"
+  description="Glossário para quem presta serviço: ordem de serviço, orçamento, NFS-e, MEI, DAS, juros de mora, protesto e outros termos explicados de forma simples."
+  path={path}
+  jsonLd={ld}
+>
+  <div class="container" style="padding-block:32px 64px">
+    <Breadcrumbs items={crumbs} />
+    <h1>Glossário do prestador de serviço</h1>
+    <p class="muted" style="font-size:19px;max-width:70ch">
+      {termos.length} termos de orçamento, cobrança, documentos e impostos que aparecem na rotina de autônomos, MEI e pequenas empresas, com definições curtas e links para os guias.
+    </p>
+    <p class="small" style="max-width:70ch">
+      Definições fiscais e legais conferidas em fontes oficiais em outubro de 2026. Regras tributárias mudam com frequência: confirme sempre com um contador ou advogado antes de decidir.
+    </p>
+
+    <nav aria-label="Índice alfabético" class="card indice">
+      <ul>
+        {letras.map((l) => <li><a href={`#letra-${l.toLowerCase()}`}>{l}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="prose glossario">
+      {
+        letras.map((l) => (
+          <section aria-labelledby={`letra-${l.toLowerCase()}`}>
+            <h2 id={`letra-${l.toLowerCase()}`}>{l}</h2>
+            <dl>
+              {grupos.get(l)!.map((t) => (
+                <div class="termo" id={t.id}>
+                  <dt>
+                    <a href={`#${t.id}`}>{t.nome}</a>
+                  </dt>
+                  <dd>
+                    {t.def}
+                    {t.link && (
+                      <span class="small saiba">
+                        {' '}
+                        Saiba mais: <a href={t.link.href}>{t.link.label}</a>.
+                      </span>
+                    )}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </section>
+        ))
+      }
+    </div>
+
+    <Cta />
+  </div>
+</Base>
+
+<style>
+  .indice {
+    margin: 24px 0 32px;
+    padding: 14px 18px;
+  }
+  .indice ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .indice a {
+    font-weight: 650;
+    text-decoration: none;
+  }
+  .indice a:hover {
+    text-decoration: underline;
+  }
+  .glossario h2 {
+    margin-top: 36px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+    scroll-margin-top: 80px;
+  }
+  .glossario dl {
+    margin: 0;
+  }
+  .termo {
+    padding-block: 12px;
+    scroll-margin-top: 80px;
+  }
+  .termo:target {
+    background: var(--teal-subtle);
+    border-radius: var(--radius-sm);
+    padding-inline: 10px;
+  }
+  .termo dt {
+    font-weight: 650;
+  }
+  .termo dt a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .termo dt a:hover {
+    text-decoration: underline;
+  }
+  .termo dd {
+    margin: 4px 0 0;
+  }
+  .saiba {
+    color: var(--text-2);
+  }
+</style>

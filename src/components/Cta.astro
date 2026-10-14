@@ -1,0 +1,65 @@
+---
+import { links } from '../site.config'
+interface Props {
+  title?: string
+  text?: string
+}
+const {
+  title = 'Organize seus serviços e cobre com clareza',
+  text = 'Registre o que executou, feche o mês por cliente e envie um demonstrativo com link para o cliente consultar e confirmar o recebimento.',
+} = Astro.props
+---
+
+<aside class="cta no-print" aria-label="Conheça o MinhaOS App">
+  <div>
+    <p class="t">{title}</p>
+    <p class="d">{text}</p>
+  </div>
+  <div class="a">
+    <a href={links.signup} class="btn btn-light">Criar conta</a>
+    <a href="/funcionalidades/" class="more">Ver funcionalidades</a>
+  </div>
+</aside>
+
+<style>
+  .cta {
+    display: grid;
+    gap: 18px;
+    align-items: center;
+    background: var(--navy);
+    color: #cbd5e1;
+    border-radius: var(--radius);
+    padding: 28px;
+    margin: 40px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  @media (min-width: 760px) {
+    .cta {
+      grid-template-columns: 1fr auto;
+    }
+  }
+  .t {
+    color: #fff;
+    font-size: 21px;
+    font-weight: 650;
+    margin: 0 0 6px;
+  }
+  .d {
+    margin: 0;
+    font-size: 16px;
+  }
+  .a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .more {
+    color: #fff;
+    font-weight: 600;
+  }
+  .more:hover {
+    color: var(--teal-bright);
+  }
+</style>
