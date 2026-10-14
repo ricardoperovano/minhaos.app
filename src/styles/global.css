@@ -239,6 +239,10 @@ a.card h2 {
 /* Texto longo (guias) */
 .prose {
   max-width: var(--measure);
+  overflow-wrap: break-word;
+}
+.prose a {
+  overflow-wrap: anywhere;
 }
 .prose ul,
 .prose ol {
@@ -259,7 +263,11 @@ a.card h2 {
   margin: 0;
 }
 .prose table {
-  width: 100%;
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  width: max-content;
+  min-width: 100%;
   border-collapse: collapse;
   font-size: 15px;
   margin: 8px 0 24px;

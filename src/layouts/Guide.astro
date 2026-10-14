@@ -171,6 +171,7 @@ const tool = d.tool ? { key: d.tool, ...tools[d.tool] } : null
   }
   .layout {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 40px;
   }
   @media (min-width: 1040px) {
