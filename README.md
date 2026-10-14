@@ -28,4 +28,4 @@ Astro 7, saída 100% estática, sem JavaScript de framework no cliente (só scri
 
 ## Deploy
 
-Vercel (`vercel.json`): framework Astro, saída `dist/`, domínio `minhaos.app`. Ao trocar a URL do app, ajuste `appUrl` em `src/site.config.ts`.
+GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`): cada push na `main` roda `npm run build` e publica `dist/`. Domínio `minhaos.app` (`public/CNAME`; DNS apontando para o GitHub Pages). Em Settings → Pages, a fonte deve ser "GitHub Actions". Ao trocar a URL do app, ajuste `appUrl` em `src/site.config.ts`.
