@@ -1,0 +1,163 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Base from '../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../lib/seo'
+import { site } from '../site.config'
+
+const path = '/privacidade/'
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Política de privacidade', href: path },
+]
+const description =
+  'Como o site minhaos.app trata dados pessoais: o que coletamos, cookies com consentimento, chat de atendimento, ferramentas grátis e seus direitos na LGPD.'
+const updated = '2026-10-15'
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'WebPage',
+  name: 'Política de privacidade do site',
+  url: abs(path),
+  description,
+  inLanguage: 'pt-BR',
+  dateModified: updated,
+  publisher: { '@id': `${site.url}/#organization` },
+})
+const lgpd = 'https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm'
+const mail = `mailto:${site.contactEmail}`
+
+/*
+ * DONO DO SITE — COMPLETAR antes de considerar a política final:
+ * - Identificação do controlador: razão social (ou nome do responsável), CNPJ/CPF e endereço.
+ *   Inclua na seção "Quem é o responsável" (id="controlador"), abaixo do nome.
+ * - Encarregado de dados (DPO), se houver nomeação; hoje o canal é o e-mail de contato.
+ * - Prazo de retenção configurado no Google Analytics (Administrador → Configurações de dados → Retenção de dados)
+ *   e o prazo de guarda das conversas do chat na Monitchat, se quiser citar números.
+ */
+---
+
+<Base title="Política de privacidade" description={description} path={path} jsonLd={ld}>
+  <div class="container legal-page prose">
+    <Breadcrumbs items={crumbs} />
+    <h1>Política de privacidade do site</h1>
+    <p class="small">Atualizada em <time datetime={updated}>15 de outubro de 2026</time></p>
+    <p class="lead">
+      Esta política explica quais dados o site <strong>minhaos.app</strong> trata, para quê e como você controla isso. Os dados da sua conta no aplicativo (clientes, serviços, demonstrativos) seguem a <a href="https://app.minhaos.app/privacidade">política de privacidade do aplicativo</a>.
+    </p>
+
+    <h2 id="controlador">Quem é o responsável</h2>
+    <p>
+      O controlador dos dados tratados neste site é o <strong>{site.name}</strong>. Para qualquer assunto sobre privacidade e dados pessoais, escreva para <a href={mail}>{site.contactEmail}</a>.
+    </p>
+
+    <h2 id="dados">Quais dados o site trata</h2>
+    <h3>Ao visitar qualquer página</h3>
+    <p>
+      O site é hospedado no GitHub Pages. Como em qualquer site, o servidor recebe dados técnicos da conexão, como endereço IP e tipo de navegador. Segundo a documentação do GitHub, o endereço IP de quem visita um site do GitHub Pages é registrado e armazenado por motivos de segurança.
+    </p>
+    <p>
+      O chat de atendimento (Monitchat) é carregado em todas as páginas para ficar à mão. Ao carregar, ele busca a configuração do botão no servidor da Monitchat, que recebe esses mesmos dados técnicos da conexão.
+    </p>
+
+    <h3>Análise de uso, só com o seu consentimento</h3>
+    <p>
+      Se você permitir cookies de análise, usamos o Google Analytics (diretamente ou pelo Google Tag Manager) para entender como o site é usado: páginas vistas, de onde a visita veio, tipo de aparelho e navegador, região aproximada e alguns cliques, como "Começar grátis", a escolha de um plano, o uso de uma ferramenta grátis (por exemplo, "imprimiu um recibo") ou a leitura de um guia até o fim. Esses eventos não levam nome, e-mail, telefone nem nada do que você digita nas ferramentas. O Google identifica o navegador por um cookie com um código aleatório.
+    </p>
+
+    <h3>Anúncios e remarketing, só com o seu consentimento</h3>
+    <p>
+      Se você permitir cookies de marketing, o site pode carregar o Google Ads e o Pixel da Meta (Facebook e Instagram). Eles servem para medir se nossos anúncios trazem visitas e para mostrar anúncios do {site.name} a quem já visitou o site (remarketing). Para isso, o Google e a Meta recebem o identificador do cookie, as páginas visitadas e dados técnicos do navegador, e podem relacioná-los à sua conta nesses serviços, conforme as políticas de cada um.
+    </p>
+
+    <h3>No chat de atendimento</h3>
+    <p>
+      Quando você inicia uma conversa no chat, a Monitchat recebe as mensagens, os dados que você decidir informar (como nome, e-mail ou telefone), a página em que o chat foi aberto e um código de visitante salvo no seu navegador para a conversa continuar entre páginas. Usamos isso só para responder e acompanhar o seu atendimento.
+    </p>
+
+    <h3>Nas ferramentas grátis</h3>
+    <p>
+      A <a href="/ferramentas/calculadora-valor-hora/">calculadora de valor da hora</a>, o <a href="/ferramentas/mensagem-de-cobranca/">gerador de mensagem de cobrança</a>, o <a href="/ferramentas/gerador-de-recibo/">gerador de recibo</a> e o <a href="/ferramentas/modelo-ordem-de-servico/">modelo de ordem de serviço</a> funcionam inteiramente no seu navegador. O que você digita não é enviado para nós nem guardado no aparelho: ao fechar ou recarregar a página, os dados somem. A única saída é por ação sua: "Abrir no WhatsApp" leva o texto da mensagem para o WhatsApp, "Copiar" coloca o texto na área de transferência e "Imprimir" gera o documento na sua impressora ou em PDF.
+    </p>
+
+    <h3>Origem da visita</h3>
+    <p>
+      Se você chegou por um link de campanha (com parâmetros <code>utm_</code> no endereço), o site guarda esses parâmetros enquanto a aba estiver aberta e os repassa ao aplicativo quando você clica para criar a conta. Assim sabemos qual campanha trouxe o cadastro. Esses parâmetros descrevem a campanha, não você.
+    </p>
+
+    <h3>Quando você nos escreve</h3>
+    <p>Se você mandar um e-mail, usamos o seu endereço e o conteúdo da mensagem para responder.</p>
+
+    <h2 id="bases-legais">Para que usamos e com qual base legal</h2>
+    <p>A Lei Geral de Proteção de Dados (<a href={lgpd}>Lei nº 13.709/2018</a>, art. 7º) exige uma base legal para cada uso. No site:</p>
+    <ul>
+      <li><strong>Consentimento</strong> (art. 7º, I): análise de uso (Google Analytics e Google Tag Manager) e anúncios (Google Ads e Meta). Nada disso é carregado antes da sua escolha, e você pode mudar de ideia a qualquer momento.</li>
+      <li><strong>Legítimo interesse</strong> (art. 7º, IX): manter o site seguro e funcionando (hospedagem), lembrar da sua escolha de cookies, oferecer o chat de atendimento que você usa por iniciativa própria, registrar a origem da visita repassada ao aplicativo e responder aos seus e-mails.</li>
+    </ul>
+
+    <h2 id="cookies">Cookies</h2>
+    <p>
+      A lista de cookies e armazenamentos usados, com fornecedor, finalidade e duração, está na <a href="/cookies/">política de cookies</a>. Para mudar a sua escolha agora: <button type="button" class="btn btn-secondary inline-btn" data-cc-open>Preferências de cookies</button>
+    </p>
+
+    <h2 id="compartilhamento">Com quem os dados são compartilhados</h2>
+    <p>Não vendemos dados pessoais. Os dados passam apenas pelos fornecedores necessários para cada finalidade:</p>
+    <ul>
+      <li><strong>GitHub</strong> (hospedagem do site): dados técnicos de conexão.</li>
+      <li><strong>Monitchat</strong> (chat de atendimento): dados técnicos de conexão e, se você conversar, as mensagens e dados informados. O chat usa o serviço Pusher para entregar as mensagens em tempo real.</li>
+      <li><strong>Google</strong> (Google Analytics, Google Tag Manager e Google Ads): só com o seu consentimento para a categoria correspondente.</li>
+      <li><strong>Meta</strong> (Pixel da Meta): só com o seu consentimento para marketing.</li>
+    </ul>
+    <p>Alguns desses fornecedores tratam dados em servidores fora do Brasil, de acordo com as próprias políticas de privacidade.</p>
+
+    <h2 id="retencao">Por quanto tempo</h2>
+    <ul>
+      <li>A sua escolha de cookies fica guardada no navegador por 180 dias; depois, perguntamos de novo.</li>
+      <li>A origem da visita (<code>utm_</code>) é apagada quando você fecha a aba.</li>
+      <li>Os cookies do Google e da Meta têm as durações indicadas na <a href="/cookies/">política de cookies</a>. Os relatórios do Google Analytics ficam pelo prazo de retenção configurado na nossa conta.</li>
+      <li>Conversas do chat e e-mails ficam guardados enquanto forem úteis para o atendimento ou enquanto você não pedir a exclusão.</li>
+    </ul>
+
+    <h2 id="direitos">Seus direitos</h2>
+    <p>O art. 18 da LGPD garante a você, a qualquer momento e mediante requisição:</p>
+    <ol>
+      <li>confirmação de que tratamos dados seus;</li>
+      <li>acesso aos dados;</li>
+      <li>correção de dados incompletos, inexatos ou desatualizados;</li>
+      <li>anonimização, bloqueio ou eliminação de dados desnecessários, excessivos ou tratados em desconformidade com a lei;</li>
+      <li>portabilidade dos dados a outro fornecedor, nos termos da regulamentação;</li>
+      <li>eliminação dos dados tratados com o seu consentimento, salvo as exceções do art. 16;</li>
+      <li>informação sobre com quem compartilhamos os dados;</li>
+      <li>informação sobre a possibilidade de não dar consentimento e as consequências da negativa;</li>
+      <li>revogação do consentimento.</li>
+    </ol>
+    <p>
+      Você também pode se opor a um tratamento feito sem consentimento, se ele descumprir a lei, e peticionar à Autoridade Nacional de Proteção de Dados (ANPD). Fonte: <a href={lgpd}>Lei nº 13.709/2018, art. 18, no Planalto</a> (consultada em 15 de outubro de 2026).
+    </p>
+    <p>
+      <strong>Sobre não consentir:</strong> recusar cookies de análise ou de marketing não muda nada no uso do site, das ferramentas ou do chat. Só deixamos de medir a sua visita e de mostrar anúncios para você.
+    </p>
+
+    <h2 id="como-exercer">Como exercer os seus direitos</h2>
+    <p>
+      Escreva para <a href={mail}>{site.contactEmail}</a> dizendo o que você quer. Para dados do chat, informe o e-mail ou telefone usados na conversa, para localizarmos o atendimento. O pedido é atendido sem custo. Para revogar o consentimento de cookies, use o botão "Preferências de cookies" no rodapé de qualquer página.
+    </p>
+
+    <h2 id="alteracoes">Alterações desta política</h2>
+    <p>Quando esta política mudar, atualizamos a data no topo da página.</p>
+  </div>
+</Base>
+
+<style>
+  .legal-page {
+    max-width: var(--measure);
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--text-2);
+  }
+  .inline-btn {
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 15px;
+    margin-top: 6px;
+  }
+</style>

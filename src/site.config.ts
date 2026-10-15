@@ -20,6 +20,23 @@ export const links = {
   login: `${site.appUrl}/login`,
 }
 
+/**
+ * IDs de rastreamento. Nada aqui carrega sem consentimento (banner de cookies, src/lib/tracking.ts);
+ * ID vazio = a ferramenta não é carregada.
+ * - gaId (análise): Google Analytics → Administrador → Fluxos de dados → seu fluxo da Web → "ID da métrica" (G-…).
+ * - gtmId (análise): Google Tag Manager → no topo do espaço de trabalho, "ID do contêiner" (GTM-…).
+ *   Com gtmId preenchido, o GA4 NÃO é carregado direto: configure a tag do GA4 dentro do GTM (evita contagem em dobro).
+ * - metaPixelId (marketing): Gerenciador de Eventos da Meta → Fontes de dados → seu pixel → "ID do conjunto de dados" (só números).
+ * - googleAdsId (marketing): Google Ads → Metas → Conversões → Configurações → "Tag do Google" (AW-…).
+ *   Se você configurar o Google Ads dentro do GTM, deixe este campo vazio.
+ */
+export const tracking = {
+  gaId: 'G-7RYM7B1WPC',
+  gtmId: '',
+  metaPixelId: '',
+  googleAdsId: '',
+}
+
 export const nav = [
   { href: '/funcionalidades/', label: 'Funcionalidades' },
   { href: '/planos/', label: 'Planos' },

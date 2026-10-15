@@ -1,0 +1,335 @@
+---
+/**
+ * Banner e painel de preferências de cookies (LGPD). Sem decisão, nada de análise/marketing é carregado.
+ * O formato do cookie é compartilhado com o aplicativo: ver src/lib/consent.ts.
+ * Qualquer elemento com [data-cc-open] reabre o painel (rodapé, página /cookies/).
+ */
+---
+
+<section id="cc" class="cc" aria-labelledby="cc-title" hidden>
+  <div class="container cc-in">
+    <div class="cc-text">
+      <h2 id="cc-title" class="cc-t" tabindex="-1">Cookies neste site</h2>
+      <p id="cc-desc" class="cc-d">
+        Usamos cookies necessários para o site funcionar e, se você permitir, cookies de análise (para medir o uso do site) e de marketing (anúncios do MinhaOS App no Google e na Meta). <a href="/cookies/">Saiba mais</a>
+      </p>
+    </div>
+
+    <form id="cc-panel" class="cc-panel" hidden aria-labelledby="cc-panel-title">
+      <h3 id="cc-panel-title" class="cc-pt">Escolha o que permitir</h3>
+      <div class="cc-opt">
+        <input type="checkbox" id="cc-nec" role="switch" checked disabled aria-describedby="cc-nec-d" />
+        <div>
+          <label for="cc-nec">Necessários <span class="cc-tag">sempre ativos</span></label>
+          <p id="cc-nec-d">Guardam a sua escolha de cookies e a origem da visita enquanto a aba estiver aberta. Sem eles o site não lembra das suas preferências. O chat de atendimento também faz parte desta categoria e só guarda dados quando você inicia uma conversa.</p>
+        </div>
+      </div>
+      <div class="cc-opt">
+        <input type="checkbox" id="cc-analytics" role="switch" aria-describedby="cc-analytics-d" />
+        <div>
+          <label for="cc-analytics">Análise</label>
+          <p id="cc-analytics-d">Google Analytics (e Google Tag Manager, quando usado): páginas visitadas e cliques em botões, de forma agregada, para melhorar o site.</p>
+        </div>
+      </div>
+      <div class="cc-opt">
+        <input type="checkbox" id="cc-marketing" role="switch" aria-describedby="cc-marketing-d" />
+        <div>
+          <label for="cc-marketing">Marketing</label>
+          <p id="cc-marketing-d">Google Ads e Meta Pixel: medir anúncios e mostrar anúncios do MinhaOS App a quem visitou o site.</p>
+        </div>
+      </div>
+      <button type="submit" class="btn cc-btn cc-save">Salvar escolhas</button>
+    </form>
+
+    <div class="cc-actions">
+      <button type="button" class="btn cc-btn" data-cc="reject">Recusar</button>
+      <button type="button" class="btn cc-btn" data-cc="custom" aria-expanded="false" aria-controls="cc-panel">Personalizar</button>
+      <button type="button" class="btn cc-btn" data-cc="accept">Aceitar todos</button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import {
+    CONSENT_EVENT,
+    deleteCookies,
+    isAnalyticsCookie,
+    isMarketingCookie,
+    readConsent,
+    writeConsent,
+    type Consent,
+  } from '../lib/consent'
+  import { applyConsent, startTracking } from '../lib/tracking'
+
+  const root = document.getElementById('cc') as HTMLElement
+  const panel = document.getElementById('cc-panel') as HTMLFormElement
+  const title = document.getElementById('cc-title') as HTMLElement
+  const custom = root.querySelector<HTMLButtonElement>('[data-cc="custom"]')!
+  const swA = document.getElementById('cc-analytics') as HTMLInputElement
+  const swM = document.getElementById('cc-marketing') as HTMLInputElement
+  let opener: HTMLElement | null = null
+  let ro: ResizeObserver | null = null
+
+  // O balão do chat (Monitchat) fica no canto inferior direito, acima de tudo; enquanto o banner
+  // está aberto ele é ocultado pela API pública do widget para não cobrir os botões.
+  type Chat = { hide?: () => void; show?: () => void; _q?: unknown[][] }
+  function chat(method: 'hide' | 'show') {
+    const ww = window as unknown as { MonitchatWidget?: Chat }
+    const api = ww.MonitchatWidget
+    if (api && typeof api[method] === 'function') api[method]!()
+    else {
+      ww.MonitchatWidget = api ?? { _q: [] }
+      ww.MonitchatWidget._q = (ww.MonitchatWidget._q ?? []).filter((c) => c[0] !== 'hide' && c[0] !== 'show')
+      ww.MonitchatWidget._q.push([method, []])
+    }
+  }
+
+  function reserveSpace() {
+    document.body.style.paddingBottom = root.hidden ? '' : `${root.offsetHeight}px`
+  }
+
+  function setPanel(open: boolean) {
+    panel.hidden = !open
+    custom.setAttribute('aria-expanded', String(open))
+    reserveSpace()
+  }
+
+  function show(withPanel: boolean, from: HTMLElement | null) {
+    const c = readConsent()
+    swA.checked = c?.analytics ?? false
+    swM.checked = c?.marketing ?? false
+    opener = from
+    root.hidden = false
+    setPanel(withPanel)
+    chat('hide')
+    if (!ro && 'ResizeObserver' in window) {
+      ro = new ResizeObserver(reserveSpace)
+      ro.observe(root)
+    }
+    reserveSpace()
+    if (from) (withPanel ? swA : title).focus()
+  }
+
+  function hide() {
+    const hadFocus = root.contains(document.activeElement)
+    root.hidden = true
+    setPanel(false)
+    reserveSpace()
+    chat('show')
+    if (hadFocus) {
+      if (opener && document.contains(opener)) opener.focus()
+      else (document.activeElement as HTMLElement | null)?.blur()
+    }
+    opener = null
+  }
+
+  function save(analytics: boolean, marketing: boolean) {
+    const prev = readConsent()
+    const c: Consent = { analytics, marketing, ts: Math.floor(Date.now() / 1000) }
+    writeConsent(c)
+    window.dispatchEvent(new CustomEvent(CONSENT_EVENT, { detail: c }))
+    const revoked = (prev?.analytics && !analytics) || (prev?.marketing && !marketing)
+    if (revoked) {
+      if (!analytics) deleteCookies(isAnalyticsCookie)
+      if (!marketing) deleteCookies(isMarketingCookie)
+      location.reload()
+      return
+    }
+    hide()
+    applyConsent(c)
+  }
+
+  root.addEventListener('click', (e) => {
+    const b = (e.target as Element).closest<HTMLButtonElement>('[data-cc]')
+    if (!b) return
+    const action = b.dataset.cc
+    if (action === 'accept') save(true, true)
+    else if (action === 'reject') save(false, false)
+    else if (action === 'custom') {
+      const open = !!panel.hidden
+      setPanel(open)
+      if (open) swA.focus()
+    }
+  })
+
+  panel.addEventListener('submit', (e) => {
+    e.preventDefault()
+    save(swA.checked, swM.checked)
+  })
+
+  root.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return
+    if (!panel.hidden) {
+      setPanel(false)
+      custom.focus()
+    } else if (readConsent()) {
+      hide() // reaberto pelo rodapé: fecha sem mudar nada
+    }
+  })
+
+  document.addEventListener('click', (e) => {
+    const t = (e.target as Element).closest<HTMLElement>('[data-cc-open]')
+    if (!t) return
+    e.preventDefault()
+    show(true, t)
+  })
+
+  startTracking()
+  const current = readConsent()
+  if (current) applyConsent(current)
+  else show(false, null)
+</script>
+
+<style>
+  .cc {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 60; /* acima do cabeçalho fixo (50) */
+    background: var(--surface);
+    border-top: 1px solid var(--border-strong);
+    box-shadow: 0 -6px 24px rgb(15 23 42 / 0.12);
+    max-height: 85vh;
+    max-height: 85dvh;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .cc[hidden] {
+    display: none;
+  }
+  .cc-in {
+    display: grid;
+    gap: 12px;
+    padding-block: 14px;
+  }
+  @media (min-width: 900px) {
+    .cc-in {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      column-gap: 28px;
+    }
+    .cc-panel {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .cc-actions {
+      grid-column: 2;
+      grid-row: 1;
+    }
+  }
+  .cc-t {
+    font-size: 17px;
+    margin: 0 0 4px;
+  }
+  .cc-t:focus {
+    outline: none;
+  }
+  .cc-d {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+  .cc-actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .cc-btn {
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 15px;
+    background: var(--surface);
+    color: var(--navy);
+    border-color: var(--navy);
+    line-height: 1.2;
+    text-align: center;
+  }
+  .cc-btn:hover {
+    background: var(--surface-muted);
+    color: var(--navy);
+  }
+  @media (max-width: 380px) {
+    .cc-btn {
+      padding: 0 6px;
+      font-size: 14px;
+    }
+  }
+  .cc-panel {
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+  }
+  .cc-panel[hidden] {
+    display: none;
+  }
+  .cc-pt {
+    font-size: 16px;
+    margin: 0 0 8px;
+  }
+  .cc-opt {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 8px 0;
+  }
+  .cc-opt input {
+    appearance: none;
+    flex-shrink: 0;
+    width: 44px;
+    height: 26px;
+    margin: 2px 0 0;
+    border-radius: 999px;
+    background: var(--text-3);
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.14s;
+  }
+  .cc-opt input::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--surface);
+    transition: transform 0.14s;
+  }
+  .cc-opt input:checked {
+    background: var(--teal);
+  }
+  .cc-opt input:checked::after {
+    transform: translateX(18px);
+  }
+  .cc-opt input:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .cc-opt label {
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .cc-opt p {
+    margin: 2px 0 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-2);
+  }
+  .cc-tag {
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--text-3);
+    margin-left: 6px;
+  }
+  .cc-save {
+    margin-top: 6px;
+  }
+  @media print {
+    .cc {
+      display: none !important;
+    }
+  }
+</style>

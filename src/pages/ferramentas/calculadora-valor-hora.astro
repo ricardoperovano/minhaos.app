@@ -301,7 +301,7 @@ const jsonLd = graph(
 
   let liveTimer: number | undefined
 
-  function calc() {
+  function calc(): boolean {
     const vals = rules.map(read)
     const okAll = vals.every((v) => v !== null)
     const fail = (msg: string) => {
@@ -309,6 +309,7 @@ const jsonLd = graph(
       $('res-erro').hidden = false
       $('res-erro').textContent = msg
       $('live').textContent = ''
+      return false
     }
     if (!okAll) return fail('Corrija os campos destacados para ver o resultado.')
     const [renda, custos, imp, mar, dias, horas, folga, fat] = vals as bigint[]
@@ -357,9 +358,19 @@ const jsonLd = graph(
     liveTimer = window.setTimeout(() => {
       $('live').textContent = `Valor mínimo da hora: ${brl(horaCents)}.`
     }, 900)
+    return true
   }
 
-  form.addEventListener('input', calc)
+  // Evento de uso (sem nenhum valor digitado): primeiro resultado válido após a pessoa editar, uma vez por página.
+  let usageSent = false
+  function calcFromUser() {
+    if (calc() && !usageSent) {
+      usageSent = true
+      window.dispatchEvent(new CustomEvent('minhaos:track', { detail: { event: 'tool_use', params: { tool: 'calculadora-valor-hora', action: 'calculate' } } }))
+    }
+  }
+
+  form.addEventListener('input', calcFromUser)
   form.addEventListener('reset', () => window.setTimeout(calc, 0))
   form.addEventListener('submit', (e) => e.preventDefault())
   calc()

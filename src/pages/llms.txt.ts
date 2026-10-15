@@ -26,6 +26,11 @@ export const GET: APIRoute = async () => {
     `- [Gerador de mensagem de cobrança](${site.url}/ferramentas/mensagem-de-cobranca/)`,
     `- [Gerador de recibo](${site.url}/ferramentas/gerador-de-recibo/)`,
     `- [Modelo de ordem de serviço](${site.url}/ferramentas/modelo-ordem-de-servico/)`,
+    '',
+    '## Privacidade',
+    `- [Política de privacidade do site](${site.url}/privacidade/)`,
+    `- [Política de cookies](${site.url}/cookies/)`,
+    '- Política de privacidade do aplicativo: https://app.minhaos.app/privacidade',
   ]
   return new Response(lines.join('\n') + '\n', { headers: { 'Content-Type': 'text/plain; charset=utf-8' } })
 }

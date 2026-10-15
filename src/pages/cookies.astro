@@ -1,0 +1,217 @@
+---
+import Breadcrumbs from '../components/Breadcrumbs.astro'
+import Base from '../layouts/Base.astro'
+import { abs, breadcrumbLd, graph, organizationLd } from '../lib/seo'
+import { site } from '../site.config'
+
+const path = '/cookies/'
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Política de cookies', href: path },
+]
+const description =
+  'Quais cookies e armazenamentos o site minhaos.app usa, de qual fornecedor, para quê, por quanto tempo e como mudar a sua escolha a qualquer momento.'
+const updated = '2026-10-15'
+const ld = graph(organizationLd, breadcrumbLd(crumbs), {
+  '@type': 'WebPage',
+  name: 'Política de cookies',
+  url: abs(path),
+  description,
+  inLanguage: 'pt-BR',
+  dateModified: updated,
+  publisher: { '@id': `${site.url}/#organization` },
+})
+
+interface Row {
+  name: string
+  tipo: string
+  fornecedor: string
+  finalidade: string
+  duracao: string
+}
+const groups: Array<{ id: string; title: string; text: string; rows: Row[] }> = [
+  {
+    id: 'necessarios',
+    title: 'Necessários (sempre ativos)',
+    text: 'Fazem o site lembrar da sua escolha e funcionar como esperado. Não identificam você.',
+    rows: [
+      {
+        name: 'minhaos_consent',
+        tipo: 'Cookie (minhaos.app e app.minhaos.app)',
+        fornecedor: site.name,
+        finalidade: 'Guarda a sua escolha de cookies (análise e marketing), para não perguntar de novo a cada página. A mesma escolha vale no aplicativo.',
+        duracao: '180 dias',
+      },
+      {
+        name: 'minhaos_utm',
+        tipo: 'sessionStorage',
+        fornecedor: site.name,
+        finalidade: 'Guarda os parâmetros utm_ da campanha que trouxe a visita e os repassa ao aplicativo quando você clica para criar a conta.',
+        duracao: 'Até fechar a aba',
+      },
+      {
+        name: 'monitchat:vid e monitchat:wc:…',
+        tipo: 'localStorage',
+        fornecedor: 'Monitchat (chat de atendimento)',
+        finalidade: 'Criados só quando você inicia uma conversa: código de visitante e dados da sessão do chat, para a conversa continuar entre páginas.',
+        duracao: 'Até você limpar os dados do site no navegador',
+      },
+    ],
+  },
+  {
+    id: 'analise',
+    title: 'Análise (só com consentimento)',
+    text: 'Mostram, de forma agregada, quais páginas e recursos são usados, para melhorarmos o site.',
+    rows: [
+      {
+        name: 'Google Tag Manager',
+        tipo: 'Script (quando usado)',
+        fornecedor: 'Google',
+        finalidade: 'Carrega as tags de análise configuradas pelo MinhaOS App, como o Google Analytics. Os cookies gravados são os das tags listadas nesta página.',
+        duracao: '—',
+      },
+      {
+        name: '_ga',
+        tipo: 'Cookie',
+        fornecedor: 'Google Analytics',
+        finalidade: 'Distingue visitantes com um código aleatório.',
+        duracao: '2 anos',
+      },
+      {
+        name: '_ga_<ID>',
+        tipo: 'Cookie',
+        fornecedor: 'Google Analytics',
+        finalidade: 'Mantém o estado da sessão de navegação.',
+        duracao: '2 anos',
+      },
+    ],
+  },
+  {
+    id: 'marketing',
+    title: 'Marketing (só com consentimento)',
+    text: 'Medem os resultados dos anúncios e permitem mostrar anúncios do MinhaOS App a quem visitou o site (remarketing).',
+    rows: [
+      {
+        name: '_gcl_au',
+        tipo: 'Cookie',
+        fornecedor: 'Google Ads',
+        finalidade: 'Mede conversões de anúncios do Google.',
+        duracao: '90 dias',
+      },
+      {
+        name: '_fbp',
+        tipo: 'Cookie',
+        fornecedor: 'Meta (Facebook e Instagram)',
+        finalidade: 'Identifica o navegador com um código aleatório para medir e direcionar anúncios da Meta.',
+        duracao: '90 dias',
+      },
+      {
+        name: '_fbc',
+        tipo: 'Cookie',
+        fornecedor: 'Meta (Facebook e Instagram)',
+        finalidade: 'Criado quando você chega por um anúncio da Meta; registra o clique no anúncio.',
+        duracao: '90 dias',
+      },
+    ],
+  },
+]
+---
+
+<Base title="Política de cookies" description={description} path={path} jsonLd={ld}>
+  <div class="container legal-page prose">
+    <Breadcrumbs items={crumbs} />
+    <h1>Política de cookies</h1>
+    <p class="small">Atualizada em <time datetime={updated}>15 de outubro de 2026</time></p>
+    <p class="lead">
+      Cookies são pequenos arquivos que o site grava no seu navegador. Usamos os necessários sempre e os de análise e marketing só se você permitir. Sem a sua escolha, nenhum deles é carregado.
+    </p>
+
+    <div class="callout choice">
+      <p><strong>Mudar a sua escolha:</strong> abra as preferências e ligue ou desligue cada categoria. Se você desligar algo que tinha permitido, a página é recarregada sem aquela ferramenta.</p>
+      <button type="button" class="btn btn-secondary" data-cc-open>Preferências de cookies</button>
+    </div>
+
+    {
+      groups.map((g) => (
+        <section aria-labelledby={g.id}>
+          <h2 id={g.id}>{g.title}</h2>
+          <p>{g.text}</p>
+          <table>
+            <caption class="sr-only">{g.title}</caption>
+            <thead>
+              <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Fornecedor</th>
+                <th scope="col">Finalidade</th>
+                <th scope="col">Duração</th>
+              </tr>
+            </thead>
+            <tbody>
+              {g.rows.map((r) => (
+                <tr>
+                  <th scope="row">
+                    <code>{r.name}</code>
+                    <span class="tipo">{r.tipo}</span>
+                  </th>
+                  <td>{r.fornecedor}</td>
+                  <td>{r.finalidade}</td>
+                  <td>{r.duracao}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))
+    }
+
+    <h2 id="chat">Chat de atendimento</h2>
+    <p>
+      O botão de chat no canto da tela é da Monitchat e é carregado em todas as páginas, para você pedir ajuda quando quiser. Ele não usa cookies de análise nem de anúncios; só grava os itens listados acima quando você inicia uma conversa. Detalhes na <a href="/privacidade/">política de privacidade</a>.
+    </p>
+
+    <h2 id="duracoes">Sobre as durações</h2>
+    <p>
+      As durações são as padrão informadas pelos fornecedores e podem mudar. O navegador também pode encurtá-las: segundo o Google, o Chrome limita esses cookies a 400 dias e o Safari pode apagá-los após 7 dias sem visita. Você pode apagar cookies a qualquer momento nas configurações do navegador.
+    </p>
+    <p class="small">Fontes consultadas em 15 de outubro de 2026:</p>
+    <ul class="small">
+      <li><a href="https://support.google.com/analytics/answer/11397207?hl=pt-BR" rel="noopener" target="_blank">Google: uso de cookies do Google Analytics em sites</a> (_ga e _ga_&lt;ID&gt;)</li>
+      <li><a href="https://business.safety.google/adscookies/" rel="noopener" target="_blank">Google: cookies usados em produtos de publicidade</a> (_gcl_au)</li>
+      <li><a href="https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc/" rel="noopener" target="_blank">Meta for Developers: parâmetros fbp e fbc</a> (_fbp e _fbc; a validade de 90 dias do _fbp é a definida no script oficial do Pixel da Meta)</li>
+    </ul>
+  </div>
+</Base>
+
+<style>
+  .legal-page {
+    max-width: var(--measure);
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    color: var(--text-2);
+  }
+  .choice {
+    display: grid;
+    gap: 12px;
+    justify-items: start;
+  }
+  .choice p {
+    margin: 0;
+  }
+  th[scope='row'] {
+    background: none;
+    color: var(--navy);
+    min-width: 150px;
+  }
+  .tipo {
+    display: block;
+    font-weight: 400;
+    font-size: 13px;
+    color: var(--text-3);
+    margin-top: 4px;
+  }
+  td:nth-child(3) {
+    min-width: 240px;
+  }
+</style>

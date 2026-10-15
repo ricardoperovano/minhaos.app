@@ -81,8 +81,8 @@ const jsonLd = graph(
       </p>
       <p class="small privacy">Tudo acontece no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
       <div class="actions">
-        <button type="button" class="btn btn-primary js-print">Imprimir / salvar em PDF</button>
-        <button type="button" class="btn btn-secondary" id="print-blank">Imprimir em branco</button>
+        <button type="button" class="btn btn-primary js-print" data-track-event="tool_use" data-track-tool="modelo-ordem-de-servico" data-track-action="print">Imprimir / salvar em PDF</button>
+        <button type="button" class="btn btn-secondary" id="print-blank" data-track-event="tool_use" data-track-tool="modelo-ordem-de-servico" data-track-action="print_blank">Imprimir em branco</button>
       </div>
     </div>
 
@@ -237,7 +237,7 @@ const jsonLd = graph(
     </form>
 
     <div class="actions no-print bottom-actions">
-      <button type="button" class="btn btn-primary js-print">Imprimir / salvar em PDF</button>
+      <button type="button" class="btn btn-primary js-print" data-track-event="tool_use" data-track-tool="modelo-ordem-de-servico" data-track-action="print">Imprimir / salvar em PDF</button>
       <button type="button" class="btn btn-secondary" id="limpar">Limpar tudo</button>
     </div>
 

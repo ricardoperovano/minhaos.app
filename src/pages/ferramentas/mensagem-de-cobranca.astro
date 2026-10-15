@@ -160,8 +160,8 @@ const jsonLd = graph(
         <textarea id="msg" rows="14" spellcheck="true"></textarea>
         <p id="faltando" class="small" hidden>Os trechos entre colchetes ainda precisam ser preenchidos.</p>
         <div class="actions">
-          <button type="button" id="copiar" class="btn btn-primary">Copiar texto</button>
-          <a id="whats" class="btn btn-secondary" href="https://wa.me/" target="_blank" rel="noopener">Abrir no WhatsApp<span class="sr-only"> (abre em nova aba)</span></a>
+          <button type="button" id="copiar" class="btn btn-primary" data-track-event="tool_use" data-track-tool="mensagem-de-cobranca" data-track-action="copy">Copiar texto</button>
+          <a id="whats" class="btn btn-secondary" data-track-event="tool_use" data-track-tool="mensagem-de-cobranca" data-track-action="whatsapp" href="https://wa.me/" target="_blank" rel="noopener">Abrir no WhatsApp<span class="sr-only"> (abre em nova aba)</span></a>
         </div>
         <p class="small">O WhatsApp abre com o texto pronto. Você escolhe o contato, revisa e decide se envia.</p>
         <p id="status" class="status" role="status" aria-live="polite"></p>

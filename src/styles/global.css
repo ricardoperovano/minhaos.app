@@ -337,10 +337,13 @@ a.card h2 {
 @media print {
   header.site-header,
   footer.site-footer,
-  .no-print {
+  .no-print,
+  #cc,
+  #monitchat-widget /* host do widget de chat (id definido pelo script do Monitchat) */ {
     display: none !important;
   }
   body {
     font-size: 12pt;
+    padding-bottom: 0 !important; /* espaço reservado pelo banner de cookies */
   }
 }

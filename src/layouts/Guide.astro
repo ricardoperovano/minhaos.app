@@ -83,7 +83,7 @@ const tool = d.tool ? { key: d.tool, ...tools[d.tool] } : null
           </aside>
         )
       }
-      <div class="body prose">
+      <div class="body prose" data-guide={entry.id} data-cluster={d.cluster}>
         <slot />
 
         {
