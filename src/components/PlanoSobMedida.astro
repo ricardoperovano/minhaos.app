@@ -1,0 +1,54 @@
+---
+/** Bloco “Precisa de mais?”: contato para quem passa dos limites do Negócios (clique medido como `contact_click`). */
+import { customPlanHref } from '../lib/plans'
+
+interface Props {
+  /** Valor de `location` no evento de análise. */
+  location: string
+  /** Mesmo nível de título do contexto (h2 numa seção, h3 dentro de outra). */
+  heading?: 'h2' | 'h3'
+}
+const { location, heading = 'h2' } = Astro.props
+const H = heading
+---
+
+<aside class="sob-medida" data-track-location={location} aria-label="Plano sob medida">
+  <div>
+    <H class="t">Precisa de mais?</H>
+    <p class="d">
+      Se o Negócios ficou pequeno, montamos um plano sob medida: limites maiores de clientes, demonstrativos e armazenamento, mais usuários e condições para equipes. Escreva para a gente ou chame no chat do site, no canto da tela.
+    </p>
+  </div>
+  <a href={customPlanHref} class="btn btn-secondary">Fale com a gente</a>
+</aside>
+
+<style>
+  .sob-medida {
+    display: grid;
+    gap: 16px;
+    align-items: center;
+    background: var(--teal-subtle);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+  }
+  @media (min-width: 760px) {
+    .sob-medida {
+      grid-template-columns: 1fr auto;
+      gap: 28px;
+    }
+  }
+  .t {
+    margin: 0 0 6px;
+    font-size: 20px;
+    color: var(--navy);
+  }
+  .d {
+    margin: 0;
+    color: var(--text-2);
+    max-width: 70ch;
+  }
+  .sob-medida .btn {
+    white-space: nowrap;
+  }
+</style>

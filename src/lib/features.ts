@@ -214,7 +214,7 @@ export const features: Feature[] = [
     limits: [
       'O fechamento não é automático: você escolhe o que entra e emite. Nos planos pagos, um contrato recorrente gera os lançamentos de serviço sozinho, mas a emissão do demonstrativo continua sendo sua.',
       'Cada demonstrativo é de um único cliente.',
-      'No plano Grátis, o sistema não envia a cobrança sozinho: você compartilha o link por WhatsApp, e-mail ou outro meio. O envio por e-mail direto da plataforma, com lembretes automáticos de vencimento e atraso, faz parte dos planos Profissional e Negócios.',
+      'No plano Grátis, o sistema não envia a cobrança sozinho: você compartilha o link por WhatsApp, e-mail ou outro meio. O envio por e-mail direto da plataforma, com lembretes automáticos de vencimento e atraso, está chegando aos planos pagos (em breve).',
       'Não calcula multa, juros ou descontos automaticamente.',
     ],
     faq: [
@@ -348,7 +348,7 @@ export const features: Feature[] = [
         h2: 'Como enviar o link',
         body: [],
         steps: [
-          'No demonstrativo emitido, abra a aba <strong>Compartilhamento</strong> e gere o link. A validade sugerida vem das suas configurações (de 1 a 365 dias, ou sem expiração), e você pode ajustá-la nos planos Profissional e Negócios; no plano Grátis a validade é fixa em 30 dias.',
+          'No demonstrativo emitido, abra a aba <strong>Compartilhamento</strong> e gere o link. A validade sugerida vem das suas configurações (de 1 a 365 dias, ou sem expiração), e você pode ajustá-la nos planos pagos; no plano Grátis a validade é fixa em 30 dias.',
           'Escolha como enviar: <strong>Copiar link</strong>, <strong>Compartilhar pelo WhatsApp</strong> (abre o WhatsApp com uma mensagem pronta; quem envia é você) ou o compartilhamento nativo do celular.',
           'Se quiser conferir o que o cliente verá, use <strong>Pré-visualizar como administrador</strong>, que mostra a mesma página sem contar como acesso.',
         ],
@@ -382,7 +382,7 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'Não envia mensagens de WhatsApp automaticamente: o WhatsApp abre com o texto pronto, mas o envio é feito por você. O envio por e-mail com lembretes automáticos existe nos planos Profissional e Negócios.',
+      'Não envia mensagens de WhatsApp automaticamente: o WhatsApp abre com o texto pronto, mas o envio é feito por você. O envio por e-mail com lembretes automáticos está chegando aos planos pagos (em breve).',
       'Os registros de acesso não provam identidade nem leitura.',
       '“Confirmar recebimento” confirma o recebimento do documento, não o pagamento.',
       'Não tem assinatura digital do cliente.',
@@ -406,7 +406,7 @@ export const features: Feature[] = [
       },
       {
         q: 'O link expira?',
-        a: 'Nos planos Profissional e Negócios, você decide: a validade padrão é configurável de 1 a 365 dias, ou sem expiração, e pode ser ajustada a cada link. No plano Grátis, os links valem 30 dias.',
+        a: 'Nos planos pagos, você decide: a validade padrão é configurável de 1 a 365 dias, ou sem expiração, e pode ser ajustada a cada link. No plano Grátis, os links valem 30 dias.',
       },
     ],
     guides: [
@@ -603,7 +603,7 @@ export const features: Feature[] = [
           'No grupo <strong>Financeiro</strong>, abra <strong>Contas a pagar</strong> e crie uma nova conta.',
           'Preencha a <strong>descrição</strong> (por exemplo, “Aluguel da sala”), o <strong>fornecedor</strong>, a <strong>categoria</strong>, o <strong>valor</strong> e o <strong>vencimento</strong>.',
           'Se o gasto foi para um trabalho específico, ligue a conta a um <strong>cliente</strong> ou a um <strong>serviço</strong>. Use a <strong>observação</strong> para o que precisar lembrar.',
-          'Nos planos Profissional e Negócios, anexe o <strong>boleto</strong>, o <strong>comprovante</strong> ou a <strong>nota</strong> da compra, para ter tudo junto na hora de pagar ou de entregar ao contador.',
+          'Nos planos pagos, anexe o <strong>boleto</strong>, o <strong>comprovante</strong> ou a <strong>nota</strong> da compra, para ter tudo junto na hora de pagar ou de entregar ao contador.',
           'Salve. A conta fica <strong>em aberto</strong> e passa a <strong>em atraso</strong> se o vencimento chegar sem quitação.',
         ],
       },
@@ -628,7 +628,7 @@ export const features: Feature[] = [
       {
         h2: 'Contas recorrentes e parceladas',
         body: [
-          'Nos planos Profissional e Negócios, uma conta pode se <strong>repetir</strong> (semanal, quinzenal, mensal, trimestral ou anual) com término nunca, até uma data ou depois de um número de vezes. Também dá para <strong>parcelar</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total, sem centavo sobrando ou faltando. As próximas ocorrências são geradas com até 60 dias de antecedência.',
+          'Nos planos pagos, uma conta pode se <strong>repetir</strong> (semanal, quinzenal, mensal, trimestral ou anual) com término nunca, até uma data ou depois de um número de vezes. Também dá para <strong>parcelar</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total, sem centavo sobrando ou faltando. As próximas ocorrências são geradas com até 60 dias de antecedência.',
           'Ao editar uma ocorrência, você escolhe se a mudança vale <strong>só para esta</strong>, <strong>para esta e as próximas</strong> ou <strong>para todas</strong>. Ocorrências já quitadas nunca mudam, então o histórico do que você pagou fica preservado.',
         ],
       },
@@ -654,7 +654,7 @@ export const features: Feature[] = [
       },
       {
         q: 'Dá para cadastrar uma conta que se repete todo mês?',
-        a: 'Sim, nos planos Profissional e Negócios. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes. No plano Grátis, cada conta é lançada individualmente.',
+        a: 'Sim, nos planos pagos, a partir do Essencial. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes. No plano Grátis, cada conta é lançada individualmente.',
       },
       {
         q: 'Como funciona o lembrete de vencimento?',
@@ -720,7 +720,7 @@ export const features: Feature[] = [
       {
         h2: 'Recebimentos que se repetem ou vêm em parcelas',
         body: [
-          'Nos planos Profissional e Negócios, um recebimento avulso pode ser <strong>recorrente</strong> (semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes) ou <strong>parcelado</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total. As ocorrências futuras são geradas com até 60 dias de antecedência.',
+          'Nos planos pagos, um recebimento avulso pode ser <strong>recorrente</strong> (semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes) ou <strong>parcelado</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total. As ocorrências futuras são geradas com até 60 dias de antecedência.',
           'O painel mostra o bloco “Financeiro do mês”, e a visão geral do Financeiro lista o que está em atraso e o que vence nos próximos 30 dias. Nos planos pagos, esses valores também entram no <a href="/funcionalidades/fluxo-de-caixa/">fluxo de caixa</a>.',
         ],
       },
@@ -768,7 +768,7 @@ export const features: Feature[] = [
     summary: 'A mensalidade do cliente vira lançamento de serviço sozinha, em cada data, e entra no fechamento.',
     intro: [
       'Manutenção mensal de um condomínio, suporte de informática com valor fixo, aulas com mensalidade, jardim cuidado toda semana: quando o valor e a frequência são combinados, registrar o mesmo serviço todo mês é trabalho repetido e fácil de esquecer.',
-      'O <strong>contrato recorrente</strong>, disponível nos planos Profissional e Negócios, faz esse registro por você. Ele gera automaticamente, em cada data, o <strong>lançamento de serviço</strong> do cliente, que entra no fechamento mensal e no demonstrativo como qualquer outro serviço.',
+      'O <strong>contrato recorrente</strong>, disponível nos planos pagos (a partir do Essencial), faz esse registro por você. Ele gera automaticamente, em cada data, o <strong>lançamento de serviço</strong> do cliente, que entra no fechamento mensal e no demonstrativo como qualquer outro serviço.',
     ],
     sections: [
       {
@@ -803,7 +803,7 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'Está disponível só nos planos Profissional e Negócios. Ao voltar para o Grátis, nada é apagado: os contratos ficam pausados.',
+      'Está disponível só nos planos pagos, a partir do Essencial. Ao voltar para o Grátis, nada é apagado: os contratos ficam pausados.',
       'Não emite nem envia o demonstrativo automaticamente: o fechamento e a emissão continuam sendo seus.',
       'Não cobra o cliente, não gera boleto nem Pix e não debita cartão.',
       'Não reajusta o valor sozinho: o reajuste é decisão sua, combinada com o cliente.',
@@ -823,7 +823,7 @@ export const features: Feature[] = [
       },
       {
         q: 'O contrato recorrente existe no plano Grátis?',
-        a: 'Não. Ele faz parte dos planos Profissional e Negócios. Se você voltar para o Grátis, os contratos ficam pausados, sem perder nada.',
+        a: 'Não. Ele faz parte dos planos pagos, a partir do Essencial. Se você voltar para o Grátis, os contratos ficam pausados, sem perder nada.',
       },
     ],
     guides: [
@@ -845,7 +845,7 @@ export const features: Feature[] = [
     summary: 'Realizado e previsto mês a mês, atrasos à parte, próximos 30 dias, gráfico, tabela e CSV.',
     intro: [
       'Saber quanto você faturou não responde à pergunta que mais importa no fim do mês: vai sobrar dinheiro? O <strong>fluxo de caixa</strong> do MinhaOS App junta o que você recebe e o que você paga e mostra, mês a mês, o <strong>realizado</strong> (o que de fato entrou e saiu) ao lado do <strong>previsto</strong> (o que ainda vai vencer).',
-      'Ele está nos planos Profissional e Negócios e usa os dados que você já registra: recebimentos de demonstrativos, recebimentos avulsos e contas a pagar.',
+      'Ele está nos planos pagos, a partir do Essencial, e usa os dados que você já registra: recebimentos de demonstrativos, recebimentos avulsos e contas a pagar.',
     ],
     sections: [
       {
@@ -877,7 +877,7 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'Está disponível só nos planos Profissional e Negócios. No Grátis, o painel continua mostrando o bloco “Financeiro do mês”.',
+      'Está disponível só nos planos pagos, a partir do Essencial. No Grátis, o painel continua mostrando o bloco “Financeiro do mês”.',
       'Não se conecta ao banco nem faz conciliação automática: os números vêm do que você registra.',
       'Não é DRE nem sistema contábil e não calcula impostos.',
     ],
@@ -896,7 +896,7 @@ export const features: Feature[] = [
       },
       {
         q: 'O fluxo de caixa existe no plano Grátis?',
-        a: 'Não. Ele faz parte dos planos Profissional e Negócios. No Grátis, você registra contas a pagar e recebimentos avulsos (até 20 lançamentos por mês) e vê o resumo “Financeiro do mês” no painel.',
+        a: 'Não. Ele faz parte dos planos pagos, a partir do Essencial. No Grátis, você registra contas a pagar e recebimentos avulsos (até 20 lançamentos por mês) e vê o resumo “Financeiro do mês” no painel.',
       },
     ],
     guides: [
@@ -956,20 +956,20 @@ export const features: Feature[] = [
           '<strong>Recebimentos</strong>: cada pagamento do período, incluindo os estornados, mostrados separadamente.',
           '<strong>Contas a pagar</strong> e <strong>recebimentos avulsos</strong> do período.',
           '<strong>Margem por serviço e por cliente</strong>: a receita (por execução ou por faturamento) menos os custos das contas a pagar ligadas a cada serviço ou cliente.',
-          '<strong>Fluxo de caixa</strong>, nos planos Profissional e Negócios.',
+          '<strong>Fluxo de caixa</strong>, nos planos pagos.',
         ],
       },
       {
         h2: 'Exportar em CSV e imprimir',
         body: [
-          'Cada relatório pode ser exportado em <strong>CSV</strong> pronto para abrir no Excel em português: separador ponto e vírgula, vírgula decimal e datas no formato dd/mm/aaaa. A exportação traz sempre o conjunto completo filtrado e está disponível nos planos Profissional e Negócios. Em todos os planos é possível imprimir em A4, útil para entregar ao contador ou guardar.',
+          'Cada relatório pode ser exportado em <strong>CSV</strong> pronto para abrir no Excel em português: separador ponto e vírgula, vírgula decimal e datas no formato dd/mm/aaaa. A exportação traz sempre o conjunto completo filtrado e está disponível nos planos pagos. Em todos os planos é possível imprimir em A4, útil para entregar ao contador ou guardar.',
         ],
       },
     ],
     limits: [
       'Não é sistema contábil: não calcula impostos, não gera obrigações fiscais e não substitui um DRE.',
       'Não faz conciliação bancária automática: os números vêm do que você registra.',
-      'Não integra com banco ou com o sistema do seu contador; a troca de dados é pelo CSV ou, no plano Negócios, pela exportação completa e pela API com chave.',
+      'Não integra com banco ou com o sistema do seu contador; a troca de dados é pelo CSV.',
     ],
     faq: [
       {
@@ -978,7 +978,7 @@ export const features: Feature[] = [
       },
       {
         q: 'Consigo mandar os relatórios para o meu contador?',
-        a: 'Sim. Nos planos Profissional e Negócios, exporte em CSV, que abre no Excel com acentos e números corretos. Em qualquer plano, imprima em A4 e salve em PDF.',
+        a: 'Sim. Nos planos pagos, exporte em CSV, que abre no Excel com acentos e números corretos. Em qualquer plano, imprima em A4 e salve em PDF.',
       },
       {
         q: 'Os relatórios mostram as despesas do negócio?',

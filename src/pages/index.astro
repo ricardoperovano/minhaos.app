@@ -87,7 +87,7 @@ const recursos = [
       <div class="grid grid-3" style="margin-top:24px">
         {recursos.map((r) => <a class="card" href={r.href}><h3>{r.t}</h3><p class="muted small" style="margin:0">{r.d}</p></a>)}
       </div>
-      <p class="small" style="margin-top:20px">O MinhaOS App não emite nota fiscal, não processa pagamentos e não é banco. Você pode anexar a nota emitida no sistema oficial ao demonstrativo, para o cliente baixar. Contratos recorrentes e fluxo de caixa fazem parte dos <a href="/planos/">planos Profissional e Negócios</a>.</p>
+      <p class="small" style="margin-top:20px">O MinhaOS App não emite nota fiscal, não processa pagamentos e não é banco. Você pode anexar a nota emitida no sistema oficial ao demonstrativo, para o cliente baixar. Contratos recorrentes e fluxo de caixa fazem parte dos <a href="/planos/">planos pagos, a partir do Essencial</a>.</p>
     </div>
   </section>
 
@@ -95,7 +95,7 @@ const recursos = [
     <div class="container">
       <h2>Planos simples, a partir de R$ 0</h2>
       <p class="muted">Comece grátis e mude de plano só quando a cobrança virar rotina.</p>
-      <div class="grid grid-3" style="margin-top:24px">
+      <div class="grid plans-grid" style="margin-top:24px">
         {plans.map((p) => (
           <a class={`card plan${p.highlight ? ' featured' : ''}`} href="/planos/">
             <h3>{p.name}</h3>
@@ -291,6 +291,19 @@ const recursos = [
   }
   .chips a:hover {
     border-color: var(--teal);
+  }
+  .plans-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 560px) {
+    .plans-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1000px) {
+    .plans-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
   }
   .plan.featured {
     border-color: var(--teal);

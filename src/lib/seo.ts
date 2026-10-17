@@ -1,4 +1,5 @@
 import { site } from '../site.config'
+import { highestMonthly, plans } from './plans'
 
 export const abs = (path: string) => new URL(path, site.url).toString()
 
@@ -53,9 +54,9 @@ export const softwareLd = {
   offers: {
     '@type': 'AggregateOffer',
     lowPrice: '0.00',
-    highPrice: '99.00',
+    highPrice: highestMonthly.toFixed(2),
     priceCurrency: 'BRL',
-    offerCount: 3,
+    offerCount: plans.length,
     url: `${site.url}/planos/`,
   },
 }

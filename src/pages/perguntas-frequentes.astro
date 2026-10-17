@@ -52,7 +52,7 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Tem relatórios?',
-        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos, saldo atual, contas a pagar, recebimentos avulsos e margem por serviço e cliente, com impressão em A4 e, nos planos Profissional e Negócios, exportação em CSV e fluxo de caixa. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido), o Financeiro do mês e as pendências.',
+        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos, saldo atual, contas a pagar, recebimentos avulsos e margem por serviço e cliente, com impressão em A4 e, nos planos pagos, exportação em CSV e fluxo de caixa. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido), o Financeiro do mês e as pendências.',
         link: { href: '/funcionalidades/relatorios/', label: 'Relatórios' },
       },
     ],
@@ -67,7 +67,7 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Quanto custa? Quais são os planos?',
-        a: 'Há três planos: Grátis (R$ 0, até 10 clientes ativos e 5 demonstrativos por mês), Profissional (R$ 49 por mês, clientes ilimitados, seu logo no documento e envio por e-mail com lembretes automáticos) e Negócios (R$ 99 por mês, demonstrativos ilimitados, até 5 usuários, régua de cobrança e API). No anual, os planos pagos têm 20% de desconto. Veja a comparação completa em minhaos.app/planos/.',
+        a: 'Há quatro planos, todos com limites: Grátis (R$ 0, até 10 clientes ativos e 5 demonstrativos por mês), Essencial (R$ 59 por mês, até 50 clientes e 50 demonstrativos por mês, seu logo no documento, histórico de acessos, CSV e o financeiro completo), Profissional (R$ 99 por mês, até 100 clientes e 100 demonstrativos por mês) e Negócios (R$ 199 por mês, até 300 clientes e 300 demonstrativos por mês, 20 GB e suporte prioritário). No anual, os planos pagos têm 20% de desconto. Precisa de mais? Fale com a gente por e-mail ou pelo chat. Veja a comparação completa em minhaos.app/planos/.',
       },
       {
         q: 'Que dados de clientes posso cadastrar?',
@@ -145,12 +145,12 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Posso cadastrar contas que se repetem ou parcelas?',
-        a: 'Sim, nos planos Profissional e Negócios. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, ou parcelada em N vezes que somam exatamente o total. Para a mensalidade de um cliente, o contrato recorrente gera o lançamento de serviço em cada data, e ele entra no fechamento do mês. Se você voltar para o Grátis, nada é apagado: recorrências e contratos ficam pausados.',
+        a: 'Sim, nos planos pagos, a partir do Essencial. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, ou parcelada em N vezes que somam exatamente o total. Para a mensalidade de um cliente, o contrato recorrente gera o lançamento de serviço em cada data, e ele entra no fechamento do mês. Se você voltar para o Grátis, nada é apagado: recorrências e contratos ficam pausados.',
         link: { href: '/funcionalidades/contratos-recorrentes/', label: 'Contratos recorrentes' },
       },
       {
         q: 'O MinhaOS App tem fluxo de caixa?',
-        a: 'Sim, nos planos Profissional e Negócios. Ele mostra o realizado e o previsto mês a mês, com entradas, saídas, saldo e acumulado, o que está em atraso e os próximos 30 dias, em gráfico ou tabela, com exportação em CSV. Os números vêm do que você registra: o app não se conecta ao banco.',
+        a: 'Sim, nos planos pagos, a partir do Essencial. Ele mostra o realizado e o previsto mês a mês, com entradas, saídas, saldo e acumulado, o que está em atraso e os próximos 30 dias, em gráfico ou tabela, com exportação em CSV. Os números vêm do que você registra: o app não se conecta ao banco.',
         link: { href: '/funcionalidades/fluxo-de-caixa/', label: 'Fluxo de caixa' },
       },
     ],
@@ -180,7 +180,7 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Posso tirar meus dados do aplicativo?',
-        a: 'Os relatórios podem ser exportados em CSV (planos Profissional e Negócios; no Negócios há também exportação completa dos dados), e os demonstrativos podem ser salvos em PDF. Assim você mantém uma cópia dos seus registros fora do aplicativo.',
+        a: 'Os relatórios podem ser exportados em CSV (planos pagos, a partir do Essencial), e os demonstrativos podem ser salvos em PDF. Assim você mantém uma cópia dos seus registros fora do aplicativo.',
       },
       {
         q: 'Como falo com a equipe sobre privacidade ou outra dúvida?',

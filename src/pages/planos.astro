@@ -1,20 +1,23 @@
 ---
 import Breadcrumbs from '../components/Breadcrumbs.astro'
 import Cta from '../components/Cta.astro'
+import PlanoSobMedida from '../components/PlanoSobMedida.astro'
 import Base from '../layouts/Base.astro'
-import { annualDiscount, annualMonthly, annualTotal, brl, compare, offersLd, plans } from '../lib/plans'
+import { annualDiscount, annualMonthly, annualTotal, brl, compare, isSoon, offersLd, paidPlans, plans } from '../lib/plans'
 import { breadcrumbLd, faqLd, graph, organizationLd, softwareLd } from '../lib/seo'
 import { links, site } from '../site.config'
 
 const path = '/planos/'
 const title = 'Planos e preços do MinhaOS App'
 const description =
-  'Comece grátis e evolua quando precisar. Compare os planos Grátis, Profissional (R$ 49/mês) e Negócios (R$ 99/mês): limites, recursos e perguntas comuns.'
+  'Comece grátis e evolua quando precisar. Compare Grátis, Essencial (R$ 59/mês), Profissional (R$ 99/mês) e Negócios (R$ 199/mês): limites e recursos.'
 const crumbs = [
   { name: 'Início', href: '/' },
   { name: 'Planos e preços', href: path },
 ]
 const pct = Math.round(annualDiscount * 100)
+const listPt = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}`)
+const annualList = listPt(paidPlans.map((p) => `o ${p.name} sai por ${brl(annualTotal(p.monthly))} por ano (${brl(annualMonthly(p.monthly))} por mês)`))
 
 const incluso = [
   'Registro de serviços com datas, quantidades e valores, sem limite de lançamentos',
@@ -35,11 +38,11 @@ const faq = [
   },
   {
     q: 'O que acontece se eu passar do limite do plano?',
-    a: 'Você continua acessando tudo o que já registrou. Para emitir novos demonstrativos ou cadastrar novos clientes além do limite, basta mudar para o plano seguinte; a mudança vale na hora.',
+    a: 'Nada é apagado e você continua acessando tudo o que já registrou. O limite só impede criar além dele: novos clientes ativos, demonstrativos no mês, contas a pagar e recebimentos avulsos no mês ou anexos acima do armazenamento. Para continuar, mude para o plano seguinte; a mudança vale na hora. Se você já está no Negócios, fale com a gente para um plano sob medida.',
   },
   {
     q: 'Como funciona o desconto do plano anual?',
-    a: `No anual você paga 12 meses de uma vez com ${pct}% de desconto: o Profissional sai por ${brl(annualTotal(49))} por ano (${brl(annualMonthly(49))} por mês) e o Negócios por ${brl(annualTotal(99))} por ano (${brl(annualMonthly(99))} por mês).`,
+    a: `No anual você paga 12 meses de uma vez com ${pct}% de desconto: ${annualList}.`,
   },
   {
     q: 'Posso cancelar quando quiser?',
@@ -47,15 +50,19 @@ const faq = [
   },
   {
     q: 'Posso trocar de plano depois?',
-    a: 'Sim, para cima ou para baixo, a qualquer momento, dentro do aplicativo. Ao subir de plano, os novos recursos ficam disponíveis imediatamente.',
+    a: 'Sim, para cima ou para baixo, a qualquer momento, dentro do aplicativo. Ao subir de plano, os novos limites e recursos ficam disponíveis imediatamente. Ao descer, nada é apagado: o que passar dos limites do novo plano continua disponível para consulta, e só a criação de novos itens acima do limite fica bloqueada.',
   },
   {
     q: 'Se eu voltar para o Grátis, perco meus dados?',
-    a: 'Não. Clientes, serviços, demonstrativos e recebimentos continuam na sua conta. O que muda são os limites: por exemplo, novos demonstrativos passam a valer a cota de 5 por mês, e os anexos acima de 100 MB ficam disponíveis para download, mas não dá para enviar novos até liberar espaço. Lançamentos recorrentes e contratos recorrentes ficam pausados, sem nada ser apagado.',
+    a: 'Não. Clientes, serviços, demonstrativos e recebimentos continuam na sua conta. O que muda são os limites: por exemplo, novos demonstrativos passam a valer a cota de 5 por mês, contas a pagar e recebimentos avulsos a de 20 lançamentos por mês, e os anexos acima de 100 MB ficam disponíveis para download, mas não dá para enviar novos até liberar espaço. Lançamentos recorrentes e contratos recorrentes ficam pausados, sem nada ser apagado.',
   },
   {
     q: 'A marca “organizado com MinhaOS” aparece para o meu cliente?',
-    a: 'No plano Grátis, sim: uma linha discreta no rodapé do demonstrativo. Nos planos Profissional e Negócios o documento sai sem a marca e com o seu logo.',
+    a: 'No plano Grátis, sim: uma linha discreta no rodapé do demonstrativo. Nos planos pagos, a partir do Essencial, o documento sai sem a marca e com o seu logo.',
+  },
+  {
+    q: 'E se eu precisar de mais que o Negócios?',
+    a: `Fale com a gente pelo e-mail ${site.contactEmail}, com o assunto “Plano sob medida”, ou pelo chat do site. Combinamos limites maiores de clientes, demonstrativos e armazenamento, mais usuários e condições para equipes.`,
   },
   {
     q: 'Os planos incluem emissão de nota fiscal ou recebimento de pagamentos?',
@@ -79,7 +86,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
       <span class="eyebrow">Planos e preços</span>
       <h1>Comece grátis. Pague só quando a cobrança virar rotina.</h1>
       <p class="lead">
-        Os três planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está em quantos clientes e documentos você emite, em como a cobrança chega ao cliente e em quem mais trabalha na conta.
+        Os quatro planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está nos limites, como clientes, demonstrativos, lançamentos e armazenamento, e nos recursos para apresentar a sua marca, acompanhar o cliente e organizar o financeiro.
       </p>
 
       <fieldset class="toggle" aria-label="Período de cobrança">
@@ -110,16 +117,25 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
         <p class="audience muted">{p.audience}</p>
         <a href={signup(p.key)} class={`btn ${p.highlight ? 'btn-primary' : 'btn-secondary'}`}>{p.cta}</a>
         <ul class="feats">
-          {p.features.map((f) => (
-            <li>
-              <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l3.5 3.5L16 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-              <span>{f}</span>
-            </li>
-          ))}
+          {p.features.map((f) =>
+            typeof f === 'string' ? (
+              <li>
+                <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l3.5 3.5L16 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                <span>{f}</span>
+              </li>
+            ) : (
+              <li class="soon-item">
+                <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="currentColor" stroke-width="1.8" /><path d="M10 6.5V10l2.5 1.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" /></svg>
+                <span>{f.text} <span class="soon-tag">Em breve</span></span>
+              </li>
+            ),
+          )}
         </ul>
       </article>
     ))}
   </section>
+
+  <div class="container more-after-plans"><PlanoSobMedida location="sob-medida-planos" /></div>
 
   <section class="section section-muted">
     <div class="container">
@@ -146,12 +162,14 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
           </thead>
           {compare.map((g) => (
             <tbody>
-              <tr class="group"><th scope="rowgroup" colspan="4">{g.title}</th></tr>
+              <tr class="group"><th scope="rowgroup" colspan={plans.length + 1}>{g.title}</th></tr>
               {g.rows.map((r) => (
                 <tr>
                   <th scope="row">{r.label}</th>
                   {r.values.map((v) =>
-                    typeof v === 'boolean' ? (
+                    isSoon(v) ? (
+                      <td>{v.text && <>{v.text} </>}<span class="soon-tag">Em breve</span></td>
+                    ) : typeof v === 'boolean' ? (
                       <td class={v ? 'yes' : 'no'}>
                         {v ? (
                           <><svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M4 10.5l3.5 3.5L16 6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /></svg><span class="sr-only">Incluído</span></>
@@ -172,6 +190,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
       <div class="table-ctas">
         {plans.map((p) => <a href={signup(p.key)} class={`btn ${p.highlight ? 'btn-primary' : 'btn-secondary'}`}>{p.cta}</a>)}
       </div>
+      <div class="more-after-table"><PlanoSobMedida location="sob-medida-tabela" heading="h3" /></div>
     </div>
   </section>
 
@@ -259,9 +278,24 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
     padding-block: 40px 16px;
     align-items: start;
   }
-  @media (min-width: 900px) {
+  @media (min-width: 640px) {
     .plans {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (min-width: 1100px) {
+    .plans {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .plans .plan {
+      padding: 24px 20px;
+    }
+    .plans .amount {
+      font-size: 36px;
+    }
+    .plans .tagline {
+      min-height: 2lh;
     }
   }
   .plan {
@@ -356,6 +390,31 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
     margin-top: 3px;
     color: var(--teal);
   }
+  .feats .soon-item {
+    color: var(--text-2);
+  }
+  .feats .soon-item svg {
+    color: var(--text-3);
+  }
+  .soon-tag {
+    display: inline-block;
+    margin-left: 2px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--info-subtle);
+    color: var(--info);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.5;
+    white-space: nowrap;
+    vertical-align: 1px;
+  }
+  .more-after-plans {
+    padding-block: 8px 40px;
+  }
+  .more-after-table {
+    margin-top: 28px;
+  }
 
   .incluso {
     display: grid;
@@ -387,7 +446,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
   }
   .compare {
     width: 100%;
-    min-width: 720px;
+    min-width: 860px;
     border-collapse: collapse;
     font-size: 15px;
   }
@@ -404,7 +463,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
     font-weight: 600;
   }
   .compare thead th:first-child {
-    width: 38%;
+    width: 30%;
   }
   .compare tbody th[scope='row'] {
     font-weight: 500;
@@ -440,9 +499,14 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
     gap: 12px;
     margin-top: 20px;
   }
-  @media (min-width: 760px) {
+  @media (min-width: 560px) {
     .table-ctas {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1000px) {
+    .table-ctas {
+      grid-template-columns: repeat(4, 1fr);
     }
   }
 
