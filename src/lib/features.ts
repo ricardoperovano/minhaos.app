@@ -30,6 +30,8 @@ export interface FeatureSection {
   steps?: string[]
   /** Lista simples, em HTML. */
   bullets?: string[]
+  /** Tabela simples (cabeçalho + linhas), em texto. A primeira coluna de cada linha é o rótulo. */
+  table?: { caption: string; head: string[]; rows: string[][] }
   /** Imagem exibida ao fim da seção. */
   image?: FeatureImage
 }
@@ -48,8 +50,8 @@ export interface Feature {
   intro: string[]
   /** Captura principal (opcional: páginas sem captura usam só texto). */
   image?: FeatureImage
-  /** Agrupamento no índice: serviços e cobrança (padrão) ou financeiro. */
-  group?: 'cobranca' | 'financeiro'
+  /** Agrupamento no índice: serviços e cobrança (padrão), financeiro ou equipe. */
+  group?: 'cobranca' | 'financeiro' | 'equipe'
   sections: FeatureSection[]
   /** O que a funcionalidade não faz (limites honestos). */
   limits: string[]
@@ -1084,6 +1086,115 @@ export const features: Feature[] = [
       { slug: 'como-organizar-clientes', label: 'Como organizar clientes' },
     ],
     related: ['registro-de-servicos', 'link-e-acessos', 'fechamento-mensal'],
+  },
+  {
+    slug: 'usuarios-e-permissoes',
+    group: 'equipe',
+    name: 'Usuários e permissões',
+    title: 'Usuários e permissões: sua equipe na mesma conta',
+    h1: 'Usuários e permissões: convide a equipe e defina o que cada um acessa',
+    description:
+      'Convide sua equipe para a mesma conta do MinhaOS App e escolha o papel de cada pessoa: administrador, operador ou financeiro. Até 10 usuários no Negócios.',
+    summary: 'Convide pessoas por e-mail e dê a cada uma um papel: administrador, operador ou financeiro.',
+    intro: [
+      'Quando o trabalho deixa de ser só seu, a conta do MinhaOS App pode ser usada por mais pessoas. Você convida cada uma por e-mail e escolhe o <strong>papel</strong> dela: <strong>administrador</strong>, <strong>operador</strong> ou <strong>financeiro</strong>. O papel define o que a pessoa vê e o que pode fazer.',
+      'Assim, quem vai a campo registra os serviços, quem cuida do dinheiro fecha o mês e acompanha os recebimentos, e as configurações da conta ficam com quem administra. Mais de um usuário está disponível a partir do plano <a href="/planos/">Profissional</a> (até 5 usuários) e no Negócios (até 10).',
+    ],
+    sections: [
+      {
+        h2: 'Como convidar alguém para a conta',
+        body: ['Só administradores convidam pessoas, mudam papéis e desativam usuários.'],
+        steps: [
+          'Na área de usuários da conta, informe o <strong>e-mail</strong> da pessoa e escolha o <strong>papel</strong>: administrador, operador ou financeiro.',
+          'Ela recebe um e-mail com o <strong>link do convite</strong>, válido por <strong>7 dias</strong> e de uso único.',
+          'Quem ainda não tem login no MinhaOS App cria nome e senha ao abrir o link. Quem já usa o MinhaOS aceita o convite entrando com o login que já tem.',
+          'Pronto: a pessoa passa a acessar a sua conta com as permissões do papel escolhido. Se o link expirar antes do aceite, envie um novo convite.',
+        ],
+      },
+      {
+        h2: 'Os três papéis e o que cada um pode fazer',
+        body: [
+          'O <strong>administrador</strong> faz tudo, inclusive gerenciar usuários, o plano e as configurações da conta. O <strong>operador</strong> cuida do dia a dia do serviço: cadastra clientes e registra serviços e lançamentos, com valores; no painel, vê só os indicadores de serviços. O <strong>financeiro</strong> cuida da cobrança e do caixa: consulta os serviços sem alterá-los, emite demonstrativos, gera links, registra recebimentos e usa o financeiro e os relatórios.',
+        ],
+        table: {
+          caption: 'O que cada papel pode fazer na conta',
+          head: ['Área', 'Administrador', 'Operador', 'Financeiro'],
+          rows: [
+            ['Clientes', 'Sim', 'Sim', 'Sim'],
+            ['Serviços e lançamentos', 'Sim', 'Registra, com valores', 'Só consulta'],
+            ['Faturamento, demonstrativos e links', 'Sim', 'Não', 'Sim'],
+            ['Recebimentos', 'Sim', 'Não', 'Sim'],
+            ['Financeiro (contas a pagar, recebimentos avulsos, fluxo de caixa)', 'Sim', 'Não', 'Sim'],
+            ['Relatórios e exportação CSV', 'Sim', 'Não', 'Sim'],
+            ['Categorias financeiras', 'Sim', 'Não', 'Sim'],
+            ['Usuários, plano e configurações da conta', 'Sim', 'Não', 'Não'],
+            ['E-mails de faturamento e financeiro', 'Recebe', 'Não recebe', 'Recebe'],
+          ],
+        },
+      },
+      {
+        h2: 'Uma pessoa, várias contas',
+        body: [
+          'O mesmo login pode participar de <strong>várias contas</strong>, por exemplo quando alguém trabalha para mais de uma empresa. Para ir de uma conta a outra, use a troca de conta no menu; os dados de cada conta continuam separados.',
+          'Quem participa da conta de outra pessoa também pode <strong>criar uma conta própria</strong>, com seus clientes, serviços e plano.',
+        ],
+      },
+      {
+        h2: 'Segurança e controle de acesso',
+        body: ['Algumas regras protegem a conta contra erros e acessos indevidos:'],
+        bullets: [
+          'Quem criou a conta (o <strong>dono</strong>) não pode ser removido.',
+          'Sempre há pelo menos um <strong>administrador</strong>: a conta nunca fica sem quem a gerencie.',
+          '<strong>Desativar</strong> um usuário corta o acesso dele na hora.',
+          'O convite vale uma única vez e expira em 7 dias, então um link antigo esquecido no e-mail não dá acesso à conta.',
+          'Os <strong>e-mails de faturamento e financeiro</strong> vão para administradores e financeiros.',
+          'Cada serviço registrado mostra <strong>quem registrou</strong>, para você saber de onde veio cada lançamento.',
+        ],
+      },
+      {
+        h2: 'Quantos usuários cada plano permite',
+        body: [
+          'Grátis e Essencial têm <strong>1 usuário</strong>. O Profissional permite <strong>até 5</strong> e o Negócios <strong>até 10</strong>. Convites pendentes entram na conta: um convite enviado e ainda não aceito já ocupa uma vaga.',
+          'Se você mudar para um plano com menos usuários, quem passar do limite fica <strong>suspenso</strong>, e nada é apagado. Ao voltar para um plano com espaço, o administrador reativa essas pessoas. Compare os limites em <a href="/planos/">planos e preços</a>.',
+        ],
+      },
+    ],
+    limits: [
+      'Disponível a partir do plano Profissional: no Grátis e no Essencial, a conta tem 1 usuário.',
+      'Os papéis são três (administrador, operador e financeiro), com permissões definidas; não há papel personalizado.',
+      'O convite é feito por e-mail, e o link vale por 7 dias e uma única vez.',
+      'Quem criou a conta não pode ser removido dela.',
+      'O cliente que recebe o demonstrativo não é usuário da conta: ele abre o link sem login.',
+    ],
+    faq: [
+      {
+        q: 'Quantas pessoas posso colocar na conta?',
+        a: 'Depende do plano: Grátis e Essencial têm 1 usuário, o Profissional até 5 e o Negócios até 10. Convites ainda não aceitos também contam no limite.',
+      },
+      {
+        q: 'O operador vê quanto eu faturo?',
+        a: 'Não. O operador registra serviços e lançamentos com valores, mas não vê faturamento, recebimentos, financeiro, relatórios, plano nem as configurações da conta. No painel, vê só os indicadores de serviços.',
+      },
+      {
+        q: 'A pessoa convidada precisa criar outra conta?',
+        a: 'Não. Quem não tem login cria nome e senha pelo próprio link do convite. Quem já usa o MinhaOS aceita entrando com o login que já tem e troca de conta pelo menu.',
+      },
+      {
+        q: 'O que acontece com a equipe se eu mudar para um plano menor?',
+        a: 'Os membros acima do limite do novo plano ficam suspensos, e nada é apagado. Quando a conta voltar a um plano com espaço, o administrador pode reativá-los.',
+      },
+      {
+        q: 'Posso tirar o acesso de alguém imediatamente?',
+        a: 'Sim. Desativar um usuário corta o acesso dele na hora. A única pessoa que não pode ser removida é quem criou a conta, e a conta mantém sempre ao menos um administrador.',
+      },
+    ],
+    guides: [
+      { slug: 'rotina-administrativa-do-autonomo', label: 'Rotina administrativa do autônomo' },
+      { slug: 'controle-de-servicos-prestados', label: 'Controle de serviços prestados' },
+      { slug: 'como-organizar-clientes', label: 'Como organizar clientes' },
+      { slug: 'fechamento-mensal-de-servicos', label: 'Fechamento mensal de serviços' },
+    ],
+    related: ['registro-de-servicos', 'fechamento-mensal', 'relatorios'],
   },
 ]
 

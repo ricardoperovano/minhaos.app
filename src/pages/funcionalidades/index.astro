@@ -10,8 +10,9 @@ const crumbs = [
   { name: 'Início', href: '/' },
   { name: 'Funcionalidades', href: path },
 ]
-const cobranca = features.filter((f) => f.group !== 'financeiro')
+const cobranca = features.filter((f) => !f.group || f.group === 'cobranca')
 const financeiro = features.filter((f) => f.group === 'financeiro')
+const equipe = features.filter((f) => f.group === 'equipe')
 const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
   '@type': 'CollectionPage',
   name: 'Funcionalidades do MinhaOS App',
@@ -32,7 +33,7 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
     <Breadcrumbs items={crumbs} />
     <h1>Funcionalidades do MinhaOS App</h1>
     <p class="muted" style="font-size:19px;max-width:70ch">
-      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. No grupo Financeiro, controla as contas a pagar, os recebimentos avulsos e o fluxo de caixa. Tudo no navegador ou instalado no celular.
+      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. No grupo Financeiro, controla as contas a pagar, os recebimentos avulsos e o fluxo de caixa. E, a partir do Profissional, divide o trabalho com a equipe, cada pessoa com o seu papel. Tudo no navegador ou instalado no celular.
     </p>
 
     <ol class="flow" aria-label="Como funciona, em quatro passos">
@@ -59,6 +60,19 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
     <div class="grid grid-2" style="margin-top:16px">
       {
         financeiro.map((f) => (
+          <a class="card" href={`/funcionalidades/${f.slug}/`}>
+            <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
+            <p class="muted" style="margin:0">{f.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <h2 id="equipe" style="margin-top:40px">Equipe</h2>
+    <p class="muted" style="max-width:70ch">Mais de uma pessoa na mesma conta, cada uma com o seu papel. Disponível a partir do <a href="/planos/">plano Profissional</a>, com até 5 usuários, e no Negócios, com até 10.</p>
+    <div class="grid grid-2" style="margin-top:16px">
+      {
+        equipe.map((f) => (
           <a class="card" href={`/funcionalidades/${f.slug}/`}>
             <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
             <p class="muted" style="margin:0">{f.summary}</p>

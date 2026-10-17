@@ -59,7 +59,7 @@ const grupos: Grupo[] = [
   },
   {
     id: 'conta-e-cadastro',
-    titulo: 'Conta e cadastro',
+    titulo: 'Conta, cadastro e usuários',
     itens: [
       {
         q: 'Como crio uma conta?',
@@ -67,7 +67,7 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Quanto custa? Quais são os planos?',
-        a: 'Há quatro planos, todos com limites: Grátis (R$ 0, até 10 clientes ativos e 5 demonstrativos por mês), Essencial (R$ 59 por mês, até 50 clientes e 50 demonstrativos por mês, seu logo no documento, histórico de acessos, CSV e o financeiro completo), Profissional (R$ 99 por mês, até 100 clientes e 100 demonstrativos por mês) e Negócios (R$ 199 por mês, até 300 clientes e 300 demonstrativos por mês, 20 GB e suporte prioritário). No anual, os planos pagos têm 20% de desconto. Precisa de mais? Fale com a gente por e-mail ou pelo chat. Veja a comparação completa em minhaos.app/planos/.',
+        a: 'Há quatro planos, todos com limites: Grátis (R$ 0, até 10 clientes ativos e 5 demonstrativos por mês), Essencial (R$ 59 por mês, até 50 clientes e 50 demonstrativos por mês, seu logo no documento, histórico de acessos, CSV e o financeiro completo), Profissional (R$ 99 por mês, até 100 clientes e 100 demonstrativos por mês e até 5 usuários) e Negócios (R$ 199 por mês, até 300 clientes e 300 demonstrativos por mês, até 10 usuários, 20 GB e suporte prioritário). No anual, os planos pagos têm 20% de desconto. Precisa de mais? Fale com a gente por e-mail ou pelo chat. Veja a comparação completa em minhaos.app/planos/.',
       },
       {
         q: 'Que dados de clientes posso cadastrar?',
@@ -76,6 +76,20 @@ const grupos: Grupo[] = [
       {
         q: 'Os dados de uma conta aparecem para outra?',
         a: 'Não. O MinhaOS App é multiempresa: cada conta tem seus próprios dados, separados dos dados das demais contas.',
+      },
+      {
+        q: 'Mais de uma pessoa pode usar a mesma conta?',
+        a: 'Sim, a partir do plano Profissional, com até 5 usuários, e no Negócios, com até 10, contando os convites pendentes. Grátis e Essencial têm 1 usuário. O administrador convida cada pessoa por e-mail; o link do convite vale 7 dias e uma única vez. Quem não tem login cria nome e senha; quem já usa o MinhaOS aceita entrando com o login que já tem.',
+        link: { href: '/funcionalidades/usuarios-e-permissoes/', label: 'Usuários e permissões' },
+      },
+      {
+        q: 'Quais são os papéis e o que cada um pode fazer?',
+        a: 'São três. O administrador faz tudo, inclusive gerenciar usuários, plano e configurações. O operador cadastra clientes e registra serviços e lançamentos, com valores, e vê no painel só os serviços; não vê faturamento, recebimentos, financeiro, relatórios, plano nem configurações da conta. O financeiro vê clientes e consulta serviços, cuida do faturamento, dos demonstrativos, dos links, dos recebimentos, do financeiro e dos relatórios com CSV, mas não gerencia usuários, plano nem configurações da conta, exceto as categorias financeiras.',
+        link: { href: '/funcionalidades/usuarios-e-permissoes/', label: 'Tabela de permissões por papel' },
+      },
+      {
+        q: 'Posso participar de mais de uma conta?',
+        a: 'Sim. O mesmo login pode participar de várias contas e trocar de uma para outra pelo menu, com os dados de cada conta separados. Quem foi convidado para a conta de alguém também pode criar uma conta própria.',
       },
     ],
   },
@@ -130,7 +144,7 @@ const grupos: Grupo[] = [
       },
       {
         q: 'Recebo avisos sobre cobranças?',
-        a: 'Há notificações e e-mails para a primeira visualização do link, a confirmação de recebimento pelo cliente, demonstrativos vencidos e um lembrete de fechamento do mês. Você pode ajustar as preferências e descadastrar os e-mails.',
+        a: 'Há notificações e e-mails para a primeira visualização do link, a confirmação de recebimento pelo cliente, demonstrativos vencidos e um lembrete de fechamento do mês. Em contas com equipe, os e-mails de faturamento e financeiro vão para administradores e financeiros. Você pode ajustar as preferências e descadastrar os e-mails.',
       },
     ],
   },
@@ -176,7 +190,7 @@ const grupos: Grupo[] = [
     itens: [
       {
         q: 'Quem vê os meus dados?',
-        a: 'Os dados ficam na sua conta, separados das demais contas. Seus clientes só veem, pelo link, o demonstrativo que você enviou e as notas anexadas a ele. Observações internas nunca aparecem para o cliente.',
+        a: 'Os dados ficam na sua conta, separados das demais contas. Se você convidar outras pessoas, cada uma vê só o que o papel dela permite. Seus clientes só veem, pelo link, o demonstrativo que você enviou e as notas anexadas a ele. Observações internas nunca aparecem para o cliente.',
       },
       {
         q: 'Posso tirar meus dados do aplicativo?',
@@ -200,7 +214,7 @@ const ld = graph(organizationLd, breadcrumbLd(crumbs), faqLd(todas))
 
 <Base
   title="Perguntas frequentes sobre o MinhaOS App"
-  description="Dúvidas sobre o MinhaOS App: o que faz e não faz, conta, link do cliente, confirmação de recebimento, recebimentos, contas a pagar e fluxo de caixa."
+  description="Dúvidas sobre o MinhaOS App: o que faz e não faz, conta e usuários, link do cliente, confirmação de recebimento, recebimentos e financeiro."
   path="/perguntas-frequentes/"
   jsonLd={ld}
 >

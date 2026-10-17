@@ -89,7 +89,7 @@ export const plans: Plan[] = [
       'Até 100 clientes ativos e 100 demonstrativos por mês',
       'Contas a pagar e recebimentos avulsos: até 300 lançamentos por mês',
       '5 GB de armazenamento de anexos',
-      { soon: true, text: 'Até 5 usuários na mesma conta' },
+      'Até 5 usuários na mesma conta, cada um com seu papel: administrador, operador ou financeiro',
     ],
   },
   {
@@ -105,7 +105,7 @@ export const plans: Plan[] = [
       'Contas a pagar e recebimentos avulsos: até 1.000 lançamentos por mês',
       '20 GB de armazenamento de anexos',
       'Suporte prioritário com resposta em 1 dia útil',
-      { soon: true, text: 'Até 10 usuários na mesma conta, com papéis: administrador, operador e financeiro' },
+      'Até 10 usuários na mesma conta, com papéis: administrador, operador e financeiro',
     ],
   },
 ]
@@ -134,7 +134,8 @@ export const compare: CompareGroup[] = [
       { label: 'Demonstrativos emitidos por mês', values: ['Até 5', 'Até 50', 'Até 100', 'Até 300'] },
       { label: 'Contas a pagar e recebimentos avulsos por mês', values: ['Até 20', 'Até 100', 'Até 300', 'Até 1.000'] },
       { label: 'Lançamentos de serviço', values: ['Sem limite', 'Sem limite', 'Sem limite', 'Sem limite'] },
-      { label: 'Usuários na conta', values: ['1', '1', soon('Até 5'), soon('Até 10, com papéis')] },
+      { label: 'Usuários na conta', values: ['1', '1', 'Até 5', 'Até 10, com papéis'] },
+      { label: 'Papéis: administrador, operador e financeiro', values: [false, false, true, true] },
       { label: 'Anexos por demonstrativo', values: ['1', anexos, anexos, anexos] },
       { label: 'Armazenamento de anexos', values: ['100 MB', '2 GB', '5 GB', '20 GB'] },
     ],

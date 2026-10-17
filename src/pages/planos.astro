@@ -38,7 +38,7 @@ const faq = [
   },
   {
     q: 'O que acontece se eu passar do limite do plano?',
-    a: 'Nada é apagado e você continua acessando tudo o que já registrou. O limite só impede criar além dele: novos clientes ativos, demonstrativos no mês, contas a pagar e recebimentos avulsos no mês ou anexos acima do armazenamento. Para continuar, mude para o plano seguinte; a mudança vale na hora. Se você já está no Negócios, fale com a gente para um plano sob medida.',
+    a: 'Nada é apagado e você continua acessando tudo o que já registrou. O limite só impede criar além dele: novos clientes ativos, demonstrativos no mês, contas a pagar e recebimentos avulsos no mês, convites de novos usuários ou anexos acima do armazenamento. Para continuar, mude para o plano seguinte; a mudança vale na hora. Se você já está no Negócios, fale com a gente para um plano sob medida.',
   },
   {
     q: 'Como funciona o desconto do plano anual?',
@@ -50,11 +50,15 @@ const faq = [
   },
   {
     q: 'Posso trocar de plano depois?',
-    a: 'Sim, para cima ou para baixo, a qualquer momento, dentro do aplicativo. Ao subir de plano, os novos limites e recursos ficam disponíveis imediatamente. Ao descer, nada é apagado: o que passar dos limites do novo plano continua disponível para consulta, e só a criação de novos itens acima do limite fica bloqueada.',
+    a: 'Sim, para cima ou para baixo, a qualquer momento, dentro do aplicativo. Ao subir de plano, os novos limites e recursos ficam disponíveis imediatamente. Ao descer, nada é apagado: o que passar dos limites do novo plano continua disponível para consulta, e só a criação de novos itens acima do limite fica bloqueada. Usuários acima do limite ficam suspensos e podem ser reativados pelo administrador quando a conta voltar a um plano com espaço.',
   },
   {
     q: 'Se eu voltar para o Grátis, perco meus dados?',
     a: 'Não. Clientes, serviços, demonstrativos e recebimentos continuam na sua conta. O que muda são os limites: por exemplo, novos demonstrativos passam a valer a cota de 5 por mês, contas a pagar e recebimentos avulsos a de 20 lançamentos por mês, e os anexos acima de 100 MB ficam disponíveis para download, mas não dá para enviar novos até liberar espaço. Lançamentos recorrentes e contratos recorrentes ficam pausados, sem nada ser apagado.',
+  },
+  {
+    q: 'Quantos usuários posso ter na conta?',
+    a: 'Grátis e Essencial têm 1 usuário. O Profissional permite até 5 e o Negócios até 10, contando os convites pendentes. Cada pessoa entra por convite enviado por e-mail e recebe um papel: administrador, operador ou financeiro.',
   },
   {
     q: 'A marca “organizado com MinhaOS” aparece para o meu cliente?',
@@ -86,7 +90,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
       <span class="eyebrow">Planos e preços</span>
       <h1>Comece grátis. Pague só quando a cobrança virar rotina.</h1>
       <p class="lead">
-        Os quatro planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está nos limites, como clientes, demonstrativos, lançamentos e armazenamento, e nos recursos para apresentar a sua marca, acompanhar o cliente e organizar o financeiro.
+        Os quatro planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está nos limites, como clientes, demonstrativos, lançamentos, armazenamento e usuários, e nos recursos para apresentar a sua marca, acompanhar o cliente e organizar o financeiro.
       </p>
 
       <fieldset class="toggle" aria-label="Período de cobrança">
@@ -198,6 +202,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
     <div class="container prose faq-wrap">
       <h2>Perguntas sobre os planos</h2>
       {faq.map((f) => <details class="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      <p>O que cada papel da equipe pode fazer está em <a href="/funcionalidades/usuarios-e-permissoes/">usuários e permissões</a>.</p>
       <p>Outra dúvida? Veja as <a href="/perguntas-frequentes/">perguntas frequentes</a> ou escreva para <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</p>
     </div>
   </section>

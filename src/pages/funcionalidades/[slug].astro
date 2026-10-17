@@ -72,6 +72,22 @@ const imgSizes = (mobile?: boolean) => (mobile ? '(min-width: 760px) 360px, 90vw
             {s.body.map((p) => <p set:html={p} />)}
             {s.steps && <ol>{s.steps.map((li) => <li set:html={li} />)}</ol>}
             {s.bullets && <ul>{s.bullets.map((li) => <li set:html={li} />)}</ul>}
+            {s.table && (
+              <table class="perm">
+                <caption class="sr-only">{s.table.caption}</caption>
+                <thead>
+                  <tr>{s.table.head.map((h) => <th scope="col">{h}</th>)}</tr>
+                </thead>
+                <tbody>
+                  {s.table.rows.map(([label, ...cells]) => (
+                    <tr>
+                      <th scope="row">{label}</th>
+                      {cells.map((c) => <td>{c}</td>)}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
             {s.image && (
               <figure class:list={['shot', { 'shot-mobile': s.image.mobile }]}>
                 <Picture
@@ -128,6 +144,14 @@ const imgSizes = (mobile?: boolean) => (mobile ? '(min-width: 760px) 360px, 90vw
 </Base>
 
 <style>
+  .perm {
+    width: 100%;
+  }
+  .perm tbody th {
+    background: none;
+    color: var(--text);
+    min-width: 9em;
+  }
   .lead p {
     font-size: 19px;
     color: var(--text-2);
