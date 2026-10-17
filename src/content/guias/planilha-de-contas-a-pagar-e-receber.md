@@ -144,9 +144,7 @@ Para transformar esse resumo em uma visão semana a semana, veja o guia de [flux
 
 A planilha de contas a receber depende das cobranças que você emite. E as cobranças dependem do registro dos serviços feitos. Se esse registro também está em planilha, mantenha as duas conversando: no fechamento do mês, cada cobrança emitida vira uma linha "Receber". O guia [planilha de controle de serviços](/guias/planilha-de-controle-de-servicos/) mostra como montar a parte dos serviços.
 
-Se você registra os serviços no MinhaOS App, os relatórios de demonstrativos e de recebimentos podem ser exportados em CSV e colados na planilha, evitando digitar tudo de novo.
-
-[//]: # (MINHAOS-FINANCEIRO: mencionar contas a pagar e receber, recebimentos avulsos e fluxo previsto x realizado no MinhaOS App como alternativa à planilha)
+Se você registra os serviços no MinhaOS App, pode exportar os relatórios em CSV (nos planos pagos) e colar na planilha, ou dispensar a planilha: o app tem [contas a pagar](/funcionalidades/contas-a-pagar/) e uma lista de [recebimentos](/funcionalidades/recebimentos/) que junta os demonstrativos em aberto e os recebimentos avulsos e, nos planos pagos, mostra o fluxo de caixa previsto × realizado.
 
 ## Limitações da planilha
 

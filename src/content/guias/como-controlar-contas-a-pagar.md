@@ -98,7 +98,7 @@ Muita conta vencendo em dias diferentes cria trabalho e esquecimento. Algumas me
 
 As contas que se repetem todo mês merecem atenção própria. O guia de [despesas recorrentes](/guias/despesas-recorrentes/) mostra como revisar assinaturas e acompanhar parcelamentos.
 
-[//]: # (MINHAOS-FINANCEIRO: mencionar cadastro de contas a pagar e lembretes de vencimento no MinhaOS App)
+Se o calendário não der conta, as [contas a pagar do MinhaOS App](/funcionalidades/contas-a-pagar/) guardam descrição, fornecedor, categoria, valor e vencimento de cada conta e separam o que está em aberto, em atraso ou pago. Quando há contas vencendo em até 3 dias ou atrasadas, você recebe um resumo diário por e-mail e um aviso no app, que podem ser desligados nas preferências.
 
 ## O que pagar primeiro quando o dinheiro não dá
 

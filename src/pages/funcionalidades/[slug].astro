@@ -47,18 +47,22 @@ const imgSizes = (mobile?: boolean) => (mobile ? '(min-width: 760px) 360px, 90vw
       {f.intro.map((p) => <p set:html={p} />)}
     </div>
 
-    <figure class:list={['shot', { 'shot-mobile': f.image.mobile }]}>
-      <Picture
-        src={f.image.src}
-        alt={f.image.alt}
-        formats={['avif', 'webp']}
-        widths={imgWidths(f.image.mobile)}
-        sizes={imgSizes(f.image.mobile)}
-        loading="eager"
-        fetchpriority="high"
-      />
-      <figcaption class="small">{f.image.caption}</figcaption>
-    </figure>
+    {
+      f.image && (
+        <figure class:list={['shot', { 'shot-mobile': f.image.mobile }]}>
+          <Picture
+            src={f.image.src}
+            alt={f.image.alt}
+            formats={['avif', 'webp']}
+            widths={imgWidths(f.image.mobile)}
+            sizes={imgSizes(f.image.mobile)}
+            loading="eager"
+            fetchpriority="high"
+          />
+          <figcaption class="small">{f.image.caption}</figcaption>
+        </figure>
+      )
+    }
 
     <div class="prose">
       {

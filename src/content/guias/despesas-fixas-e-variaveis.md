@@ -151,7 +151,7 @@ Para refazer essa conta com os seus números, use a [calculadora de margem](/fer
 
 No exemplo, a margem de contribuição é 186 ÷ 300 = 62% do preço. Para cobrir R$ 916,05 de despesas fixas, o prestador precisa faturar 916,05 ÷ 0,62 = **R$ 1.477,50 por mês** — antes de ganhar qualquer coisa para ele. Esse é o ponto de equilíbrio das despesas fixas. Somando a retirada que ele quer, a conta mostra o faturamento mínimo do mês.
 
-[//]: # (MINHAOS-FINANCEIRO: mencionar custo ligado ao serviço [despesas variáveis por lançamento] e margem no MinhaOS App)
+Se você usa o MinhaOS App, pode ligar cada [conta a pagar](/funcionalidades/contas-a-pagar/) a um cliente ou a um serviço: o material comprado para aquele trabalho vira custo do serviço, e o relatório de margem mostra a receita menos os custos ligados, por serviço e por cliente, sem refazer a conta na mão.
 
 ## Como reduzir cada tipo de despesa
 

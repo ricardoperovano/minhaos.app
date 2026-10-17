@@ -12,7 +12,7 @@ keywords:
   - "reserva de emergência autônomo"
   - "como lidar com meses fracos autônomo"
 publishedAt: 2026-10-14
-updatedAt: 2026-10-14
+updatedAt: 2026-10-17
 pillar: false
 related:
   - "controle-de-servicos-prestados"
@@ -171,7 +171,7 @@ Separe também, se for o caso, o dinheiro de **impostos e obrigações anuais**.
 
 - **Planilha:** uma aba de lançamentos (data, descrição, categoria, entrada, saída, previsto/realizado) e uma aba de resumo por semana resolvem. A mesma lógica de SOMASES da [planilha de controle de serviços](/guias/planilha-de-controle-de-servicos/) funciona aqui.
 - **Aplicativo do banco:** ajuda a ver o realizado, mas não costuma mostrar o previsto.
-- **Aplicativo de gestão de serviços:** útil para a parte das entradas. No MinhaOS App, por exemplo, os [recebimentos e saldos](/funcionalidades/recebimentos-e-saldos/) mostram o que cada cliente já pagou, o que está em aberto e o que está vencido — exatamente o que alimenta a previsão de entradas. As saídas você controla à parte.
+- **Aplicativo de gestão de serviços:** útil para a parte das entradas. No MinhaOS App, por exemplo, os [recebimentos e saldos](/funcionalidades/recebimentos-e-saldos/) mostram o que cada cliente já pagou, o que está em aberto e o que está vencido — exatamente o que alimenta a previsão de entradas. As saídas entram nas [contas a pagar](/funcionalidades/contas-a-pagar/), e nos planos pagos o [fluxo de caixa](/funcionalidades/fluxo-de-caixa/) junta os dois lados, previsto e realizado.
 
 ## Erros comuns
 

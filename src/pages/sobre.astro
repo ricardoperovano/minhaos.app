@@ -44,6 +44,8 @@ const naoFaz = [
   'não emite nota fiscal nem NFS-e (você emite no sistema da prefeitura ou no Emissor Nacional e anexa o arquivo ao demonstrativo);',
   'não processa pagamentos, não gera boleto nem cobrança Pix e não é banco;',
   'não envia mensagens de WhatsApp automaticamente (ele prepara a mensagem; quem envia é você);',
+  'não faz conciliação bancária automática nem se conecta ao seu banco (contas pagas e recebimentos são registrados por você);',
+  'não calcula impostos;',
   'não controla estoque;',
   'não tem agenda, assinatura digital nem certificado digital.',
 ]
@@ -64,6 +66,9 @@ const naoFaz = [
       </p>
       <p>
         O {site.name} junta essas pontas. Você registra cada execução com data, unidade, quantidade e valor. No fim do período, seleciona o que vai cobrar daquele cliente e emite um demonstrativo de cobrança com todos os itens. O cliente abre o demonstrativo por um link, sem criar conta, pode imprimir, baixar as notas fiscais que você anexou e confirmar que recebeu o documento. Você acompanha os acessos ao link, registra os pagamentos e vê o que ainda está em aberto.
+      </p>
+      <p>
+        No grupo Financeiro, você registra também as <a href="/funcionalidades/contas-a-pagar/">contas a pagar</a> do negócio e os recebimentos que não passam por demonstrativo, recebe lembrete do que vai vencer e, nos planos pagos, acompanha o <a href="/funcionalidades/fluxo-de-caixa/">fluxo de caixa</a> previsto e realizado e lança mensalidades de clientes com contratos recorrentes.
       </p>
       <p>
         O aplicativo funciona no navegador e pode ser instalado na tela inicial do Android e do iPhone, para registrar o serviço ainda no local do cliente.
@@ -92,7 +97,7 @@ const naoFaz = [
         {naoFaz.map((i) => <li>{i}</li>)}
       </ul>
       <p>
-        Ele organiza serviços, cobranças e recebimentos. Para nota fiscal, impostos e questões legais, conte com os canais oficiais e com o seu contador.
+        Ele organiza serviços, cobranças, recebimentos e contas a pagar. Para nota fiscal, impostos e questões legais, conte com os canais oficiais e com o seu contador.
       </p>
     </section>
 

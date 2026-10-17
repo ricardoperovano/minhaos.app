@@ -124,7 +124,7 @@ Mesmo sem exigência de livro-caixa, registrar despesas é útil para o MEI: mos
 
 Quais despesas do seu dia a dia se encaixam em "custeio necessário" é uma análise caso a caso. Use o plano de contas deste guia para organizar e leve a dúvida ao contador antes de deduzir.
 
-[//]: # (MINHAOS-FINANCEIRO: mencionar categorias de despesas e contas a pagar no MinhaOS App)
+Se preferir não manter esse plano de contas em planilha, as [contas a pagar do MinhaOS App](/funcionalidades/contas-a-pagar/) já vêm com categorias como aluguel, combustível e transporte, material e peças, software e assinaturas e impostos e taxas, que você pode renomear, arquivar ou completar com as suas. Cada conta guarda fornecedor, valor e vencimento e, nos planos pagos, aceita o boleto ou o comprovante anexado.
 
 ## Comprovantes: o que guardar e como
 

@@ -24,7 +24,7 @@ const grupos: Grupo[] = [
     itens: [
       {
         q: 'O que é o MinhaOS App?',
-        a: 'É um aplicativo web para prestadores de serviço — autônomos, MEI e pequenas empresas — registrarem os serviços que executam, fazerem o fechamento do mês por cliente e enviarem um demonstrativo de cobrança com link para o cliente consultar e confirmar que recebeu o documento.',
+        a: 'É um aplicativo web para prestadores de serviço — autônomos, MEI e pequenas empresas — registrarem os serviços que executam, fazerem o fechamento do mês por cliente e enviarem um demonstrativo de cobrança com link para o cliente consultar e confirmar que recebeu o documento. No grupo Financeiro, também organiza as contas a pagar, os recebimentos avulsos e, nos planos pagos, o fluxo de caixa.',
       },
       {
         q: 'Para quem o MinhaOS App foi feito?',
@@ -48,11 +48,11 @@ const grupos: Grupo[] = [
       },
       {
         q: 'O que o MinhaOS App não faz?',
-        a: 'Ele não emite nota fiscal nem NFS-e, não processa pagamentos, não gera boleto nem cobrança Pix, não é banco, não envia mensagens de WhatsApp automaticamente, não controla estoque e não tem agenda, assinatura digital nem certificado digital.',
+        a: 'Ele não emite nota fiscal nem NFS-e, não processa pagamentos, não gera boleto nem cobrança Pix, não é banco, não faz conciliação bancária automática, não calcula impostos, não envia mensagens de WhatsApp automaticamente, não controla estoque e não tem agenda, assinatura digital nem certificado digital. Contas a pagar e recebimentos você registra no app, mas o pagamento em si acontece fora dele.',
       },
       {
         q: 'Tem relatórios?',
-        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos e saldo atual, com impressão em A4 e, nos planos Profissional e Negócios, exportação em CSV. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido) e as pendências.',
+        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos, saldo atual, contas a pagar, recebimentos avulsos e margem por serviço e cliente, com impressão em A4 e, nos planos Profissional e Negócios, exportação em CSV e fluxo de caixa. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido), o Financeiro do mês e as pendências.',
         link: { href: '/funcionalidades/relatorios/', label: 'Relatórios' },
       },
     ],
@@ -135,6 +135,27 @@ const grupos: Grupo[] = [
     ],
   },
   {
+    id: 'financeiro',
+    titulo: 'Contas a pagar e fluxo de caixa',
+    itens: [
+      {
+        q: 'Dá para controlar as contas a pagar do negócio no MinhaOS App?',
+        a: 'Sim. Em Contas a pagar, você registra descrição, fornecedor, categoria, valor e vencimento, marca a quitação com data, valor e forma de pagamento e pode ligar a conta a um cliente ou serviço para ver a margem. Quando há contas vencendo em até 3 dias ou em atraso, você recebe um resumo diário por e-mail e um aviso no app. No plano Grátis, são até 20 lançamentos por mês, somando contas a pagar e recebimentos avulsos.',
+        link: { href: '/funcionalidades/contas-a-pagar/', label: 'Contas a pagar' },
+      },
+      {
+        q: 'Posso cadastrar contas que se repetem ou parcelas?',
+        a: 'Sim, nos planos Profissional e Negócios. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, ou parcelada em N vezes que somam exatamente o total. Para a mensalidade de um cliente, o contrato recorrente gera o lançamento de serviço em cada data, e ele entra no fechamento do mês. Se você voltar para o Grátis, nada é apagado: recorrências e contratos ficam pausados.',
+        link: { href: '/funcionalidades/contratos-recorrentes/', label: 'Contratos recorrentes' },
+      },
+      {
+        q: 'O MinhaOS App tem fluxo de caixa?',
+        a: 'Sim, nos planos Profissional e Negócios. Ele mostra o realizado e o previsto mês a mês, com entradas, saídas, saldo e acumulado, o que está em atraso e os próximos 30 dias, em gráfico ou tabela, com exportação em CSV. Os números vêm do que você registra: o app não se conecta ao banco.',
+        link: { href: '/funcionalidades/fluxo-de-caixa/', label: 'Fluxo de caixa' },
+      },
+    ],
+  },
+  {
     id: 'celular',
     titulo: 'Celular e instalação',
     itens: [
@@ -179,7 +200,7 @@ const ld = graph(organizationLd, breadcrumbLd(crumbs), faqLd(todas))
 
 <Base
   title="Perguntas frequentes sobre o MinhaOS App"
-  description="Dúvidas sobre o MinhaOS App: o que faz e não faz, conta, link do cliente, confirmação de recebimento, notas anexadas, recebimentos e uso no celular."
+  description="Dúvidas sobre o MinhaOS App: o que faz e não faz, conta, link do cliente, confirmação de recebimento, recebimentos, contas a pagar e fluxo de caixa."
   path="/perguntas-frequentes/"
   jsonLd={ld}
 >

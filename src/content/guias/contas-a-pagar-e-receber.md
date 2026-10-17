@@ -118,9 +118,7 @@ Uma planilha com uma aba de lançamentos e uma aba de resumo resolve a maioria d
 
 ### No aplicativo
 
-Um aplicativo ajuda quando o volume cresce ou quando você quer que a parte de recebimentos venha direto das cobranças emitidas. No MinhaOS App, por exemplo, cada demonstrativo de cobrança tem os recebimentos registrados, com pagamento parcial, saldo em aberto e atraso, e os relatórios mostram o que está a receber por cliente. As contas a pagar você controla à parte.
-
-[//]: # (MINHAOS-FINANCEIRO: mencionar contas a pagar, lembretes de vencimento e fluxo previsto x realizado no MinhaOS App)
+Um aplicativo ajuda quando o volume cresce ou quando você quer que a parte de recebimentos venha direto das cobranças emitidas. No MinhaOS App, por exemplo, os recebimentos ficam registrados em cada demonstrativo de cobrança, e as [contas a pagar](/funcionalidades/contas-a-pagar/) ficam no mesmo lugar, com vencimento, categoria e um resumo diário por e-mail do que vence em até 3 dias ou atrasou. Nos planos pagos, o fluxo de caixa junta os dois lados e compara o previsto com o realizado mês a mês.
 
 ## Rotina semanal de contas a pagar e receber
 

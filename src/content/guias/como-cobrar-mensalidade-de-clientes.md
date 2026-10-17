@@ -124,9 +124,7 @@ A rotina de cada mês tem três partes:
 2. **Fechar o mês.** Somar as horas usadas, comparar com o pacote e calcular o excedente. O guia de [fechamento mensal de serviços](/guias/fechamento-mensal-de-servicos/) mostra o passo a passo.
 3. **Enviar a cobrança.** Uma cobrança com a mensalidade e, separadamente, as linhas de excedente, cada uma com data e descrição. O cliente entende o que está pagando e você evita perguntas.
 
-Se você usa o MinhaOS App, pode lançar a mensalidade como uma linha de serviço (unidade "serviço") e as horas excedentes como linhas com unidade "hora"; no fechamento do mês, tudo vira um demonstrativo de cobrança com link para o cliente consultar.
-
-[//]: # (MINHAOS-FINANCEIRO: mencionar contratos/mensalidades recorrentes que geram lançamentos automaticamente no MinhaOS App)
+Se você usa o MinhaOS App, um [contrato recorrente](/funcionalidades/contratos-recorrentes/) (nos planos pagos) gera sozinho, em cada data, o lançamento de serviço da mensalidade do cliente. As horas excedentes você registra normalmente, com unidade "hora", e no fechamento do mês tudo vira um demonstrativo de cobrança com link para o cliente consultar.
 
 ### Mensalidade antes ou depois?
 

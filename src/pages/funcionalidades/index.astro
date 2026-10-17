@@ -10,6 +10,8 @@ const crumbs = [
   { name: 'Início', href: '/' },
   { name: 'Funcionalidades', href: path },
 ]
+const cobranca = features.filter((f) => f.group !== 'financeiro')
+const financeiro = features.filter((f) => f.group === 'financeiro')
 const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
   '@type': 'CollectionPage',
   name: 'Funcionalidades do MinhaOS App',
@@ -21,8 +23,8 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
 ---
 
 <Base
-  title="Funcionalidades: registro, fechamento e cobrança"
-  description="Conheça as funcionalidades do MinhaOS App: registro de serviços por data, fechamento mensal, demonstrativo com link, notas anexas, recebimentos e relatórios."
+  title="Funcionalidades: serviços, cobrança e financeiro"
+  description="Conheça o MinhaOS App: registro de serviços, fechamento mensal, demonstrativo com link, recebimentos, contas a pagar, contratos recorrentes e fluxo de caixa."
   path={path}
   jsonLd={ld}
 >
@@ -30,7 +32,7 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
     <Breadcrumbs items={crumbs} />
     <h1>Funcionalidades do MinhaOS App</h1>
     <p class="muted" style="font-size:19px;max-width:70ch">
-      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. Tudo no navegador ou instalado no celular.
+      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. No grupo Financeiro, controla as contas a pagar, os recebimentos avulsos e o fluxo de caixa. Tudo no navegador ou instalado no celular.
     </p>
 
     <ol class="flow" aria-label="Como funciona, em quatro passos">
@@ -40,11 +42,25 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
       <li><strong>Registre o recebimento</strong> e veja o saldo em aberto.</li>
     </ol>
 
-    <div class="grid grid-2" style="margin-top:32px">
+    <h2 style="margin-top:40px">Serviços e cobrança</h2>
+    <div class="grid grid-2" style="margin-top:16px">
       {
-        features.map((f) => (
+        cobranca.map((f) => (
           <a class="card" href={`/funcionalidades/${f.slug}/`}>
-            <h2 style="font-size:21px;margin:0 0 6px">{f.name}</h2>
+            <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
+            <p class="muted" style="margin:0">{f.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <h2 id="financeiro" style="margin-top:40px">Financeiro</h2>
+    <p class="muted" style="max-width:70ch">Contas a pagar, recebimentos fora da cobrança, mensalidades lançadas sozinhas e o caixa do mês. Recorrência, contratos recorrentes, anexos em contas e fluxo de caixa fazem parte dos <a href="/planos/">planos Profissional e Negócios</a>.</p>
+    <div class="grid grid-2" style="margin-top:16px">
+      {
+        financeiro.map((f) => (
+          <a class="card" href={`/funcionalidades/${f.slug}/`}>
+            <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
             <p class="muted" style="margin:0">{f.summary}</p>
           </a>
         ))

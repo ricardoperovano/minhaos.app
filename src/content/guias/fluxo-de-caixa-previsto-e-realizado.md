@@ -131,7 +131,7 @@ Com o saldo realizado de R$ 3.250,00, dezembro e janeiro mudam. Considerando os 
 
 No cenário pessimista, janeiro fecha com R$ 250,00. Essa é a hora de agir: mandar um [lembrete de pagamento](/guias/lembrete-de-pagamento/) ao cliente atrasado, revisar o preço do material nos próximos orçamentos e decidir desde já o que fazer em janeiro. Para encurtar o tempo entre executar e receber, veja [prazo de pagamento para prestador](/guias/prazo-de-pagamento-para-prestador/).
 
-[//]: # (MINHAOS-FINANCEIRO: mencionar fluxo de caixa previsto x realizado no MinhaOS App)
+Se não quiser montar essa projeção à mão, o [fluxo de caixa do MinhaOS App](/funcionalidades/fluxo-de-caixa/) (planos pagos) mostra o realizado e o previsto mês a mês, com entradas, saídas, saldo e acumulado, separa o que está em atraso e lista os próximos 30 dias, em gráfico ou tabela. Os cenários, como o pessimista acima, continuam sendo decisão sua.
 
 ## Como melhorar a precisão da previsão
 

@@ -144,9 +144,7 @@ Margem baixa não significa descartar o cliente. Ele pode preencher a agenda em 
 4. **Compare com o mês anterior.** Margem caindo no mesmo cliente costuma ser material mais caro ou serviço crescendo sem reajuste.
 5. **Revise os custos esquecidos.** O guia [custos esquecidos no preço](/guias/custos-esquecidos-no-preco/) lista os mais comuns.
 
-A receita de cada cliente vem do seu [controle de serviços prestados](/guias/controle-de-servicos-prestados/). No MinhaOS App, os relatórios mostram o que foi executado e faturado por cliente e período, o que já entrega a coluna de receita da análise; os custos diretos você ainda soma à parte.
-
-[//]: # (MINHAOS-FINANCEIRO: mencionar custo ligado ao serviço e margem por serviço/cliente calculada no MinhaOS App)
+A receita de cada cliente vem do seu [controle de serviços prestados](/guias/controle-de-servicos-prestados/). No MinhaOS App, quando você liga uma [conta a pagar](/funcionalidades/contas-a-pagar/) (o material, o deslocamento) a um cliente ou serviço, ela vira custo daquele trabalho, e o relatório de margem mostra, por serviço e por cliente, a receita (por execução ou por faturamento) menos esses custos.
 
 ## Erros comuns
 

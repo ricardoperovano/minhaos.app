@@ -135,9 +135,7 @@ Rotina de conciliação semanal:
 
 Algumas práticas facilitam muito a conciliação: pedir que o cliente pague o valor exato de cada cobrança, colocar o número da cobrança na descrição do Pix quando possível e usar uma conta só para o trabalho.
 
-No MinhaOS App, os recebimentos são registrados em cada demonstrativo de cobrança, com pagamento parcial, saldo em aberto, atraso e estorno, e o relatório de recebimentos mostra o que entrou por período. A conferência com o extrato continua sendo sua, mas fica mais rápida.
-
-[//]: # (MINHAOS-FINANCEIRO: mencionar recebimentos avulsos, lembretes de vencimento e fluxo previsto x realizado no MinhaOS App)
+No MinhaOS App, os recebimentos são registrados em cada demonstrativo de cobrança, com pagamento parcial, saldo em aberto, atraso e estorno. A tela de [recebimentos](/funcionalidades/recebimentos/) junta numa lista só os demonstrativos com saldo e os recebimentos avulsos, como um sinal ou uma venda de material sem demonstrativo, e nos planos pagos o fluxo de caixa compara o previsto com o realizado mês a mês. A conferência com o extrato continua sendo sua, mas fica mais rápida.
 
 ## Como encurtar o tempo até receber
 

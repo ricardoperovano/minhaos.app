@@ -46,7 +46,10 @@ export interface Feature {
   /** Resumo de uma frase para o card do índice. */
   summary: string
   intro: string[]
-  image: FeatureImage
+  /** Captura principal (opcional: páginas sem captura usam só texto). */
+  image?: FeatureImage
+  /** Agrupamento no índice: serviços e cobrança (padrão) ou financeiro. */
+  group?: 'cobranca' | 'financeiro'
   sections: FeatureSection[]
   /** O que a funcionalidade não faz (limites honestos). */
   limits: string[]
@@ -209,7 +212,7 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'O fechamento não é automático: você escolhe o que entra e emite. Não há cobrança recorrente programada.',
+      'O fechamento não é automático: você escolhe o que entra e emite. Nos planos pagos, um contrato recorrente gera os lançamentos de serviço sozinho, mas a emissão do demonstrativo continua sendo sua.',
       'Cada demonstrativo é de um único cliente.',
       'No plano Grátis, o sistema não envia a cobrança sozinho: você compartilha o link por WhatsApp, e-mail ou outro meio. O envio por e-mail direto da plataforma, com lembretes automáticos de vencimento e atraso, faz parte dos planos Profissional e Negócios.',
       'Não calcula multa, juros ou descontos automaticamente.',
@@ -508,7 +511,7 @@ export const features: Feature[] = [
     summary: 'Registre pagamentos, inclusive parciais, e veja saldo em aberto, atrasos e estornos.',
     intro: [
       'Cobrar é metade do trabalho; a outra metade é saber o que já entrou. No MinhaOS App, você registra cada pagamento recebido no demonstrativo correspondente, e o sistema calcula o saldo em aberto e indica o que está em atraso.',
-      'O registro é manual: o dinheiro entra pela sua conta, pelo seu Pix ou em mãos, e você informa no sistema. O MinhaOS App não movimenta dinheiro.',
+      'O registro é manual: o dinheiro entra pela sua conta, pelo seu Pix ou em mãos, e você informa no sistema. O MinhaOS App não movimenta dinheiro. Para o dinheiro que entra fora de um demonstrativo, como um sinal ou uma venda de material, use os <a href="/funcionalidades/recebimentos/">recebimentos avulsos</a>.',
     ],
     image: {
       src: atividade,
@@ -542,7 +545,8 @@ export const features: Feature[] = [
       {
         h2: 'Onde acompanhar',
         body: [
-          'No painel, o indicador “Recebido no período” soma os recebimentos pela data em que entraram, já descontados os estornos. Na lista de demonstrativos, você filtra por situação: em aberto, parcial, recebido ou em atraso. O relatório de recebimentos traz cada pagamento do período, com exportação em CSV.',
+          'No painel, o indicador “Recebido no período” soma os recebimentos pela data em que entraram, já descontados os estornos. Na lista de demonstrativos, você filtra por situação: em aberto, parcial, recebido ou em atraso. O relatório de recebimentos traz cada pagamento do período, com exportação em CSV nos planos pagos.',
+          'No grupo Financeiro, a tela de <a href="/funcionalidades/recebimentos/">Recebimentos</a> junta numa lista só os demonstrativos com saldo em aberto e os recebimentos avulsos. O pagamento de um demonstrativo continua sendo registrado nele. Nos planos pagos, tudo isso entra no <a href="/funcionalidades/fluxo-de-caixa/">fluxo de caixa</a>.',
         ],
       },
     ],
@@ -574,9 +578,334 @@ export const features: Feature[] = [
       { slug: 'como-cobrar-cliente-que-nao-paga', label: 'Como cobrar cliente que não paga' },
       { slug: 'multa-e-juros-por-atraso', label: 'Multa e juros por atraso' },
       { slug: 'fluxo-de-caixa-para-autonomo', label: 'Fluxo de caixa para autônomo' },
-      { slug: 'lembrete-de-pagamento', label: 'Lembrete de pagamento' },
+      { slug: 'controle-de-contas-a-receber', label: 'Controle de contas a receber' },
     ],
-    related: ['demonstrativo-de-cobranca', 'relatorios', 'link-e-acessos'],
+    related: ['recebimentos', 'demonstrativo-de-cobranca', 'fluxo-de-caixa'],
+  },
+  {
+    slug: 'contas-a-pagar',
+    group: 'financeiro',
+    name: 'Contas a pagar',
+    title: 'Contas a pagar para autônomo: vencimento e categoria',
+    h1: 'Contas a pagar: cada despesa com vencimento, categoria e quitação',
+    description:
+      'Registre contas a pagar com fornecedor, categoria e vencimento, marque a quitação com data e forma de pagamento e receba um resumo diário do que vai vencer.',
+    summary: 'Despesas com fornecedor, categoria e vencimento, quitação registrada e aviso do que vence em até 3 dias.',
+    intro: [
+      'Aluguel, combustível, peças, o software que você assina, o DAS: as contas do negócio têm data para vencer, e esquecer uma delas custa multa e dor de cabeça. Em <strong>Contas a pagar</strong>, no grupo Financeiro do MinhaOS App, cada despesa fica registrada com fornecedor, categoria, valor e vencimento.',
+      'O app mostra o que está em aberto, o que atrasou e o que já foi pago, avisa das contas que vencem nos próximos dias e, se você ligar um custo a um cliente ou serviço, mostra a margem daquele trabalho. O pagamento em si continua sendo feito por você, no seu banco.',
+    ],
+    sections: [
+      {
+        h2: 'Como registrar uma conta a pagar',
+        body: [],
+        steps: [
+          'No grupo <strong>Financeiro</strong>, abra <strong>Contas a pagar</strong> e crie uma nova conta.',
+          'Preencha a <strong>descrição</strong> (por exemplo, “Aluguel da sala”), o <strong>fornecedor</strong>, a <strong>categoria</strong>, o <strong>valor</strong> e o <strong>vencimento</strong>.',
+          'Se o gasto foi para um trabalho específico, ligue a conta a um <strong>cliente</strong> ou a um <strong>serviço</strong>. Use a <strong>observação</strong> para o que precisar lembrar.',
+          'Nos planos Profissional e Negócios, anexe o <strong>boleto</strong>, o <strong>comprovante</strong> ou a <strong>nota</strong> da compra, para ter tudo junto na hora de pagar ou de entregar ao contador.',
+          'Salve. A conta fica <strong>em aberto</strong> e passa a <strong>em atraso</strong> se o vencimento chegar sem quitação.',
+        ],
+      },
+      {
+        h2: 'Categorias que você ajusta',
+        body: [
+          'A conta já vem com categorias pensadas para quem presta serviço. Você pode criar novas, renomear as existentes e arquivar as que não usa.',
+        ],
+        bullets: [
+          'Aluguel; contas de consumo; combustível e transporte.',
+          'Material e peças; ferramentas e equipamentos; software e assinaturas.',
+          'Impostos e taxas; pró-labore e retiradas; marketing; outros.',
+        ],
+      },
+      {
+        h2: 'Quitação, atraso e lembretes',
+        body: [
+          'Ao pagar, registre a <strong>quitação</strong> com a data, o valor pago e a forma: Pix, transferência, dinheiro, boleto, cartão ou outro. Marcou por engano? Desfaça a quitação e a conta volta a ficar em aberto. Uma conta que não vai mais ser paga pode ser <strong>cancelada</strong>. A lista separa as situações: em aberto, em atraso, paga e cancelada.',
+          'Quando há contas que vencem em até 3 dias ou que já estão em atraso, você recebe <strong>um e-mail por dia</strong> com o resumo e um aviso dentro do app. O lembrete vale para todos os planos e pode ser desligado nas preferências.',
+        ],
+      },
+      {
+        h2: 'Contas recorrentes e parceladas',
+        body: [
+          'Nos planos Profissional e Negócios, uma conta pode se <strong>repetir</strong> (semanal, quinzenal, mensal, trimestral ou anual) com término nunca, até uma data ou depois de um número de vezes. Também dá para <strong>parcelar</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total, sem centavo sobrando ou faltando. As próximas ocorrências são geradas com até 60 dias de antecedência.',
+          'Ao editar uma ocorrência, você escolhe se a mudança vale <strong>só para esta</strong>, <strong>para esta e as próximas</strong> ou <strong>para todas</strong>. Ocorrências já quitadas nunca mudam, então o histórico do que você pagou fica preservado.',
+        ],
+      },
+      {
+        h2: 'Custo do serviço e margem',
+        body: [
+          'Quando você liga uma conta a um serviço, ela passa a ser <strong>custo daquele serviço</strong>: o material comprado para a obra, o combustível da viagem até o cliente. O relatório de <strong>margem por serviço e por cliente</strong> mostra a receita (por execução ou por faturamento) menos os custos ligados, e o painel traz o bloco “Financeiro do mês”.',
+          'Os relatórios de contas a pagar e de margem podem ser vistos na tela; a exportação em CSV está nos planos pagos. Para conferir a conta na mão, use a <a href="/ferramentas/calculadora-de-margem/">calculadora de margem</a>.',
+        ],
+      },
+    ],
+    limits: [
+      'Não paga a conta, não lê nem gera boleto e não é banco: a quitação é registrada por você.',
+      'Não faz conciliação automática com o extrato bancário.',
+      'Não calcula impostos: a categoria “impostos e taxas” serve para organizar o que você paga.',
+      'No plano Grátis, são até 20 lançamentos por mês (contas a pagar e recebimentos avulsos somados), sem recorrência, sem parcelamento e sem anexos nas contas.',
+      'Não controla estoque: a compra de material é registrada como despesa, não como item de estoque.',
+    ],
+    faq: [
+      {
+        q: 'O MinhaOS App paga minhas contas?',
+        a: 'Não. Ele organiza as contas e avisa do vencimento, mas o pagamento é feito por você, no banco ou no aplicativo que você já usa. Depois, você registra a quitação com data, valor e forma.',
+      },
+      {
+        q: 'Dá para cadastrar uma conta que se repete todo mês?',
+        a: 'Sim, nos planos Profissional e Negócios. A conta pode ser semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes. No plano Grátis, cada conta é lançada individualmente.',
+      },
+      {
+        q: 'Como funciona o lembrete de vencimento?',
+        a: 'Quando há contas que vencem em até 3 dias ou que estão em atraso, você recebe um único e-mail por dia com o resumo e um aviso no app. Vale para todos os planos e pode ser desligado nas preferências de e-mail.',
+      },
+      {
+        q: 'Consigo saber quanto gastei com um cliente?',
+        a: 'Sim. Ligue a conta ao cliente ou ao serviço. O relatório de margem mostra, por serviço e por cliente, a receita menos os custos ligados.',
+      },
+      {
+        q: 'Se eu voltar para o plano Grátis, perco minhas contas recorrentes?',
+        a: 'Não. Nada é apagado: as recorrências ficam pausadas e as contas já lançadas continuam na lista.',
+      },
+    ],
+    guides: [
+      { slug: 'como-controlar-contas-a-pagar', label: 'Como controlar contas a pagar' },
+      { slug: 'despesas-recorrentes', label: 'Despesas recorrentes' },
+      { slug: 'categorias-de-despesas-mei', label: 'Categorias de despesas para MEI e autônomo' },
+      { slug: 'despesas-fixas-e-variaveis', label: 'Despesas fixas e variáveis' },
+      { slug: 'margem-de-lucro-de-servico', label: 'Margem de lucro de serviço' },
+    ],
+    related: ['fluxo-de-caixa', 'recebimentos', 'relatorios'],
+  },
+  {
+    slug: 'recebimentos',
+    group: 'financeiro',
+    name: 'Recebimentos',
+    title: 'Recebimentos avulsos e contas a receber em uma lista',
+    h1: 'Recebimentos: o que falta receber e o dinheiro que entra fora da cobrança',
+    description:
+      'Veja numa lista só os demonstrativos com saldo em aberto e os recebimentos avulsos, como sinal ou venda de material, com vencimento, cliente e quitação.',
+    summary: 'Demonstrativos com saldo e recebimentos avulsos, como sinal ou venda de material, em uma lista só.',
+    intro: [
+      'Nem todo dinheiro que você recebe passa por um demonstrativo de cobrança. Um sinal antes de começar a obra, a venda de um material que sobrou, uma mensalidade combinada e cobrada fora do app: tudo isso também entra no caixa e precisa ser acompanhado.',
+      'A tela de <strong>Recebimentos</strong>, no grupo Financeiro do MinhaOS App, junta as duas coisas em uma lista única: os demonstrativos emitidos que ainda têm saldo em aberto e os <strong>recebimentos avulsos</strong> que você lança à parte. Assim você vê, num lugar só, tudo o que falta entrar.',
+    ],
+    sections: [
+      {
+        h2: 'Duas origens na mesma lista',
+        body: [],
+        bullets: [
+          '<strong>Demonstrativos com saldo em aberto.</strong> Aparecem automaticamente depois de emitidos. O pagamento continua sendo registrado no próprio demonstrativo, como explicado em <a href="/funcionalidades/recebimentos-e-saldos/">recebimentos e saldos</a>, com pagamento parcial, saldo e estorno.',
+          '<strong>Recebimentos avulsos.</strong> Valores que não fazem parte de nenhum demonstrativo, como sinal, venda de material ou mensalidade cobrada fora do app. Você lança, acompanha o vencimento e marca quando o dinheiro entra.',
+        ],
+      },
+      {
+        h2: 'Como lançar um recebimento avulso',
+        body: [],
+        steps: [
+          'No grupo <strong>Financeiro</strong>, abra <strong>Recebimentos</strong> e crie um novo recebimento avulso.',
+          'Informe a <strong>descrição</strong> (por exemplo, “Sinal da reforma do banheiro”), a <strong>categoria</strong>, o <strong>valor</strong> e o <strong>vencimento</strong>, isto é, a data em que você espera receber.',
+          'Se quiser, escolha o <strong>cliente</strong>. O vínculo é opcional: uma venda para alguém que não está no seu cadastro também pode ser lançada.',
+          'Quando o dinheiro entrar, registre a <strong>quitação</strong> com a data, o valor e a forma: Pix, transferência, dinheiro, boleto, cartão ou outro. Se marcou por engano, dá para desfazer a quitação.',
+        ],
+      },
+      {
+        h2: 'Quando usar avulso e quando usar o demonstrativo',
+        body: [
+          'Se o valor é de um serviço que você vai cobrar ou já cobrou por demonstrativo, registre o pagamento <strong>no demonstrativo</strong>. É ele que baixa o saldo, mostra ao cliente o que falta e marca o atraso. Lançar o mesmo dinheiro também como avulso faria a entrada contar duas vezes.',
+          'Use o recebimento avulso para o que não tem demonstrativo. Se a mensalidade de um cliente deve virar serviço e entrar no fechamento do mês, o caminho é o <a href="/funcionalidades/contratos-recorrentes/">contrato recorrente</a>, não o avulso.',
+        ],
+      },
+      {
+        h2: 'Recebimentos que se repetem ou vêm em parcelas',
+        body: [
+          'Nos planos Profissional e Negócios, um recebimento avulso pode ser <strong>recorrente</strong> (semanal, quinzenal, mensal, trimestral ou anual, sem término, até uma data ou por um número de vezes) ou <strong>parcelado</strong>: você informa o valor total e o número de parcelas, e as parcelas somam exatamente o total. As ocorrências futuras são geradas com até 60 dias de antecedência.',
+          'O painel mostra o bloco “Financeiro do mês”, e a visão geral do Financeiro lista o que está em atraso e o que vence nos próximos 30 dias. Nos planos pagos, esses valores também entram no <a href="/funcionalidades/fluxo-de-caixa/">fluxo de caixa</a>.',
+        ],
+      },
+    ],
+    limits: [
+      'Não recebe o dinheiro, não gera boleto nem código Pix e não é banco: a quitação é registrada por você.',
+      'Não faz conciliação automática com o extrato bancário.',
+      'Recebimento avulso não gera demonstrativo nem link para o cliente.',
+      'No plano Grátis, são até 20 lançamentos por mês, somando contas a pagar e recebimentos avulsos, sem recorrência nem parcelamento.',
+    ],
+    faq: [
+      {
+        q: 'Qual a diferença entre recebimento avulso e recebimento de demonstrativo?',
+        a: 'O recebimento de demonstrativo baixa o saldo de uma cobrança emitida e é registrado no próprio demonstrativo. O avulso é para dinheiro que não passa por demonstrativo, como um sinal ou a venda de um material. Os dois aparecem na mesma lista de Recebimentos.',
+      },
+      {
+        q: 'Preciso vincular o recebimento avulso a um cliente?',
+        a: 'Não. O cliente é opcional. Você pode lançar, por exemplo, a venda de uma sobra de material para alguém que não está no seu cadastro.',
+      },
+      {
+        q: 'Posso lançar uma mensalidade que o cliente paga todo mês?',
+        a: 'Pode, como recebimento avulso recorrente, nos planos pagos. Se você quer que a mensalidade vire um serviço e entre no demonstrativo do mês, use um contrato recorrente.',
+      },
+      {
+        q: 'O recebimento avulso conta no limite do plano Grátis?',
+        a: 'Sim. No Grátis, contas a pagar e recebimentos avulsos somam até 20 lançamentos por mês. Os demonstrativos e os pagamentos registrados neles seguem as regras do demonstrativo.',
+      },
+    ],
+    guides: [
+      { slug: 'controle-de-contas-a-receber', label: 'Controle de contas a receber' },
+      { slug: 'contas-a-pagar-e-receber', label: 'Contas a pagar e receber' },
+      { slug: 'planilha-de-contas-a-pagar-e-receber', label: 'Planilha de contas a pagar e receber' },
+      { slug: 'fluxo-de-caixa-para-autonomo', label: 'Fluxo de caixa para autônomo' },
+    ],
+    related: ['recebimentos-e-saldos', 'contas-a-pagar', 'fluxo-de-caixa'],
+  },
+  {
+    slug: 'contratos-recorrentes',
+    group: 'financeiro',
+    name: 'Contratos recorrentes',
+    title: 'Contrato recorrente: mensalidade de cliente automática',
+    h1: 'Contratos recorrentes: a mensalidade do cliente lançada sozinha, em cada data',
+    description:
+      'Cadastre a mensalidade ou o contrato fixo de um cliente e deixe o MinhaOS App gerar o lançamento de serviço em cada data, pronto para o fechamento do mês.',
+    summary: 'A mensalidade do cliente vira lançamento de serviço sozinha, em cada data, e entra no fechamento.',
+    intro: [
+      'Manutenção mensal de um condomínio, suporte de informática com valor fixo, aulas com mensalidade, jardim cuidado toda semana: quando o valor e a frequência são combinados, registrar o mesmo serviço todo mês é trabalho repetido e fácil de esquecer.',
+      'O <strong>contrato recorrente</strong>, disponível nos planos Profissional e Negócios, faz esse registro por você. Ele gera automaticamente, em cada data, o <strong>lançamento de serviço</strong> do cliente, que entra no fechamento mensal e no demonstrativo como qualquer outro serviço.',
+    ],
+    sections: [
+      {
+        h2: 'Como criar um contrato recorrente',
+        body: [],
+        steps: [
+          'No grupo <strong>Financeiro</strong>, abra <strong>Contratos recorrentes</strong> e crie um novo contrato.',
+          'Escolha o <strong>cliente</strong> e descreva o contrato.',
+          'Preencha a <strong>linha modelo</strong>: descrição, unidade, quantidade e valor, do mesmo jeito que você lança um serviço. Por exemplo, “Manutenção preventiva mensal”, 1 serviço × R$ 450,00.',
+          'Defina a <strong>recorrência</strong>: a frequência, a data de início e o término (nunca, até uma data ou depois de um número de vezes).',
+          'Confira a <strong>prévia das próximas datas</strong> e salve.',
+        ],
+      },
+      {
+        h2: 'O que acontece em cada data',
+        body: [
+          'Na data prevista, o contrato gera o lançamento de serviço com a linha modelo. A partir daí ele é um serviço comum: aparece na lista de serviços, conta no executado do painel e fica disponível no <a href="/funcionalidades/fechamento-mensal/">fechamento mensal</a>. Se no mesmo mês houve hora extra ou material, você registra à parte e cobra tudo no mesmo demonstrativo.',
+          'A emissão do demonstrativo continua sendo sua: o contrato cria o lançamento, mas não emite nem envia a cobrança sozinho. No detalhe do contrato, você vê os lançamentos já gerados e as próximas datas.',
+        ],
+      },
+      {
+        h2: 'Pausar, retomar e encerrar',
+        body: [
+          'Cliente viajou ou o serviço foi suspenso por um tempo? <strong>Pause</strong> o contrato: enquanto estiver pausado, as datas não geram lançamentos. Quando voltar, <strong>retome</strong>. Se o contrato acabou, <strong>encerre</strong>. Os lançamentos já gerados continuam no histórico do cliente.',
+        ],
+      },
+      {
+        h2: 'Contrato recorrente ou recebimento avulso?',
+        body: [
+          'Use o contrato quando a mensalidade é cobrança de serviço e deve aparecer no demonstrativo do cliente. Use um <a href="/funcionalidades/recebimentos/">recebimento avulso</a> recorrente quando o dinheiro entra fora do demonstrativo e você só quer acompanhar o que falta receber.',
+        ],
+      },
+    ],
+    limits: [
+      'Está disponível só nos planos Profissional e Negócios. Ao voltar para o Grátis, nada é apagado: os contratos ficam pausados.',
+      'Não emite nem envia o demonstrativo automaticamente: o fechamento e a emissão continuam sendo seus.',
+      'Não cobra o cliente, não gera boleto nem Pix e não debita cartão.',
+      'Não reajusta o valor sozinho: o reajuste é decisão sua, combinada com o cliente.',
+    ],
+    faq: [
+      {
+        q: 'O contrato recorrente envia a cobrança para o cliente?',
+        a: 'Não. Ele gera o lançamento de serviço em cada data. A cobrança sai no fechamento do mês, quando você emite o demonstrativo e envia o link.',
+      },
+      {
+        q: 'Posso cobrar a mensalidade e as horas extras no mesmo demonstrativo?',
+        a: 'Sim. O lançamento gerado pelo contrato é um serviço comum. As horas extras você registra normalmente, e no fechamento escolhe tudo o que entra no demonstrativo do cliente.',
+      },
+      {
+        q: 'O cliente vai ficar um mês sem o serviço. O que faço?',
+        a: 'Pause o contrato. Enquanto estiver pausado, as datas não geram lançamentos. Quando o serviço voltar, retome.',
+      },
+      {
+        q: 'O contrato recorrente existe no plano Grátis?',
+        a: 'Não. Ele faz parte dos planos Profissional e Negócios. Se você voltar para o Grátis, os contratos ficam pausados, sem perder nada.',
+      },
+    ],
+    guides: [
+      { slug: 'como-cobrar-mensalidade-de-clientes', label: 'Como cobrar mensalidade de clientes' },
+      { slug: 'contrato-de-prestacao-de-servico', label: 'Contrato de prestação de serviço' },
+      { slug: 'fechamento-mensal-de-servicos', label: 'Fechamento mensal de serviços' },
+      { slug: 'como-reajustar-o-preco-dos-servicos', label: 'Como reajustar o preço dos serviços' },
+    ],
+    related: ['fechamento-mensal', 'registro-de-servicos', 'recebimentos'],
+  },
+  {
+    slug: 'fluxo-de-caixa',
+    group: 'financeiro',
+    name: 'Fluxo de caixa',
+    title: 'Fluxo de caixa previsto e realizado para autônomo',
+    h1: 'Fluxo de caixa: o que entrou, o que saiu e o que está previsto, mês a mês',
+    description:
+      'Compare realizado e previsto mês a mês, com entradas, saídas, saldo e acumulado, veja o que está em atraso e os próximos 30 dias e exporte em CSV.',
+    summary: 'Realizado e previsto mês a mês, atrasos à parte, próximos 30 dias, gráfico, tabela e CSV.',
+    intro: [
+      'Saber quanto você faturou não responde à pergunta que mais importa no fim do mês: vai sobrar dinheiro? O <strong>fluxo de caixa</strong> do MinhaOS App junta o que você recebe e o que você paga e mostra, mês a mês, o <strong>realizado</strong> (o que de fato entrou e saiu) ao lado do <strong>previsto</strong> (o que ainda vai vencer).',
+      'Ele está nos planos Profissional e Negócios e usa os dados que você já registra: recebimentos de demonstrativos, recebimentos avulsos e contas a pagar.',
+    ],
+    sections: [
+      {
+        h2: 'O que o fluxo de caixa mostra',
+        body: [],
+        bullets: [
+          '<strong>Realizado × previsto</strong>, mês a mês, com <strong>entradas</strong>, <strong>saídas</strong>, <strong>saldo</strong> do mês e <strong>acumulado</strong>.',
+          '<strong>Em atraso</strong>, separado: o que já venceu e não foi recebido ou pago não se mistura com o que está para vencer.',
+          '<strong>Próximos 30 dias</strong>: o que entra e o que sai no curto prazo, para decidir antes de apertar.',
+          '<strong>Gráfico e tabela</strong> com os mesmos números, e <strong>exportação em CSV</strong> para abrir no Excel ou levar ao contador.',
+        ],
+      },
+      {
+        h2: 'De onde vêm os números',
+        body: [
+          'As entradas vêm dos <a href="/funcionalidades/recebimentos-e-saldos/">recebimentos registrados nos demonstrativos</a> e dos <a href="/funcionalidades/recebimentos/">recebimentos avulsos</a>. As saídas vêm das <a href="/funcionalidades/contas-a-pagar/">contas a pagar</a>. O previsto usa os vencimentos em aberto; o realizado, as quitações e os recebimentos que você registrou.',
+          'Por isso, o fluxo de caixa é tão bom quanto o registro. Ele não lê o extrato do banco: se uma conta foi paga e não foi marcada como paga, ela continua aparecendo como prevista ou em atraso.',
+        ],
+      },
+      {
+        h2: 'Como usar no dia a dia',
+        body: [],
+        steps: [
+          'Uma vez por semana, registre as quitações e os recebimentos da semana.',
+          'Abra o fluxo de caixa e olhe primeiro o que está <strong>em atraso</strong>: é cobrança a fazer ou conta a resolver.',
+          'Confira os <strong>próximos 30 dias</strong>. Se as saídas passam das entradas, decida agora: cobrar um cliente, negociar um vencimento ou adiar uma compra.',
+          'No fim do mês, compare o realizado com o previsto e ajuste a sua expectativa para os próximos meses.',
+        ],
+      },
+    ],
+    limits: [
+      'Está disponível só nos planos Profissional e Negócios. No Grátis, o painel continua mostrando o bloco “Financeiro do mês”.',
+      'Não se conecta ao banco nem faz conciliação automática: os números vêm do que você registra.',
+      'Não é DRE nem sistema contábil e não calcula impostos.',
+    ],
+    faq: [
+      {
+        q: 'Qual a diferença entre previsto e realizado?',
+        a: 'O realizado é o que de fato entrou e saiu, pelas quitações e recebimentos registrados. O previsto é o que ainda vai vencer, pelas contas e recebimentos em aberto.',
+      },
+      {
+        q: 'O fluxo de caixa puxa os dados do meu banco?',
+        a: 'Não. O MinhaOS App não se conecta ao banco. Os números vêm dos recebimentos e das contas que você registra.',
+      },
+      {
+        q: 'Posso exportar o fluxo de caixa?',
+        a: 'Sim. A tabela pode ser exportada em CSV, que abre no Excel em português.',
+      },
+      {
+        q: 'O fluxo de caixa existe no plano Grátis?',
+        a: 'Não. Ele faz parte dos planos Profissional e Negócios. No Grátis, você registra contas a pagar e recebimentos avulsos (até 20 lançamentos por mês) e vê o resumo “Financeiro do mês” no painel.',
+      },
+    ],
+    guides: [
+      { slug: 'fluxo-de-caixa-previsto-e-realizado', label: 'Fluxo de caixa previsto e realizado' },
+      { slug: 'fluxo-de-caixa-para-autonomo', label: 'Fluxo de caixa para autônomo' },
+      { slug: 'contas-a-pagar-e-receber', label: 'Contas a pagar e receber' },
+      { slug: 'separar-financas-pessoais-e-da-empresa', label: 'Separar finanças pessoais e da empresa' },
+    ],
+    related: ['contas-a-pagar', 'recebimentos', 'relatorios'],
   },
   {
     slug: 'relatorios',
@@ -607,6 +936,12 @@ export const features: Feature[] = [
         ],
       },
       {
+        h2: 'Financeiro do mês',
+        body: [
+          'Abaixo dos indicadores de serviço, o bloco <strong>Financeiro do mês</strong> resume as <a href="/funcionalidades/contas-a-pagar/">contas a pagar</a> e os <a href="/funcionalidades/recebimentos/">recebimentos avulsos</a>, em todos os planos. Nos planos pagos, o <a href="/funcionalidades/fluxo-de-caixa/">fluxo de caixa</a> mostra o realizado e o previsto mês a mês.',
+        ],
+      },
+      {
         h2: 'Pendências e evolução',
         body: [
           'Ao lado dos indicadores, o painel lista as pendências: <strong>clientes com serviços a faturar</strong>, <strong>demonstrativos em atraso</strong> e <strong>links ainda sem visualização</strong>. O gráfico de evolução mostra os últimos seis meses de executado, faturado e recebido, e pode ser visto como tabela.',
@@ -619,6 +954,9 @@ export const features: Feature[] = [
           '<strong>Serviços executados</strong>: uma linha por lançamento, com filtro por situação de faturamento (a faturar, reservado em rascunho, faturado).',
           '<strong>Demonstrativos emitidos</strong>: por data de emissão ou de vencimento, com filtro por situação de pagamento (em aberto, parcial, recebido, em atraso) e o saldo atual de cada um.',
           '<strong>Recebimentos</strong>: cada pagamento do período, incluindo os estornados, mostrados separadamente.',
+          '<strong>Contas a pagar</strong> e <strong>recebimentos avulsos</strong> do período.',
+          '<strong>Margem por serviço e por cliente</strong>: a receita (por execução ou por faturamento) menos os custos das contas a pagar ligadas a cada serviço ou cliente.',
+          '<strong>Fluxo de caixa</strong>, nos planos Profissional e Negócios.',
         ],
       },
       {
@@ -629,8 +967,8 @@ export const features: Feature[] = [
       },
     ],
     limits: [
-      'Não é sistema contábil: não calcula impostos nem gera obrigações fiscais.',
-      'Não registra despesas, então não substitui um fluxo de caixa completo nem um DRE.',
+      'Não é sistema contábil: não calcula impostos, não gera obrigações fiscais e não substitui um DRE.',
+      'Não faz conciliação bancária automática: os números vêm do que você registra.',
       'Não integra com banco ou com o sistema do seu contador; a troca de dados é pelo CSV ou, no plano Negócios, pela exportação completa e pela API com chave.',
     ],
     faq: [
@@ -644,7 +982,7 @@ export const features: Feature[] = [
       },
       {
         q: 'Os relatórios mostram as despesas do negócio?',
-        a: 'Não. O MinhaOS App registra serviços, cobranças e recebimentos. Despesas precisam ser controladas em outra ferramenta.',
+        a: 'Sim. As despesas registradas em contas a pagar aparecem no relatório de contas a pagar, no painel (Financeiro do mês) e, nos planos pagos, no fluxo de caixa. As ligadas a um serviço ou cliente entram no relatório de margem.',
       },
       {
         q: 'Dá para filtrar por cliente?',
@@ -654,10 +992,10 @@ export const features: Feature[] = [
     guides: [
       { slug: 'controle-de-servicos-prestados', label: 'Controle de serviços prestados' },
       { slug: 'fluxo-de-caixa-para-autonomo', label: 'Fluxo de caixa para autônomo' },
-      { slug: 'separar-financas-pessoais-e-da-empresa', label: 'Separar finanças pessoais e da empresa' },
+      { slug: 'margem-de-lucro-de-servico', label: 'Margem de lucro de serviço' },
       { slug: 'rotina-administrativa-do-autonomo', label: 'Rotina administrativa do autônomo' },
     ],
-    related: ['recebimentos-e-saldos', 'fechamento-mensal', 'registro-de-servicos'],
+    related: ['fluxo-de-caixa', 'recebimentos-e-saldos', 'contas-a-pagar'],
   },
   {
     slug: 'aplicativo-no-celular',
@@ -754,9 +1092,9 @@ export const featureBySlug = (slug: string) => features.find((f) => f.slug === s
 /** Resumo honesto do que o produto não faz (página-índice). */
 export const naoFaz = [
   'Não emite nota fiscal nem NFS-e. Você emite no sistema oficial e anexa o arquivo ao demonstrativo.',
-  'Não processa pagamentos, não gera boleto nem código Pix e não é banco. Os recebimentos são registrados por você.',
+  'Não processa pagamentos, não gera boleto nem código Pix e não é banco. Recebimentos e quitações de contas são registrados por você.',
   'Não envia WhatsApp automaticamente: abre a conversa com a mensagem pronta, e o envio é seu.',
   'Não tem controle de estoque. Material e peças entram como linhas do serviço.',
   'Não tem agenda de visitas, assinatura digital nem certificado digital.',
-  'Não calcula impostos, multa ou juros e não registra despesas.',
+  'Não calcula impostos, multa ou juros e não faz conciliação bancária automática.',
 ]

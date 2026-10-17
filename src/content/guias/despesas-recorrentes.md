@@ -78,7 +78,7 @@ No caso do MEI, o valor do DAS é reajustado com o salário mínimo. Em 2026, se
 - **Cartão de crédito para assinaturas, com cuidado.** Concentra as cobranças em uma fatura só, mas esconde o que você está pagando. Confira a fatura linha por linha.
 - **Rotina semanal.** No seu dia fixo de finanças, olhe o que vence nos próximos 14 dias.
 
-[//]: # (MINHAOS-FINANCEIRO: mencionar contas a pagar recorrentes e lembretes de vencimento no MinhaOS App)
+No MinhaOS App, uma [conta a pagar](/funcionalidades/contas-a-pagar/) pode ser recorrente (semanal, quinzenal, mensal, trimestral ou anual) ou parcelada nos planos pagos, e o resumo diário por e-mail avisa, em todos os planos, o que vence em até 3 dias ou já atrasou.
 
 ## Revisão de assinaturas: o vazamento silencioso
 
