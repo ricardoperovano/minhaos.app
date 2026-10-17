@@ -15,6 +15,7 @@ const guiaDe: Record<ToolKey, { href: string; label: string }> = {
   'mensagem-de-cobranca': { href: '/guias/mensagem-de-cobranca-whatsapp/', label: 'Guia: mensagem de cobrança pelo WhatsApp' },
   'gerador-de-recibo': { href: '/guias/recibo-de-prestacao-de-servico/', label: 'Guia: recibo de prestação de serviço' },
   'modelo-ordem-de-servico': { href: '/guias/como-fazer-ordem-de-servico/', label: 'Guia: como fazer ordem de serviço' },
+  'calculadora-de-margem': { href: '/guias/margem-de-lucro-de-servico/', label: 'Guia: margem de lucro de serviço' },
 }
 
 const jsonLd = graph(organizationLd, breadcrumbLd(crumbs), {
@@ -26,7 +27,7 @@ const jsonLd = graph(organizationLd, breadcrumbLd(crumbs), {
 
 <Base
   title="Ferramentas grátis para prestadores de serviço"
-  description="Calculadora de valor da hora, mensagem de cobrança, recibo e modelo de ordem de serviço. Grátis, sem cadastro e funcionando no seu navegador."
+  description="Calculadoras de valor da hora e de margem, mensagem de cobrança, recibo e modelo de ordem de serviço. Grátis, sem cadastro, no seu navegador."
   path="/ferramentas/"
   jsonLd={jsonLd}
 >
@@ -34,7 +35,7 @@ const jsonLd = graph(organizationLd, breadcrumbLd(crumbs), {
     <Breadcrumbs items={crumbs} />
     <h1>Ferramentas grátis para quem presta serviço</h1>
     <p class="lead muted">
-      Calcule o valor da sua hora, monte mensagens de cobrança, gere recibos e ordens de serviço para imprimir ou salvar em PDF. Sem cadastro e
+      Calcule o valor da sua hora e a margem de cada serviço, monte mensagens de cobrança, gere recibos e ordens de serviço para imprimir ou salvar em PDF. Sem cadastro e
       sem custo.
     </p>
     <p class="callout small privacy">

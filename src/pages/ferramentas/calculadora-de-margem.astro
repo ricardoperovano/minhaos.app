@@ -1,0 +1,755 @@
+---
+import Breadcrumbs from '../../components/Breadcrumbs.astro'
+import Cta from '../../components/Cta.astro'
+import Base from '../../layouts/Base.astro'
+import { abs, breadcrumbLd, faqLd, graph, organizationLd } from '../../lib/seo'
+import { tools } from '../../lib/tools'
+
+const slug = 'calculadora-de-margem'
+const path = `/ferramentas/${slug}/`
+const tool = tools[slug]
+const crumbs = [
+  { name: 'Início', href: '/' },
+  { name: 'Ferramentas', href: '/ferramentas/' },
+  { name: tool.title, href: path },
+]
+
+const custosIniciais = [
+  { desc: 'Material', valor: '120,00' },
+  { desc: 'Deslocamento', valor: '40,00' },
+  { desc: 'Terceiros (ajudante, frete)', valor: '0,00' },
+]
+
+const faq = [
+  {
+    q: 'Como calcular a margem de lucro de um serviço?',
+    a: 'Do preço cobrado, subtraia os custos diretos do serviço (material, deslocamento, terceiros, o seu tempo, se quiser contá-lo) e os impostos sobre o valor. O que sobra é o lucro. A margem é esse lucro dividido pelo preço, vezes 100.',
+  },
+  {
+    q: 'Qual a diferença entre margem e markup?',
+    a: 'A margem compara o lucro com o preço de venda; o markup compara a diferença entre preço e custo com o custo. No mesmo serviço, o markup é sempre maior que a margem. Um serviço que custa R$ 100,00 e é vendido por R$ 200,00 tem markup de 100% e margem de 50% (sem impostos).',
+  },
+  {
+    q: 'Devo colocar o valor da minha hora como custo?',
+    a: 'Depende da pergunta que você quer responder. Sem o seu tempo, o resultado mostra quanto sobra para pagar você e as despesas fixas. Com o seu tempo a um custo por hora, o lucro passa a ser o que sobra depois de remunerar o seu trabalho. As duas visões são úteis; só não misture uma com a outra ao comparar serviços.',
+  },
+  {
+    q: 'Qual é uma boa margem de lucro para prestador de serviço?',
+    a: 'Não existe um número único: depende da atividade, do quanto das despesas fixas você já colocou no custo e de como o seu tempo entra na conta. Em vez de copiar um percentual, compare a margem dos seus próprios serviços e clientes e veja quais cobrem as despesas fixas do mês com folga.',
+  },
+  {
+    q: 'Sou MEI. O que coloco no campo de impostos?',
+    a: 'O MEI paga um valor mensal fixo (o DAS), e não um percentual sobre cada serviço. Nesse caso, deixe o campo de impostos em zero e trate o DAS como despesa fixa do mês. Se você recolhe tributo sobre o faturamento, use a alíquota indicada pelo seu contador.',
+  },
+  {
+    q: 'Os dados que eu digito ficam salvos em algum lugar?',
+    a: 'Não. O cálculo é feito no seu próprio navegador e nenhum número é enviado para servidores. Se você fechar ou recarregar a página, os campos voltam aos valores de exemplo.',
+  },
+]
+
+const jsonLd = graph(
+  organizationLd,
+  {
+    '@type': 'WebApplication',
+    name: tool.title,
+    description: tool.description,
+    url: abs(path),
+    applicationCategory: 'BusinessApplication',
+    operatingSystem: 'Any',
+    inLanguage: 'pt-BR',
+    isAccessibleForFree: true,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'BRL' },
+    publisher: { '@id': organizationLd['@id'] },
+  },
+  breadcrumbLd(crumbs),
+  faqLd(faq),
+)
+---
+
+<Base
+  title="Calculadora de margem de lucro de serviço"
+  description="Calcule grátis a margem de lucro de um serviço: custos diretos, horas, impostos, markup e preço mínimo para a margem que você quer. Sem cadastro."
+  path={path}
+  jsonLd={jsonLd}
+>
+  <div class="container page">
+    <Breadcrumbs items={crumbs} />
+    <h1>Calculadora de margem de lucro de serviço</h1>
+    <p class="lead muted">
+      Informe quanto você cobra e quanto o serviço custou para descobrir o lucro, a margem, o markup e o preço mínimo para chegar à margem que
+      você quer. Grátis, sem cadastro.
+    </p>
+    <p class="small privacy">O cálculo roda inteiro no seu navegador: nenhum dado digitado sai do seu aparelho.</p>
+
+    <div class="tool">
+      <form id="calc" class="card form" novalidate aria-labelledby="form-title">
+        <h2 id="form-title" class="form-title">Dados do serviço</h2>
+
+        <div class="field">
+          <label for="preco">Preço cobrado do cliente (R$)</label>
+          <input id="preco" name="preco" inputmode="decimal" autocomplete="off" value="450,00" aria-describedby="preco-hint preco-err" />
+          <p id="preco-hint" class="hint">O valor total do serviço, como aparece na cobrança.</p>
+          <p id="preco-err" class="err" hidden></p>
+        </div>
+
+        <fieldset>
+          <legend>Custos diretos do serviço</legend>
+          <p class="hint top-hint" id="custos-hint">Só o que existe por causa deste serviço. Deixe em branco ou 0 o que não se aplica.</p>
+          <div class="cost-head" aria-hidden="true">
+            <span>Descrição</span>
+            <span>Valor (R$)</span>
+          </div>
+          <ul id="custos" class="costs" role="list">
+            {
+              custosIniciais.map((c, i) => (
+                <li class="cost">
+                  <input class="i-desc" autocomplete="off" value={c.desc} aria-label={`Descrição do custo ${i + 1}`} />
+                  <input class="i-val" inputmode="decimal" autocomplete="off" value={c.valor} aria-label={`Valor do custo ${i + 1} (R$)`} aria-describedby="custos-err" />
+                  <button type="button" class="rm">
+                    <span aria-hidden="true">×</span>
+                    <span class="sr-only rm-label">{`Remover custo ${i + 1}`}</span>
+                  </button>
+                </li>
+              ))
+            }
+          </ul>
+          <p id="custos-err" class="err" hidden></p>
+          <button type="button" class="btn btn-secondary add" id="add">Adicionar custo</button>
+        </fieldset>
+
+        <fieldset>
+          <legend>Seu tempo (opcional)</legend>
+          <div class="row-2">
+            <div class="field">
+              <label for="horas">Horas gastas</label>
+              <input id="horas" name="horas" inputmode="decimal" autocomplete="off" value="3" aria-describedby="horas-err" />
+              <p id="horas-err" class="err" hidden></p>
+            </div>
+            <div class="field">
+              <label for="custoHora">Custo da hora (R$)</label>
+              <input id="custoHora" name="custoHora" inputmode="decimal" autocomplete="off" value="50,00" aria-describedby="custoHora-err" />
+              <p id="custoHora-err" class="err" hidden></p>
+            </div>
+          </div>
+          <p class="hint">
+            Para contar o seu trabalho como custo. Deixe os dois em branco para ver quanto sobra antes de pagar o seu tempo. Não sabe o custo da
+            hora? Use a <a href="/ferramentas/calculadora-valor-hora/">calculadora de valor da hora</a>.
+          </p>
+        </fieldset>
+
+        <fieldset>
+          <legend>Impostos e meta</legend>
+          <div class="field">
+            <label for="impostos">Impostos sobre o preço (%)</label>
+            <input id="impostos" name="impostos" inputmode="decimal" autocomplete="off" value="6" aria-describedby="impostos-hint impostos-err" />
+            <p id="impostos-hint" class="hint">Use a alíquota indicada pelo seu contador. MEI: 0 (o DAS é fixo por mês).</p>
+            <p id="impostos-err" class="err" hidden></p>
+          </div>
+          <div class="field">
+            <label for="meta">Margem de lucro desejada (%)</label>
+            <input id="meta" name="meta" inputmode="decimal" autocomplete="off" value="20" aria-describedby="meta-hint meta-err" />
+            <p id="meta-hint" class="hint">Usada só para calcular o preço mínimo.</p>
+            <p id="meta-err" class="err" hidden></p>
+          </div>
+        </fieldset>
+        <button type="reset" class="btn btn-secondary">Voltar aos valores de exemplo</button>
+      </form>
+
+      <section class="card result" aria-labelledby="res-title">
+        <h2 id="res-title" class="form-title">Resultado</h2>
+        <div id="res-ok">
+          <p class="big-label">Lucro do serviço</p>
+          <p class="big tabular" id="r-lucro">—</p>
+          <p id="r-alerta" class="callout callout-warning small" hidden></p>
+          <dl class="kpis tabular">
+            <div><dt>Margem de lucro</dt><dd id="r-margem">—</dd></div>
+            <div><dt>Markup sobre o custo</dt><dd id="r-markup">—</dd></div>
+            <div><dt>Custo direto total</dt><dd id="r-custo">—</dd></div>
+            <div><dt>Impostos</dt><dd id="r-imp">—</dd></div>
+            <div><dt id="r-min-label">Preço mínimo para a margem desejada</dt><dd id="r-min">—</dd></div>
+            <div><dt>Preço que só empata (lucro zero)</dt><dd id="r-empate">—</dd></div>
+          </dl>
+          <details class="steps" open>
+            <summary>Como chegamos nesses valores</summary>
+            <ol id="r-steps" class="tabular"></ol>
+          </details>
+        </div>
+        <p id="res-erro" class="callout callout-warning" hidden></p>
+        <p id="live" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+      </section>
+    </div>
+
+    <article class="prose content">
+      <h2>Como usar a calculadora de margem</h2>
+      <p>
+        Muita gente sabe quanto cobrou por um serviço, mas não sabe quanto ganhou com ele. A diferença está nos custos que saem do bolso para
+        aquele trabalho acontecer e nos impostos sobre o valor cobrado. Esta calculadora organiza essa conta em um minuto.
+      </p>
+      <ol>
+        <li><strong>Preço cobrado.</strong> O valor total do serviço para o cliente, incluindo material, se você cobra material junto.</li>
+        <li><strong>Custos diretos.</strong> Tudo o que só existe por causa deste serviço: material e peças, combustível e pedágio do deslocamento, ajudante, frete, aluguel de equipamento, taxa de terceiros. Use "Adicionar custo" para mais linhas e "×" para remover.</li>
+        <li><strong>Seu tempo (opcional).</strong> Se quiser que o seu trabalho entre como custo, informe as horas gastas (inclua deslocamento e preparação) e quanto vale cada hora para você.</li>
+        <li><strong>Impostos.</strong> O percentual que incide sobre o preço, se for o seu caso. MEI deixa em zero, porque o DAS é um valor fixo por mês.</li>
+        <li><strong>Margem desejada.</strong> A margem que você quer atingir. A calculadora mostra o preço mínimo para chegar nela com os mesmos custos.</li>
+      </ol>
+      <p>
+        O resultado é recalculado a cada número digitado. Use vírgula para os centavos (por exemplo, 1.250,50). Despesas fixas do mês, como
+        aluguel, celular e contador, não entram aqui: elas são cobertas pela soma do lucro de todos os serviços. O guia
+        <a href="/guias/despesas-fixas-e-variaveis/">despesas fixas e variáveis</a> explica a diferença.
+      </p>
+
+      <h2>As fórmulas</h2>
+      <ol>
+        <li><strong>Custo direto</strong> = soma dos custos + (horas × custo da hora).</li>
+        <li><strong>Impostos</strong> = preço × percentual de impostos.</li>
+        <li><strong>Lucro</strong> = preço − custo direto − impostos.</li>
+        <li><strong>Margem</strong> = lucro ÷ preço × 100.</li>
+        <li><strong>Markup sobre o custo</strong> = (preço − custo direto) ÷ custo direto × 100.</li>
+        <li><strong>Preço mínimo</strong> = custo direto ÷ (1 − impostos − margem desejada).</li>
+      </ol>
+      <p>
+        O preço mínimo divide pelo que sobra depois de impostos e margem, em vez de somar percentuais ao custo. Somar 26% a um custo de R$ 310,00
+        daria R$ 390,60; mas, sobre esse preço, 6% de impostos e 20% de margem somam R$ 101,56, e o custo não fecha. Dividindo por 0,74, o preço
+        fica em R$ 418,92 e a conta fecha. Os valores são arredondados ao centavo (meio centavo para cima).
+      </p>
+
+      <h2>Exemplo com números</h2>
+      <p>
+        Um técnico fictício cobra R$ 450,00 por uma instalação. Gasta R$ 120,00 de material e R$ 40,00 de deslocamento, leva 3 horas e considera
+        que a hora dele custa R$ 50,00. Recolhe 6% de impostos sobre o preço e quer uma margem de 20%.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th scope="col">Etapa</th><th scope="col">Conta</th><th scope="col">Resultado</th></tr></thead>
+          <tbody>
+            <tr><td>Custo direto</td><td>120,00 + 40,00 + 3 × 50,00</td><td>R$ 310,00</td></tr>
+            <tr><td>Impostos</td><td>450,00 × 6%</td><td>R$ 27,00</td></tr>
+            <tr><td>Lucro</td><td>450,00 − 310,00 − 27,00</td><td>R$ 113,00</td></tr>
+            <tr><td>Margem</td><td>113,00 ÷ 450,00</td><td>25,11%</td></tr>
+            <tr><td>Markup</td><td>(450,00 − 310,00) ÷ 310,00</td><td>45,16%</td></tr>
+            <tr><td>Preço mínimo para 20%</td><td>310,00 ÷ (1 − 0,06 − 0,20)</td><td>R$ 418,92</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        O serviço está acima da meta: a margem é de 25,11%, e o técnico poderia dar até R$ 31,08 de desconto (450,00 − 418,92) sem cair abaixo
+        de 20%. Se o material subir para R$ 220,00, o custo vai a R$ 410,00, o lucro cai para R$ 13,00 e a margem para 2,89%: hora de rever o
+        preço ou cobrar o material à parte.
+      </p>
+
+      <h2>Margem, markup e lucro: não confunda</h2>
+      <p>
+        Margem e markup usam os mesmos números, mas olham de lados diferentes. A margem responde "de cada R$ 100 que o cliente paga, quanto fica
+        comigo?". O markup responde "quanto eu coloquei em cima do custo?". Um markup de 100% não significa margem de 100%: sem impostos, ele dá
+        margem de 50%. Quem forma preço com markup e mede resultado com margem precisa saber converter um no outro, senão acha que está ganhando
+        mais do que ganha.
+      </p>
+      <p>
+        Lucro do serviço também não é o que sobra no fim do mês. Desse valor ainda saem as despesas fixas e, se você não contou o seu tempo como
+        custo, a sua própria remuneração. O guia <a href="/guias/margem-de-lucro-de-servico/">margem de lucro de serviço</a> mostra como juntar
+        tudo em uma análise por cliente.
+      </p>
+
+      <h2>O que fazer com o resultado</h2>
+      <ul>
+        <li><strong>Margem negativa:</strong> o serviço custa mais do que rende. Reveja o preço, cobre deslocamento e material à parte ou avalie se vale manter esse tipo de trabalho.</li>
+        <li><strong>Margem baixa em um cliente específico:</strong> visitas longas, deslocamento grande ou retrabalho frequente costumam ser a causa. Compare com os outros clientes antes de decidir.</li>
+        <li><strong>Margem boa, mas caixa apertado:</strong> o problema pode ser prazo de recebimento, e não preço. Veja o guia de <a href="/guias/controle-de-contas-a-receber/">controle de contas a receber</a>.</li>
+        <li><strong>Custos esquecidos:</strong> desgaste de ferramenta, estacionamento e taxas de maquininha somem do cálculo com facilidade. A lista de <a href="/guias/custos-esquecidos-no-preco/">custos esquecidos no preço</a> ajuda a conferir.</li>
+      </ul>
+      <p>
+        Para formar o preço a partir do valor da sua hora, comece pelo guia <a href="/guias/quanto-cobrar-por-hora/">quanto cobrar por hora</a> e
+        use esta calculadora para conferir serviço a serviço. Quando a conta mostrar que é hora de subir o preço, o passo a passo está em
+        <a href="/guias/como-reajustar-o-preco-dos-servicos/">como reajustar o preço dos serviços</a>.
+      </p>
+      <p>
+        Para saber quanto cada cliente rendeu no mês, você precisa do total cobrado por cliente. O MinhaOS App registra os serviços com quantidade e
+        valor e mostra, nos relatórios, o executado e o faturado por cliente e período; os custos você ainda confere à parte.
+      </p>
+      {/* MINHAOS-FINANCEIRO: mencionar custo ligado ao serviço e margem por serviço/cliente no MinhaOS App */}
+
+      <h2>Perguntas frequentes</h2>
+      {
+        faq.map((f) => (
+          <>
+            <h3>{f.q}</h3>
+            <p>{f.a}</p>
+          </>
+        ))
+      }
+    </article>
+
+    <Cta title="Saiba quanto cada cliente rendeu no mês" text="Registre horas, visitas e materiais por cliente e feche o mês com um demonstrativo de cobrança que o cliente consulta por link." />
+  </div>
+</Base>
+
+<script>
+  import { brl, decimalBR, divRound, parseScaled } from './_shared'
+
+  const form = document.getElementById('calc') as HTMLFormElement
+  const list = document.getElementById('custos') as HTMLUListElement
+  const $ = (id: string) => document.getElementById(id) as HTMLElement
+  const MAX_LINHAS = 30
+  const MAX_CENTS = 1_000_000_000n // R$ 10 milhões
+
+  /** Divisão com arredondamento meio para cima (afastando do zero) que aceita numerador negativo. */
+  const sdiv = (a: bigint, b: bigint) => (a < 0n ? -divRound(-a, b) : divRound(a, b))
+
+  function setErr(input: HTMLInputElement, errId: string, msg: string | null) {
+    const err = $(errId)
+    if (msg === null) {
+      input.removeAttribute('aria-invalid')
+      err.hidden = true
+      err.textContent = ''
+    } else {
+      input.setAttribute('aria-invalid', 'true')
+      err.textContent = msg
+      err.hidden = false
+    }
+  }
+
+  /** Lê um campo com 2 casas (centavos ou centésimos). `optional`: vazio vira null sem erro. */
+  function read(id: string, max: bigint, opts: { gt?: boolean; optional?: boolean; msg: string }): bigint | null | false {
+    const input = $(id) as HTMLInputElement
+    const raw = input.value.trim()
+    if (raw === '' && opts.optional) {
+      setErr(input, `${id}-err`, null)
+      return null
+    }
+    const v = parseScaled(raw, 2)
+    const ok = v !== null && v <= max && (opts.gt ? v > 0n : v >= 0n)
+    if (ok) {
+      setErr(input, `${id}-err`, null)
+      return v
+    }
+    setErr(input, `${id}-err`, raw === '' ? 'Campo obrigatório. ' + opts.msg : opts.msg)
+    return false
+  }
+
+  function readCosts(): bigint | false {
+    let sum = 0n
+    const bad: number[] = []
+    list.querySelectorAll<HTMLLIElement>('li.cost').forEach((li, i) => {
+      const input = li.querySelector<HTMLInputElement>('.i-val')!
+      const raw = input.value.trim()
+      const v = raw === '' ? 0n : parseScaled(raw, 2)
+      if (v === null || v > MAX_CENTS) {
+        input.setAttribute('aria-invalid', 'true')
+        bad.push(i + 1)
+      } else {
+        input.removeAttribute('aria-invalid')
+        sum += v
+      }
+    })
+    const err = $('custos-err')
+    if (bad.length) {
+      err.textContent = `Valor inválido no custo ${bad.join(', ')}. Use números como 120,00 (ou deixe em branco).`
+      err.hidden = false
+      return false
+    }
+    err.hidden = true
+    err.textContent = ''
+    return sum
+  }
+
+  const pct = (v: bigint) => `${v < 0n ? '−' : ''}${decimalBR(v < 0n ? -v : v, 2)}%`
+  const money = (v: bigint) => (v < 0n ? `−${brl(-v)}` : brl(v))
+
+  let liveTimer: number | undefined
+
+  function calc(): boolean {
+    const preco = read('preco', MAX_CENTS, { gt: true, msg: 'Informe um valor maior que zero, por exemplo 450,00.' })
+    const custos = readCosts()
+    let horas = read('horas', 100000n, { optional: true, msg: 'Informe de 0 a 1.000 horas.' })
+    let custoHora = read('custoHora', 10_000_000n, { optional: true, msg: 'Informe um valor igual ou maior que zero.' })
+    const imp = read('impostos', 6000n, { msg: 'Informe uma porcentagem entre 0 e 60.' })
+    const meta = read('meta', 9000n, { msg: 'Informe uma porcentagem entre 0 e 90.' })
+
+    // Horas e custo da hora andam juntos: um preenchido exige o outro.
+    if (horas !== false && custoHora !== false && (horas === null) !== (custoHora === null)) {
+      if (horas === null) {
+        setErr($('horas') as HTMLInputElement, 'horas-err', 'Informe as horas ou apague o custo da hora.')
+        horas = false
+      } else {
+        setErr($('custoHora') as HTMLInputElement, 'custoHora-err', 'Informe o custo da hora ou apague as horas.')
+        custoHora = false
+      }
+    }
+
+    const fail = (msg: string) => {
+      $('res-ok').hidden = true
+      $('res-erro').hidden = false
+      $('res-erro').textContent = msg
+      $('live').textContent = ''
+      return false
+    }
+    if (preco === false || preco === null || custos === false || horas === false || custoHora === false || imp === false || imp === null || meta === false || meta === null) {
+      return fail('Corrija os campos destacados para ver o resultado.')
+    }
+    $('res-ok').hidden = false
+    $('res-erro').hidden = true
+
+    // horas e custoHora têm 2 casas: horas × 100 e centavos → mão de obra = h × c ÷ 100
+    const maoDeObra = horas !== null && custoHora !== null ? divRound(horas * custoHora, 100n) : 0n
+    const custo = custos + maoDeObra
+    const impostos = divRound(preco * imp, 10000n) // imp em centésimos de %
+    const lucro = preco - custo - impostos
+    const margem = sdiv(lucro * 10000n, preco) // centésimos de %
+    const markup = custo > 0n ? sdiv((preco - custo) * 10000n, custo) : null
+    const empateDen = 10000n - imp
+    const empate = divRound(custo * 10000n, empateDen)
+    const minDen = 10000n - imp - meta
+    const minimo = minDen > 0n ? divRound(custo * 10000n, minDen) : null
+
+    $('r-lucro').textContent = money(lucro)
+    $('r-lucro').classList.toggle('neg', lucro < 0n)
+    $('r-margem').textContent = pct(margem)
+    $('r-markup').textContent = markup === null ? 'Sem custo direto' : pct(markup)
+    $('r-custo').textContent = brl(custo)
+    $('r-imp').textContent = brl(impostos)
+    $('r-min-label').textContent = `Preço mínimo para ${pct(meta)} de margem`
+    $('r-min').textContent = minimo === null ? 'Impostos + margem ≥ 100%' : brl(minimo)
+    $('r-empate').textContent = brl(empate)
+
+    const alerta = $('r-alerta')
+    if (lucro < 0n) {
+      alerta.textContent = `Este serviço dá prejuízo de ${brl(-lucro)}. Para empatar, o preço precisa ser de pelo menos ${brl(empate)}.`
+      alerta.hidden = false
+    } else if (minimo !== null && preco < minimo) {
+      alerta.textContent = `A margem está abaixo da meta de ${pct(meta)}. Faltam ${brl(minimo - preco)} no preço para chegar lá.`
+      alerta.hidden = false
+    } else {
+      alerta.hidden = true
+      alerta.textContent = ''
+    }
+
+    const steps = [
+      `Custo direto: ${brl(custos)} em custos${maoDeObra > 0n || horas !== null ? ` + ${decimalBR(horas ?? 0n, 2)} h × ${brl(custoHora ?? 0n)} = ${brl(custos)} + ${brl(maoDeObra)}` : ''} = <strong>${brl(custo)}</strong>`,
+      `Impostos: ${brl(preco)} × ${pct(imp)} = ${brl(impostos)}`,
+      `Lucro: ${brl(preco)} − ${brl(custo)} − ${brl(impostos)} = <strong>${money(lucro)}</strong>`,
+      `Margem: ${money(lucro)} ÷ ${brl(preco)} = <strong>${pct(margem)}</strong>`,
+      markup === null ? 'Markup: sem custo direto, não há base para calcular.' : `Markup: (${brl(preco)} − ${brl(custo)}) ÷ ${brl(custo)} = ${pct(markup)}`,
+      minimo === null
+        ? `Preço mínimo: impostos (${pct(imp)}) + margem desejada (${pct(meta)}) somam 100% ou mais; reduza a margem desejada.`
+        : `Preço mínimo: ${brl(custo)} ÷ (100% − ${pct(imp)} − ${pct(meta)}) = <strong>${brl(minimo)}</strong>`,
+    ]
+    $('r-steps').replaceChildren(
+      ...steps.map((s) => {
+        const li = document.createElement('li')
+        li.innerHTML = s // conteúdo gerado só a partir de números formatados
+        return li
+      }),
+    )
+
+    window.clearTimeout(liveTimer)
+    liveTimer = window.setTimeout(() => {
+      $('live').textContent = `Lucro do serviço: ${money(lucro)}. Margem: ${pct(margem)}.`
+    }, 900)
+    return true
+  }
+
+  /* ---------- Linhas de custo ---------- */
+
+  const template = list.querySelector('li.cost')!.cloneNode(true) as HTMLLIElement
+
+  function renumber() {
+    const rows = list.querySelectorAll<HTMLLIElement>('li.cost')
+    rows.forEach((li, i) => {
+      li.querySelector('.i-desc')!.setAttribute('aria-label', `Descrição do custo ${i + 1}`)
+      li.querySelector('.i-val')!.setAttribute('aria-label', `Valor do custo ${i + 1} (R$)`)
+      li.querySelector('.rm-label')!.textContent = `Remover custo ${i + 1}`
+    })
+    ;($('add') as HTMLButtonElement).disabled = rows.length >= MAX_LINHAS
+  }
+
+  function addRow(focus = true) {
+    if (list.children.length >= MAX_LINHAS) return
+    const li = template.cloneNode(true) as HTMLLIElement
+    li.querySelectorAll('input').forEach((i) => {
+      i.value = ''
+      i.removeAttribute('aria-invalid')
+    })
+    list.append(li)
+    renumber()
+    if (focus) li.querySelector<HTMLInputElement>('.i-desc')!.focus()
+  }
+
+  form.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('button')
+    if (!btn) return
+    if (btn.classList.contains('rm')) {
+      const li = btn.closest('li') as HTMLLIElement
+      const idx = Array.from(list.children).indexOf(li)
+      li.remove()
+      if (list.children.length === 0) addRow(false)
+      renumber()
+      calcFromUser()
+      const next = list.children[Math.min(idx, list.children.length - 1)]
+      next.querySelector<HTMLButtonElement>('.rm')!.focus()
+    } else if (btn.id === 'add') {
+      addRow()
+      calc()
+    }
+  })
+
+  // Evento de uso (sem nenhum valor digitado): primeiro resultado válido após a pessoa editar, uma vez por página.
+  let usageSent = false
+  function calcFromUser() {
+    if (calc() && !usageSent) {
+      usageSent = true
+      window.dispatchEvent(new CustomEvent('minhaos:track', { detail: { event: 'tool_use', params: { tool: 'calculadora-de-margem', action: 'calculate' } } }))
+    }
+  }
+
+  form.addEventListener('input', calcFromUser)
+  form.addEventListener('reset', () =>
+    window.setTimeout(() => {
+      // volta às 3 linhas de exemplo
+      list.replaceChildren(
+        ...[
+          ['Material', '120,00'],
+          ['Deslocamento', '40,00'],
+          ['Terceiros (ajudante, frete)', '0,00'],
+        ].map(([d, v]) => {
+          const li = template.cloneNode(true) as HTMLLIElement
+          li.querySelector<HTMLInputElement>('.i-desc')!.value = d
+          li.querySelector<HTMLInputElement>('.i-val')!.value = v
+          return li
+        }),
+      )
+      renumber()
+      calc()
+    }, 0),
+  )
+  form.addEventListener('submit', (e) => e.preventDefault())
+  renumber()
+  calc()
+</script>
+
+<style>
+  /* <button> não herda a fonte do site por padrão */
+  button {
+    font-family: inherit;
+  }
+  .page {
+    padding-block: 32px 64px;
+  }
+  .lead {
+    font-size: 19px;
+    max-width: 70ch;
+    margin-bottom: 8px;
+  }
+  .privacy {
+    margin-bottom: 28px;
+  }
+  .tool {
+    display: grid;
+    gap: 20px;
+    align-items: start;
+  }
+  @media (min-width: 900px) {
+    .tool {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    }
+    .result {
+      position: sticky;
+      top: 88px;
+    }
+  }
+  .form-title {
+    font-size: 20px;
+    margin: 0 0 12px;
+  }
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0 0 16px;
+    min-width: 0;
+  }
+  legend {
+    font-weight: 650;
+    color: var(--navy);
+    margin-bottom: 8px;
+    padding: 0;
+  }
+  .field {
+    margin-bottom: 14px;
+  }
+  .row-2 {
+    display: grid;
+    gap: 0 14px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  input {
+    width: 100%;
+    min-width: 0;
+    min-height: 46px;
+    padding: 8px 12px;
+    font: inherit;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid #64748b;
+    border-radius: var(--radius-sm);
+  }
+  input[aria-invalid='true'] {
+    border-color: var(--warning);
+    border-width: 2px;
+  }
+  .hint {
+    font-size: 14px;
+    color: var(--text-3);
+    margin: 4px 0 0;
+    line-height: 1.45;
+  }
+  .top-hint {
+    margin: 0 0 10px;
+  }
+  .err {
+    font-size: 14px;
+    color: var(--warning);
+    font-weight: 600;
+    margin: 4px 0 0;
+  }
+  .cost-head,
+  .cost {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 8.5em) 44px;
+    gap: 8px;
+    align-items: center;
+  }
+  .cost-head {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-2);
+    margin-bottom: 4px;
+  }
+  .costs {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .cost {
+    margin-bottom: 8px;
+  }
+  .rm {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text-2);
+    font-size: 22px;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .rm:hover {
+    background: var(--surface-muted);
+    color: var(--navy);
+  }
+  .add {
+    margin-top: 4px;
+  }
+  @media (max-width: 420px) {
+    .cost-head {
+      display: none;
+    }
+    .cost {
+      grid-template-columns: minmax(0, 1fr) 44px;
+      grid-template-areas: 'desc desc' 'val rm';
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .cost .i-desc {
+      grid-area: desc;
+    }
+    .cost .i-val {
+      grid-area: val;
+    }
+    .cost .rm {
+      grid-area: rm;
+    }
+  }
+  .result {
+    background: var(--teal-subtle);
+    border-color: var(--teal);
+  }
+  .big-label {
+    margin: 0;
+    font-weight: 600;
+    color: var(--text-2);
+  }
+  .big {
+    font-size: clamp(34px, 7vw, 46px);
+    font-weight: 700;
+    color: var(--teal-dark);
+    margin: 0 0 16px;
+    line-height: 1.1;
+  }
+  .big.neg {
+    color: var(--warning);
+  }
+  #r-alerta {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+  }
+  .kpis {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 12px;
+    margin: 0 0 16px;
+  }
+  .kpis div {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+  }
+  .kpis dt {
+    font-size: 14px;
+    color: var(--text-2);
+    line-height: 1.35;
+  }
+  .kpis dd {
+    margin: 2px 0 0;
+    font-size: 19px;
+    font-weight: 650;
+    color: var(--navy);
+    overflow-wrap: anywhere;
+  }
+  .steps summary {
+    cursor: pointer;
+    font-weight: 600;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    color: var(--navy);
+  }
+  .steps ol {
+    padding-left: 20px;
+    margin: 4px 0 0;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+  .steps li {
+    margin-bottom: 6px;
+  }
+  .content {
+    margin-top: 48px;
+  }
+  .table-wrap {
+    overflow-x: auto;
+  }
+  @media (max-width: 400px) {
+    .kpis {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

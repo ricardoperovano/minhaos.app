@@ -3,5 +3,6 @@ export const tools = {
   'mensagem-de-cobranca': { title: 'Gerador de mensagem de cobrança', description: 'Monte mensagens de cobrança educadas para WhatsApp e e-mail, do lembrete antes do vencimento ao atraso.' },
   'gerador-de-recibo': { title: 'Gerador de recibo de prestação de serviço', description: 'Preencha os dados e imprima ou salve em PDF um recibo de prestação de serviço com valor por extenso.' },
   'modelo-ordem-de-servico': { title: 'Modelo de ordem de serviço', description: 'Modelo de ordem de serviço para preencher, imprimir ou salvar em PDF, com campos que evitam retrabalho e discussão.' },
+  'calculadora-de-margem': { title: 'Calculadora de margem de lucro', description: 'Calcule lucro, margem e markup de um serviço a partir do preço, dos custos diretos, das horas e dos impostos.' },
 } as const
 export type ToolKey = keyof typeof tools

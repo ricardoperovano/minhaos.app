@@ -16,7 +16,7 @@ const guias = defineCollection({
     title: z.string().max(60),
     h1: z.string().max(90),
     description: z.string().min(110).max(160),
-    cluster: z.enum(['ordem-de-servico', 'cobranca', 'precificacao', 'documentos', 'gestao']),
+    cluster: z.enum(['ordem-de-servico', 'cobranca', 'precificacao', 'documentos', 'gestao', 'financeiro']),
     /** Termo principal buscado e variações (orientam o texto; não viram meta keywords). */
     keyword: z.string(),
     keywords: z.array(z.string()).default([]),
@@ -29,7 +29,7 @@ const guias = defineCollection({
     related: z.array(z.string()).default([]),
     /** Fontes oficiais citadas (obrigatório em temas fiscais/legais). */
     sources: z.array(source).default([]),
-    tool: z.enum(['calculadora-valor-hora', 'mensagem-de-cobranca', 'gerador-de-recibo', 'modelo-ordem-de-servico']).optional(),
+    tool: z.enum(['calculadora-valor-hora', 'mensagem-de-cobranca', 'gerador-de-recibo', 'modelo-ordem-de-servico', 'calculadora-de-margem']).optional(),
   }),
 })
 

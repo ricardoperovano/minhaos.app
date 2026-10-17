@@ -23,6 +23,7 @@ export const GET: APIRoute = async () => {
     '',
     '## Ferramentas gratuitas',
     `- [Calculadora de valor da hora](${site.url}/ferramentas/calculadora-valor-hora/)`,
+    `- [Calculadora de margem de lucro de serviço](${site.url}/ferramentas/calculadora-de-margem/)`,
     `- [Gerador de mensagem de cobrança](${site.url}/ferramentas/mensagem-de-cobranca/)`,
     `- [Gerador de recibo](${site.url}/ferramentas/gerador-de-recibo/)`,
     `- [Modelo de ordem de serviço](${site.url}/ferramentas/modelo-ordem-de-servico/)`,
