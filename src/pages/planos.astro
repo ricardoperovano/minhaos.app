@@ -1,9 +1,25 @@
 ---
 import Breadcrumbs from '../components/Breadcrumbs.astro'
 import Cta from '../components/Cta.astro'
+import CurrencySwitch from '../components/CurrencySwitch.astro'
+import Money from '../components/Money.astro'
 import PlanoSobMedida from '../components/PlanoSobMedida.astro'
 import Base from '../layouts/Base.astro'
-import { annualDiscount, annualMonthly, annualTotal, brl, compare, isSoon, offersLd, paidPlans, plans } from '../lib/plans'
+import {
+  type Currency,
+  annualDiscount,
+  annualMonthly,
+  annualTotal,
+  compare,
+  currencies,
+  isSoon,
+  money,
+  monthlyIn,
+  offersLd,
+  paidPlans,
+  plans,
+  priceIn,
+} from '../lib/plans'
 import { breadcrumbLd, faqLd, graph, organizationLd, softwareLd } from '../lib/seo'
 import { links, site } from '../site.config'
 
@@ -17,7 +33,10 @@ const crumbs = [
 ]
 const pct = Math.round(annualDiscount * 100)
 const listPt = (items: string[]) => (items.length < 2 ? items.join('') : `${items.slice(0, -1).join(', ')} e ${items[items.length - 1]}`)
-const annualList = listPt(paidPlans.map((p) => `o ${p.name} sai por ${brl(annualTotal(p.monthly))} por ano (${brl(annualMonthly(p.monthly))} por mês)`))
+/** "o Essencial sai por R$ 566,40 por ano (R$ 47,20 por mês), …" na moeda pedida. */
+const annualList = (c: Currency) =>
+  listPt(paidPlans.map((p) => `o ${p.name} sai por ${money(annualTotal(monthlyIn(p, c)), c)} por ano (${money(annualMonthly(monthlyIn(p, c)), c)} por mês)`))
+const usdList = listPt(paidPlans.map((p) => priceIn(p, 'USD')))
 
 const incluso = [
   'Registro de serviços com datas, quantidades e valores, sem limite de lançamentos',
@@ -42,7 +61,9 @@ const faq = [
   },
   {
     q: 'Como funciona o desconto do plano anual?',
-    a: `No anual você paga 12 meses de uma vez com ${pct}% de desconto: ${annualList}.`,
+    // `a` (reais) vai no JSON-LD e no HTML sem JS; `aIn` gera o texto por moeda para a troca na tela.
+    a: `No anual você paga 12 meses de uma vez com ${pct}% de desconto: ${annualList('BRL')}.`,
+    aIn: (c: Currency) => `No anual você paga 12 meses de uma vez com ${pct}% de desconto: ${annualList(c)}.`,
   },
   {
     q: 'Posso cancelar quando quiser?',
@@ -74,7 +95,11 @@ const faq = [
   },
   {
     q: 'Quais formas de pagamento da assinatura?',
-    a: 'As formas de pagamento disponíveis e as condições aparecem na tela de assinatura, dentro do aplicativo. Os preços são em reais.',
+    a: 'As formas de pagamento disponíveis e as condições aparecem na tela de assinatura, dentro do aplicativo. Os preços são em reais para quem usa o navegador em português e em dólar para quem usa outro idioma (veja a pergunta seguinte).',
+  },
+  {
+    q: 'Posso pagar em dólar?',
+    a: `Sim. Quem usa o navegador em outro idioma que não o português vê os preços em dólar, com os mesmos números (${usdList} por mês; anual com ${pct}% de desconto), e paga pelo ${currencies.USD.provider}. Quem usa o navegador em português vê e paga em reais, pelo ${currencies.BRL.provider}. A moeda é definida no cadastro, a partir do idioma do navegador, e fica fixa na conta: não há seletor para trocar depois. Se precisar de outra moeda antes de assinar, fale com a gente.`,
   },
 ]
 
@@ -98,23 +123,26 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
         <label><input type="radio" name="billing" value="monthly" checked /> <span>Mensal</span></label>
         <label><input type="radio" name="billing" value="annual" /> <span>Anual <small>−{pct}%</small></span></label>
       </fieldset>
+      <p class="small muted currency-note" data-currency="BRL">
+        <Money of={(c) => `Cobrança em ${c === 'BRL' ? 'reais' : 'dólar'} pelo ${currencies[c].provider}.`} /> A moeda é definida pelo idioma do navegador no cadastro e fica fixa na conta.
+      </p>
     </div>
   </section>
 
-  <section class="container plans" data-billing="monthly" id="planos">
+  <section class="container plans" data-billing="monthly" data-currency="BRL" id="planos">
     {plans.map((p) => (
       <article class={`plan card${p.highlight ? ' featured' : ''}`} aria-labelledby={`plan-${p.key}`}>
         {p.highlight && <span class="badge">Mais escolhido</span>}
         <h2 id={`plan-${p.key}`}>{p.name}</h2>
         <p class="tagline">{p.tagline}</p>
         {p.monthly === 0 ? (
-          <p class="price"><span class="amount">R$ 0</span><span class="per">para sempre</span></p>
+          <p class="price"><span class="amount"><Money of={(c) => priceIn(p, c)} /></span><span class="per">para sempre</span></p>
         ) : (
           <div class="prices">
-            <p class="price m"><span class="amount">{brl(p.monthly, false)}</span><span class="per">/mês</span></p>
+            <p class="price m"><span class="amount"><Money of={(c) => priceIn(p, c)} /></span><span class="per">/mês</span></p>
             <p class="price a">
-              <span class="amount">{brl(annualMonthly(p.monthly))}</span><span class="per">/mês</span>
-              <span class="note">{brl(annualTotal(p.monthly))} cobrados por ano</span>
+              <span class="amount"><Money of={(c) => money(annualMonthly(monthlyIn(p, c)), c)} /></span><span class="per">/mês</span>
+              <span class="note"><Money of={(c) => money(annualTotal(monthlyIn(p, c)), c)} /> cobrados por ano</span>
             </p>
           </div>
         )}
@@ -199,15 +227,21 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
   </section>
 
   <section class="section section-muted">
-    <div class="container prose faq-wrap">
+    <div class="container prose faq-wrap" data-currency="BRL">
       <h2>Perguntas sobre os planos</h2>
-      {faq.map((f) => <details class="faq"><summary>{f.q}</summary><p>{f.a}</p></details>)}
+      {faq.map((f) => (
+        <details class="faq">
+          <summary>{f.q}</summary>
+          <p>{f.aIn ? <Money of={f.aIn} /> : f.a}</p>
+        </details>
+      ))}
       <p>O que cada papel da equipe pode fazer está em <a href="/funcionalidades/usuarios-e-permissoes/">usuários e permissões</a>.</p>
       <p>Outra dúvida? Veja as <a href="/perguntas-frequentes/">perguntas frequentes</a> ou escreva para <a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>.</p>
     </div>
   </section>
 
   <div class="container"><Cta title="Comece pelo plano Grátis" text="Crie a conta, registre o primeiro serviço e emita um demonstrativo hoje. Mude de plano só quando precisar de mais." /></div>
+  <CurrencySwitch />
 </Base>
 
 <script>
@@ -275,6 +309,10 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
   }
   .toggle label:not(:has(input:checked)) small {
     color: var(--teal);
+  }
+  .currency-note {
+    margin: 14px 0 0;
+    max-width: 62ch;
   }
 
   .plans {

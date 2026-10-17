@@ -1,12 +1,18 @@
 /**
  * Planos e preços — fonte única para /planos/, a home, o FAQ, o llms.txt e o JSON-LD.
- * Preços em reais, por mês. O anual aplica `annualDiscount` sobre 12 mensalidades.
+ * `monthly` é o preço em reais, por mês; `currencies` traz o conjunto de cada moeda (reais pelo Asaas,
+ * dólar pelo Stripe — hoje com os mesmos números). O anual aplica `annualDiscount` sobre 12 mensalidades.
+ * O site mostra reais por padrão e troca para dólar no navegador em outro idioma (src/lib/currency.ts).
  *
  * As chaves (`key`) vão no `?plano=` dos links de cadastro. No aplicativo, os códigos internos são
  * gratis → free, essencial → starter, profissional → pro, negocios → business.
  * Todos os planos têm limites; acima do Negócios, o contato é pelo `customPlanHref`.
  */
+import { type Currency, money } from './currency'
 import { site } from '../site.config'
+
+export type { Currency } from './currency'
+export { currencyForLanguage, money } from './currency'
 
 export const annualDiscount = 0.2
 
@@ -198,37 +204,70 @@ export const compare: CompareGroup[] = [
   },
 ]
 
-/** Preço mensal equivalente no plano anual, em reais. */
+/** Preço mensal equivalente no plano anual (mesma moeda do valor informado). */
 export const annualMonthly = (monthly: number) => Math.round(monthly * (1 - annualDiscount) * 100) / 100
-/** Total do ano, em reais. */
+/** Total do ano (mesma moeda do valor informado). */
 export const annualTotal = (monthly: number) => Math.round(annualMonthly(monthly) * 12 * 100) / 100
 
-export const brl = (v: number, cents = true) =>
-  v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 })
+/** Formatação em reais ("R$ 59" / "R$ 566,40"). Para outra moeda use `money(v, currency)`. */
+export const brl = (v: number, cents = true) => money(v, 'BRL', cents)
+
+/**
+ * Moedas de cobrança. Os números são iguais nas duas (decisão de produto): quem usa o navegador em
+ * português paga em reais pelo Asaas; nos demais idiomas, em dólar pelo Stripe. `monthly` por chave de plano.
+ */
+export interface CurrencyInfo {
+  code: Currency
+  /** Nome no plural, para textos ("em reais", "em dólares"). */
+  noun: string
+  /** Operador de pagamento que cobra nessa moeda. */
+  provider: 'Asaas' | 'Stripe'
+  monthly: Record<Plan['key'], number>
+}
+const sameAsBrl = Object.fromEntries(plans.map((p) => [p.key, p.monthly])) as Record<Plan['key'], number>
+export const currencies: Record<Currency, CurrencyInfo> = {
+  BRL: { code: 'BRL', noun: 'reais', provider: 'Asaas', monthly: sameAsBrl },
+  USD: { code: 'USD', noun: 'dólares', provider: 'Stripe', monthly: { gratis: 0, essencial: 59, profissional: 99, negocios: 199 } },
+}
+export const currencyCodes = Object.keys(currencies) as Currency[]
+/** Preço mensal de um plano na moeda. */
+export const monthlyIn = (p: Plan, currency: Currency) => currencies[currency].monthly[p.key]
+/** Preço mensal formatado na moeda: "R$ 59" / "US$ 59" (sem centavos) ou com centavos. */
+export const priceIn = (p: Plan, currency: Currency, cents = false) => money(monthlyIn(p, currency), currency, cents)
 
 /** Planos pagos, do mais barato ao mais caro. */
 export const paidPlans = plans.filter((p) => p.monthly > 0)
-/** Maior preço mensal (para o AggregateOffer do JSON-LD). */
+/** Maior preço mensal em reais (para o AggregateOffer do JSON-LD). */
 export const highestMonthly = Math.max(...plans.map((p) => p.monthly))
+/** Maior preço mensal por moeda. */
+export const highestMonthlyIn = (currency: Currency) => Math.max(...plans.map((p) => monthlyIn(p, currency)))
 
-/** JSON-LD: uma oferta por plano (preço mensal) ligada ao SoftwareApplication. */
+/**
+ * JSON-LD: uma Offer por plano E por moeda (preço mensal) ligada ao SoftwareApplication.
+ * O schema.org admite uma só `priceCurrency` por Offer, então BRL e USD viram ofertas irmãs.
+ */
 export const offersLd = (softwareId: string) =>
-  plans.map((p) => ({
-    '@type': 'Offer',
-    name: `Plano ${p.name}`,
-    description: p.tagline,
-    url: 'https://minhaos.app/planos/',
-    price: p.monthly.toFixed(2),
-    priceCurrency: 'BRL',
-    availability: 'https://schema.org/InStock',
-    category: 'subscription',
-    itemOffered: { '@id': softwareId },
-    priceSpecification: {
-      '@type': 'UnitPriceSpecification',
-      price: p.monthly.toFixed(2),
-      priceCurrency: 'BRL',
-      billingDuration: 1,
-      billingIncrement: 1,
-      unitCode: 'MON',
-    },
-  }))
+  currencyCodes.flatMap((currency) =>
+    plans.map((p) => {
+      const price = monthlyIn(p, currency).toFixed(2)
+      return {
+        '@type': 'Offer',
+        name: `Plano ${p.name}`,
+        description: p.tagline,
+        url: 'https://minhaos.app/planos/',
+        price,
+        priceCurrency: currency,
+        availability: 'https://schema.org/InStock',
+        category: 'subscription',
+        itemOffered: { '@id': softwareId },
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price,
+          priceCurrency: currency,
+          billingDuration: 1,
+          billingIncrement: 1,
+          unitCode: 'MON',
+        },
+      }
+    }),
+  )

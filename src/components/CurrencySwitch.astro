@@ -1,0 +1,19 @@
+---
+/**
+ * Troca os preços da página para dólar quando o navegador não está em português (mesma regra do
+ * aplicativo, src/lib/currency.ts). Só muda `data-currency` dos containers; o HTML já traz os dois
+ * valores (ver Money.astro) e, sem JS, fica em reais. Não há seletor manual: a moeda vem do idioma e
+ * fica fixa na conta no cadastro.
+ */
+---
+
+<script>
+  import { currencyForLanguage } from '../lib/currency'
+
+  const currency = currencyForLanguage(navigator.language)
+  if (currency !== 'BRL') {
+    document.querySelectorAll<HTMLElement>('[data-currency]').forEach((el) => {
+      el.dataset.currency = currency
+    })
+  }
+</script>

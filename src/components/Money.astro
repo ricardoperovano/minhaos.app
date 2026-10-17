@@ -1,0 +1,15 @@
+---
+/**
+ * Valor em dinheiro nas duas moedas: gera um <span> por moeda e o CSS global mostra só o da moeda do
+ * container mais próximo com `data-currency` (reais sem JS; dólar quando CurrencySwitch trocar).
+ * `of(currency)` devolve o texto já formatado, por exemplo `(c) => priceIn(plan, c)`.
+ */
+import { type Currency, currencyCodes } from '../lib/plans'
+
+interface Props {
+  of: (currency: Currency) => string
+}
+const { of } = Astro.props
+---
+
+{currencyCodes.map((c) => <span data-cur={c}>{of(c)}</span>)}

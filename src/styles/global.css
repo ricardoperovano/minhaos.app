@@ -119,6 +119,21 @@ p {
   border: 0;
 }
 
+/*
+ * Moeda dos preços: o HTML traz os dois valores ([data-cur="BRL"] e [data-cur="USD"]) e mostra só o da
+ * moeda do container ([data-currency], "BRL" no HTML gerado). O script de src/components/CurrencySwitch.astro
+ * troca o container para "USD" quando o navegador não está em português. Sem JS, fica em reais.
+ */
+[data-cur='USD'] {
+  display: none;
+}
+[data-currency='USD'] [data-cur='BRL'] {
+  display: none;
+}
+[data-currency='USD'] [data-cur='USD'] {
+  display: inline;
+}
+
 .skip {
   position: absolute;
   left: 16px;

@@ -17,7 +17,8 @@ Astro 7, saída 100% estática, sem JavaScript de framework no cliente (só scri
 - `src/content/profissoes/*.md` — páginas `/para/<profissão>/` com exemplo de demonstrativo calculado.
 - `src/pages/ferramentas/` — ferramentas grátis que rodam no navegador.
 - `src/pages/funcionalidades/` + `src/lib/features.ts` — páginas do produto.
-- `src/lib/seo.ts` — JSON-LD (Organization, WebSite, SoftwareApplication, Article, FAQPage, BreadcrumbList).
+- `src/lib/plans.ts` — planos, preços e moedas (`currencies`: reais pelo Asaas e dólar pelo Stripe, mesmos números). O HTML traz os dois valores (`src/components/Money.astro`) e `src/components/CurrencySwitch.astro` troca `data-currency` para `USD` quando `navigator.language` não começa com `pt` (regra em `src/lib/currency.ts`); sem JS, fica em reais.
+- `src/lib/seo.ts` — JSON-LD (Organization, WebSite, SoftwareApplication com um AggregateOffer por moeda, Article, FAQPage, BreadcrumbList).
 - Sitemap, RSS (`/rss.xml`), `robots.txt` e `llms.txt` são gerados no build.
 
 ## Regras de conteúdo
@@ -49,7 +50,7 @@ Só saem com consentimento de análise. GA4 direto: `gtag('event', nome, params)
 | `page_view` | Automático do GA4 ao carregar (ou ao aceitar análise) | — |
 | `signup_click` | Clique em link para `app.minhaos.app/cadastro` | `location` (`header`, `hero`, `planos`, `cta`, `footer`, `conteudo`), `plan` (se o link tiver `?plano=`) |
 | `view_plans` | Abrir `/planos/` (ou aceitar análise estando nela) | — |
-| `select_plan` | Clique no botão de um plano em `/planos/` (junto com `signup_click`) | `plan` (`gratis`, `profissional`, `negocios`), `billing` (`monthly`/`annual`) |
+| `select_plan` | Clique no botão de um plano em `/planos/` (junto com `signup_click`) | `plan` (`gratis`, `essencial`, `profissional`, `negocios`), `billing` (`monthly`/`annual`), `currency` (`BRL`/`USD`, pelo idioma do navegador) |
 | `billing_toggle` | Trocar mensal/anual em `/planos/` | `billing` |
 | `tool_use` | Ferramentas grátis | `tool` (`calculadora-valor-hora`, `mensagem-de-cobranca`, `gerador-de-recibo`, `modelo-ordem-de-servico`), `action`: `calculate` (1º resultado válido após editar, 1×/página), `copy`, `whatsapp`, `print`, `print_blank` |
 | `contact_click` | Clique em link `mailto:` | `location` |

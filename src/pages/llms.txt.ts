@@ -1,7 +1,7 @@
 import type { APIRoute } from 'astro'
 import { getCollection } from 'astro:content'
 import { site } from '../site.config'
-import { brl, featureText, plans } from '../lib/plans'
+import { currencies, featureText, paidPlans, plans, priceIn } from '../lib/plans'
 
 /** Resumo para assistentes de IA (llms.txt): o que o produto faz e não faz, e onde está o conteúdo. */
 export const GET: APIRoute = async () => {
@@ -18,7 +18,8 @@ export const GET: APIRoute = async () => {
     '',
     '## Planos',
     'Quatro planos, todos com limites (clientes ativos, demonstrativos por mês, lançamentos financeiros por mês, armazenamento e usuários).',
-    ...plans.map((p) => `- ${p.name} (${p.monthly === 0 ? 'R$ 0' : `${brl(p.monthly, false)}/mês; anual com 20% de desconto`}): ${p.tagline}. ${p.features.map(featureText).join('; ')}.`),
+    ...plans.map((p) => `- ${p.name} (${p.monthly === 0 ? priceIn(p, 'BRL') : `${priceIn(p, 'BRL')}/mês; anual com 20% de desconto`}): ${p.tagline}. ${p.features.map(featureText).join('; ')}.`),
+    `- Moeda: quem usa o navegador em português vê e paga em reais pelo ${currencies.BRL.provider}; nos demais idiomas, em dólar pelo ${currencies.USD.provider}, com os mesmos números (${paidPlans.map((p) => priceIn(p, 'USD')).join(', ')} por mês; anual com 20% de desconto). A moeda é definida no cadastro pelo idioma do navegador e fica fixa na conta, sem seletor.`,
     `- Precisa de mais que o Negócios: plano sob medida, combinado pelo e-mail ${site.contactEmail} (assunto "Plano sob medida") ou pelo chat do site.`,
     `- Comparação completa: ${site.url}/planos/`,
     '',

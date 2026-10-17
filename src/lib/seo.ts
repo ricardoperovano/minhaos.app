@@ -1,5 +1,5 @@
 import { site } from '../site.config'
-import { highestMonthly, plans } from './plans'
+import { currencyCodes, highestMonthlyIn, plans } from './plans'
 
 export const abs = (path: string) => new URL(path, site.url).toString()
 
@@ -40,7 +40,11 @@ export const websiteLd = {
   publisher: { '@id': `${site.url}/#organization` },
 }
 
-/** Descreve o produto; os preços vêm de src/lib/plans.ts (sem notas ou avaliações inventadas). */
+/**
+ * Descreve o produto; os preços vêm de src/lib/plans.ts (sem notas ou avaliações inventadas).
+ * `offers` é uma lista com um AggregateOffer por moeda: o schema.org só admite uma `priceCurrency` por
+ * AggregateOffer, e `offers` aceita vários valores, então BRL (Asaas) e USD (Stripe) ficam lado a lado.
+ */
 export const softwareLd = {
   '@type': 'SoftwareApplication',
   '@id': `${site.url}/#software`,
@@ -51,14 +55,14 @@ export const softwareLd = {
   inLanguage: 'pt-BR',
   description: site.description,
   publisher: { '@id': `${site.url}/#organization` },
-  offers: {
+  offers: currencyCodes.map((priceCurrency) => ({
     '@type': 'AggregateOffer',
     lowPrice: '0.00',
-    highPrice: highestMonthly.toFixed(2),
-    priceCurrency: 'BRL',
+    highPrice: highestMonthlyIn(priceCurrency).toFixed(2),
+    priceCurrency,
     offerCount: plans.length,
     url: `${site.url}/planos/`,
-  },
+  })),
 }
 
 export function graph(...nodes: object[]) {

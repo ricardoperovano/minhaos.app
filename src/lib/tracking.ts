@@ -236,7 +236,8 @@ function onClick(e: MouseEvent) {
     const plan = url.searchParams.get('plano') ?? undefined
     track('signup_click', { location: location_, plan })
     if (plan && el.closest('#planos')) {
-      track('select_plan', { plan, billing: document.getElementById('planos')?.dataset.billing })
+      const planos = document.getElementById('planos')?.dataset
+      track('select_plan', { plan, billing: planos?.billing, currency: planos?.currency })
     }
     return
   }

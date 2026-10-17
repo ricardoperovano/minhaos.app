@@ -5,7 +5,9 @@ import GuideList from '../components/GuideList.astro'
 import Base from '../layouts/Base.astro'
 import { faqLd, graph, organizationLd, softwareLd, websiteLd } from '../lib/seo'
 import { tools } from '../lib/tools'
-import { brl, plans } from '../lib/plans'
+import CurrencySwitch from '../components/CurrencySwitch.astro'
+import Money from '../components/Money.astro'
+import { plans, priceIn } from '../lib/plans'
 import { links, site } from '../site.config'
 
 const guias = await getCollection('guias')
@@ -92,14 +94,14 @@ const recursos = [
   </section>
 
   <section class="section">
-    <div class="container">
-      <h2>Planos simples, a partir de R$ 0</h2>
+    <div class="container" data-currency="BRL">
+      <h2>Planos simples, a partir de <Money of={(c) => priceIn(plans[0]!, c)} /></h2>
       <p class="muted">Comece grátis e mude de plano só quando a cobrança virar rotina.</p>
       <div class="grid plans-grid" style="margin-top:24px">
         {plans.map((p) => (
           <a class={`card plan${p.highlight ? ' featured' : ''}`} href="/planos/">
             <h3>{p.name}</h3>
-            <p class="plan-price">{p.monthly === 0 ? 'R$ 0' : `${brl(p.monthly, false)}/mês`}</p>
+            <p class="plan-price"><Money of={(c) => (p.monthly === 0 ? priceIn(p, c) : `${priceIn(p, c)}/mês`)} /></p>
             <p class="muted small" style="margin:0">{p.tagline}</p>
           </a>
         ))}
@@ -107,6 +109,7 @@ const recursos = [
       <p style="margin-top:20px"><a href="/planos/">Comparar os planos em detalhe →</a></p>
     </div>
   </section>
+  <CurrencySwitch />
 
   <section class="section">
     <div class="container">
