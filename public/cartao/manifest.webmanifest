@@ -1,0 +1,10 @@
+{
+  "name": "MinhaOS App · cartão",
+  "short_name": "MinhaOS",
+  "start_url": "/cartao/",
+  "scope": "/cartao/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F172A",
+  "theme_color": "#0F172A"
+}
