@@ -50,8 +50,8 @@ export interface Feature {
   intro: string[]
   /** Captura principal (opcional: páginas sem captura usam só texto). */
   image?: FeatureImage
-  /** Agrupamento no índice: serviços e cobrança (padrão), financeiro ou equipe. */
-  group?: 'cobranca' | 'financeiro' | 'equipe'
+  /** Agrupamento no índice: serviços e cobrança (padrão), financeiro, estoque e patrimônio ou equipe. */
+  group?: 'cobranca' | 'financeiro' | 'estoque' | 'equipe'
   sections: FeatureSection[]
   /** O que a funcionalidade não faz (limites honestos). */
   limits: string[]
@@ -97,7 +97,14 @@ export const features: Feature[] = [
         body: [
           'Cada linha usa uma destas unidades: <strong>hora</strong>, <strong>unidade</strong>, <strong>diária</strong>, <strong>visita</strong> ou <strong>serviço</strong>. A quantidade aceita até quatro casas decimais (2,5 horas; 0,25 hora; 1,3333 diária) e o valor unitário até duas.',
           'O total da linha é quantidade × valor unitário, arredondado em centavos (meio centavo para cima). Exemplo: 2,5 horas × R$ 120,00 = R$ 300,00. O total do serviço é a soma das linhas já arredondadas, então a conta que o cliente vê sempre fecha.',
-          'Material e peças não têm cadastro próprio: quando você repassa material ao cliente, lance como uma linha do serviço (por exemplo, “Material: cabos e conectores”, 1 unidade, com o valor da compra).',
+          'Para material e peças, a linha pode usar também as unidades de material: <strong>metro</strong>, <strong>metro quadrado</strong>, <strong>metro cúbico</strong>, <strong>quilo</strong>, <strong>litro</strong>, <strong>caixa</strong>, <strong>pacote</strong>, <strong>rolo</strong> e <strong>saco</strong>. Assim o cliente lê “15 metros de cabo”, e não “15 unidades”.',
+        ],
+      },
+      {
+        h2: 'Material do estoque na linha do serviço',
+        body: [
+          'Se você usa o <a href="/funcionalidades/controle-de-estoque/">controle de estoque</a>, escolha o material na própria linha. A unidade vem do cadastro do item, a descrição é preenchida se estiver vazia e o preço vem do valor de venda cadastrado; o administrador pode ajustar o preço, e o operador usa o do cadastro. Ao salvar o serviço, a saída do material é registrada sozinha no estoque, pelo custo médio do item.',
+          'Mudou a quantidade, trocou o material ou cancelou o serviço? O estoque é acertado pela diferença: só o que mudou sai ou volta. Material que você não controla em estoque continua podendo entrar como uma linha comum, com descrição e valor.',
         ],
       },
       {
@@ -128,7 +135,7 @@ export const features: Feature[] = [
     ],
     limits: [
       'Não tem agenda nem controle de horários de visitas: você registra o que já executou.',
-      'Não controla estoque: material entra como linha do serviço, com descrição e valor.',
+      'Os lançamentos gerados por contratos recorrentes não baixam material do estoque: o material usado nesses serviços é lançado à parte.',
       'Não coleta assinatura do cliente na ordem de serviço.',
       'Precisa de conexão com a internet para salvar; não há fila de envio para quando você estiver sem sinal.',
     ],
@@ -146,8 +153,8 @@ export const features: Feature[] = [
         a: 'Não. A observação interna fica só no seu painel. O que deve aparecer no demonstrativo vai no campo de observação para o cliente.',
       },
       {
-        q: 'Como registro o material que comprei para o serviço?',
-        a: 'Como uma linha do próprio serviço, com descrição e valor. O MinhaOS App não tem controle de estoque, então o material é tratado como um item da cobrança.',
+        q: 'Como registro o material que usei no serviço?',
+        a: 'Se o material está no estoque, escolha o item na linha do serviço: o preço vem do valor de venda cadastrado e a saída do estoque é registrada sozinha ao salvar. Se não está, lance uma linha comum com descrição, unidade e valor.',
       },
     ],
     guides: [
@@ -156,7 +163,7 @@ export const features: Feature[] = [
       { slug: 'planilha-de-controle-de-servicos', label: 'Planilha de controle de serviços' },
       { slug: 'ordem-de-servico-digital', label: 'Ordem de serviço digital' },
     ],
-    related: ['fechamento-mensal', 'demonstrativo-de-cobranca', 'aplicativo-no-celular'],
+    related: ['fechamento-mensal', 'controle-de-estoque', 'demonstrativo-de-cobranca', 'aplicativo-no-celular'],
   },
   {
     slug: 'fechamento-mensal',
@@ -638,6 +645,7 @@ export const features: Feature[] = [
         h2: 'Custo do serviço e margem',
         body: [
           'Quando você liga uma conta a um serviço, ela passa a ser <strong>custo daquele serviço</strong>: o material comprado para a obra, o combustível da viagem até o cliente. O relatório de <strong>margem por serviço e por cliente</strong> mostra a receita (por execução ou por faturamento) menos os custos ligados, e o painel traz o bloco “Financeiro do mês”.',
+          'O material que sai do <a href="/funcionalidades/controle-de-estoque/">estoque</a> pelo serviço também entra como custo, pelo custo médio do item. Por isso, a conta a pagar lançada a partir de uma <strong>entrada de estoque</strong> fica fora da margem (continua em contas a pagar e no fluxo de caixa): o custo aparece quando o material é usado, e não duas vezes.',
           'Os relatórios de contas a pagar e de margem podem ser vistos na tela; a exportação em CSV está nos planos pagos. Para conferir a conta na mão, use a <a href="/ferramentas/calculadora-de-margem/">calculadora de margem</a>.',
         ],
       },
@@ -647,7 +655,7 @@ export const features: Feature[] = [
       'Não faz conciliação automática com o extrato bancário.',
       'Não calcula impostos: a categoria “impostos e taxas” serve para organizar o que você paga.',
       'No plano Grátis, são até 20 lançamentos por mês (contas a pagar e recebimentos avulsos somados), sem recorrência, sem parcelamento e sem anexos nas contas.',
-      'Não controla estoque: a compra de material é registrada como despesa, não como item de estoque.',
+      'Uma conta a pagar lançada aqui não dá entrada no estoque. Para o material entrar no saldo, registre a entrada no estoque e marque “lançar conta a pagar” ali: a conta é criada junto, ligada à entrada.',
     ],
     faq: [
       {
@@ -678,7 +686,7 @@ export const features: Feature[] = [
       { slug: 'despesas-fixas-e-variaveis', label: 'Despesas fixas e variáveis' },
       { slug: 'margem-de-lucro-de-servico', label: 'Margem de lucro de serviço' },
     ],
-    related: ['fluxo-de-caixa', 'recebimentos', 'relatorios'],
+    related: ['fluxo-de-caixa', 'controle-de-estoque', 'recebimentos', 'relatorios'],
   },
   {
     slug: 'recebimentos',
@@ -946,7 +954,7 @@ export const features: Feature[] = [
       {
         h2: 'Pendências e evolução',
         body: [
-          'Ao lado dos indicadores, o painel lista as pendências: <strong>clientes com serviços a faturar</strong>, <strong>demonstrativos em atraso</strong> e <strong>links ainda sem visualização</strong>. O gráfico de evolução mostra os últimos seis meses de executado, faturado e recebido, e pode ser visto como tabela.',
+          'Ao lado dos indicadores, o painel lista as pendências: <strong>clientes com serviços a faturar</strong>, <strong>demonstrativos em atraso</strong>, <strong>links ainda sem visualização</strong> e o <strong>material que precisa de reposição</strong>. O gráfico de evolução mostra os últimos seis meses de executado, faturado e recebido, e pode ser visto como tabela.',
         ],
       },
       {
@@ -957,7 +965,8 @@ export const features: Feature[] = [
           '<strong>Demonstrativos emitidos</strong>: por data de emissão ou de vencimento, com filtro por situação de pagamento (em aberto, parcial, recebido, em atraso) e o saldo atual de cada um.',
           '<strong>Recebimentos</strong>: cada pagamento do período, incluindo os estornados, mostrados separadamente.',
           '<strong>Contas a pagar</strong> e <strong>recebimentos avulsos</strong> do período.',
-          '<strong>Margem por serviço e por cliente</strong>: a receita (por execução ou por faturamento) menos os custos das contas a pagar ligadas a cada serviço ou cliente.',
+          '<strong>Margem por serviço e por cliente</strong>: a receita (por execução ou por faturamento) menos os custos das contas a pagar ligadas a cada serviço ou cliente e o custo do material do estoque usado no serviço.',
+          '<strong>Posição de estoque</strong>, <strong>movimentações de estoque</strong> do período e <strong>inventário de patrimônio</strong>, com a situação de cada bem.',
           '<strong>Fluxo de caixa</strong>, nos planos pagos.',
         ],
       },
@@ -997,7 +1006,7 @@ export const features: Feature[] = [
       { slug: 'margem-de-lucro-de-servico', label: 'Margem de lucro de serviço' },
       { slug: 'rotina-administrativa-do-autonomo', label: 'Rotina administrativa do autônomo' },
     ],
-    related: ['fluxo-de-caixa', 'recebimentos-e-saldos', 'contas-a-pagar'],
+    related: ['fluxo-de-caixa', 'recebimentos-e-saldos', 'contas-a-pagar', 'controle-de-estoque'],
   },
   {
     slug: 'aplicativo-no-celular',
@@ -1114,7 +1123,7 @@ export const features: Feature[] = [
       {
         h2: 'Os três papéis e o que cada um pode fazer',
         body: [
-          'O <strong>administrador</strong> faz tudo, inclusive gerenciar usuários, o plano e as configurações da conta. O <strong>operador</strong> cuida do dia a dia do serviço: cadastra clientes e registra serviços e lançamentos, com valores; no painel, vê só os indicadores de serviços. O <strong>financeiro</strong> cuida da cobrança e do caixa: consulta os serviços sem alterá-los, emite demonstrativos, gera links, registra recebimentos e usa o financeiro e os relatórios.',
+          'O <strong>administrador</strong> faz tudo, inclusive gerenciar usuários, o plano e as configurações da conta. O <strong>operador</strong> cuida do dia a dia do serviço: cadastra clientes e registra serviços e lançamentos, com valores; movimenta o estoque e o patrimônio sem ver custos nem valores de compra; no painel, vê só os indicadores de serviços e o material que precisa de reposição. O <strong>financeiro</strong> cuida da cobrança e do caixa: consulta os serviços sem alterá-los, emite demonstrativos, gera links, registra recebimentos e usa o financeiro e os relatórios.',
         ],
         table: {
           caption: 'O que cada papel pode fazer na conta',
@@ -1125,6 +1134,8 @@ export const features: Feature[] = [
             ['Faturamento, demonstrativos e links', 'Sim', 'Não', 'Sim'],
             ['Recebimentos', 'Sim', 'Não', 'Sim'],
             ['Financeiro (contas a pagar, recebimentos avulsos, fluxo de caixa)', 'Sim', 'Não', 'Sim'],
+            ['Estoque e patrimônio', 'Sim', 'Sim, sem custos nem valores de compra', 'Sim'],
+            ['Nota fiscal anexada ao bem e conta a pagar da compra', 'Sim', 'Não', 'Sim'],
             ['Relatórios e exportação CSV', 'Sim', 'Não', 'Sim'],
             ['Categorias financeiras', 'Sim', 'Não', 'Sim'],
             ['Usuários, plano e configurações da conta', 'Sim', 'Não', 'Não'],
@@ -1173,7 +1184,7 @@ export const features: Feature[] = [
       },
       {
         q: 'O operador vê quanto eu faturo?',
-        a: 'Não. O operador registra serviços e lançamentos com valores, mas não vê faturamento, recebimentos, financeiro, relatórios, plano nem as configurações da conta. No painel, vê só os indicadores de serviços.',
+        a: 'Não. O operador registra serviços e lançamentos com valores, mas não vê faturamento, recebimentos, financeiro, relatórios, plano nem as configurações da conta. No estoque e no patrimônio, ele cadastra e movimenta sem ver custo, custo médio nem valor de compra; nas linhas de serviço vê só o preço cobrado do cliente, que vem do cadastro do item. No painel, vê só os indicadores de serviços.',
       },
       {
         q: 'A pessoa convidada precisa criar outra conta?',
@@ -1194,7 +1205,234 @@ export const features: Feature[] = [
       { slug: 'como-organizar-clientes', label: 'Como organizar clientes' },
       { slug: 'fechamento-mensal-de-servicos', label: 'Fechamento mensal de serviços' },
     ],
-    related: ['registro-de-servicos', 'fechamento-mensal', 'relatorios'],
+    related: ['registro-de-servicos', 'fechamento-mensal', 'relatorios', 'controle-de-patrimonio'],
+  },
+  {
+    slug: 'controle-de-estoque',
+    group: 'estoque',
+    name: 'Controle de estoque',
+    title: 'Controle de estoque de material para prestador de serviço',
+    h1: 'Controle de estoque de material com baixa automática no serviço',
+    description:
+      'Cadastre o material, dê entrada com custo e deixe o MinhaOS baixar o estoque quando você registra o serviço. Saldo, estoque mínimo e custo médio na mão.',
+    summary: 'Material com saldo, estoque mínimo e custo médio. A saída é registrada sozinha quando você salva o serviço.',
+    intro: [
+      'Cabo, conexão, gás, filtro, adubo, parafuso: quem presta serviço gasta material todo dia e, quase sempre, só descobre que acabou quando está na casa do cliente. O <strong>controle de estoque</strong> do MinhaOS App guarda o saldo de cada material, avisa quando está na hora de repor e mostra quanto o material custou em cada serviço.',
+      'A diferença para uma planilha é que você não precisa lembrar de dar baixa: ao escolher o material na linha do serviço e salvar, a saída é registrada sozinha, e o cliente é cobrado pelo valor de venda do item. Está disponível em todos os planos, com limite de itens ativos por plano.',
+    ],
+    sections: [
+      {
+        h2: 'Cadastro do material',
+        body: [
+          'Cada item tem nome, código ou SKU (opcional), categoria e unidade de medida: <strong>unidade</strong>, <strong>metro</strong>, <strong>metro quadrado</strong>, <strong>metro cúbico</strong>, <strong>quilo</strong>, <strong>litro</strong>, <strong>caixa</strong>, <strong>pacote</strong>, <strong>rolo</strong> ou <strong>saco</strong>. As quantidades aceitam até quatro casas decimais, então 2,5 m de cabo ou 0,75 kg de massa são registrados como são.',
+          'Você também informa o <strong>estoque mínimo</strong> (o ponto em que quer ser avisado), o <strong>custo de referência</strong> e o <strong>valor de venda</strong>, que é o preço cobrado do cliente quando o material entra num serviço. Itens que você não usa mais podem ser <strong>arquivados</strong>: saem das listas e liberam a vaga do plano, sem apagar o histórico.',
+        ],
+      },
+      {
+        h2: 'Entrada com custo e, se quiser, conta a pagar',
+        body: [
+          'Comprou material? Registre a <strong>entrada</strong> com a quantidade, a data, o fornecedor e o custo, unitário ou total da compra. Já no cadastro do item dá para lançar o saldo inicial.',
+          'Na mesma tela, marque <strong>lançar conta a pagar</strong> para criar a despesa no <a href="/funcionalidades/contas-a-pagar/">Financeiro</a>, com vencimento, valor e fornecedor, ligada à entrada. A conta criada assim conta como um lançamento na cota mensal de contas a pagar do seu plano.',
+        ],
+      },
+      {
+        h2: 'Baixa automática ao salvar o serviço',
+        body: ['O estoque e a cobrança andam juntos, sem digitar duas vezes:'],
+        steps: [
+          'No <a href="/funcionalidades/registro-de-servicos/">registro do serviço</a>, adicione uma linha e escolha o <strong>material do estoque</strong>. O seletor mostra o saldo atual de cada item.',
+          'Informe a quantidade usada. A unidade vem do cadastro, a descrição é preenchida e o preço vem do <strong>valor de venda</strong> do item; o administrador pode ajustar o preço, e o operador usa o do cadastro.',
+          'Salve. A saída é registrada no estoque pelo custo médio do item, e a linha fica pronta para o <a href="/funcionalidades/fechamento-mensal/">fechamento do mês</a>, cobrada do cliente como qualquer outra.',
+        ],
+      },
+      {
+        h2: 'Editou ou cancelou o serviço? O estoque acompanha',
+        body: [
+          'Se você muda a quantidade, troca o material ou remove a linha, o MinhaOS App registra só a diferença: o que passou a ser usado sai, o que deixou de ser usado volta. Ao cancelar o serviço, todo o material volta ao estoque. Linhas que já entraram em um demonstrativo ficam travadas, como qualquer lançamento cobrado.',
+        ],
+      },
+      {
+        h2: 'Saldo negativo e reposição',
+        body: [
+          'Usou mais do que o sistema tinha? O serviço salva do mesmo jeito: o trabalho foi feito e precisa ser cobrado. O item fica com <strong>saldo negativo</strong>, destacado em vermelho, até você registrar a entrada que faltou ou acertar a contagem.',
+          'Itens negativos, zerados ou abaixo do mínimo aparecem no painel e no filtro <strong>Precisam de atenção</strong> da lista de estoque. É a sua lista de compras pronta antes de sair para a loja.',
+        ],
+      },
+      {
+        h2: 'Custo médio e margem do serviço',
+        body: [
+          'A cada entrada com custo, o MinhaOS App recalcula o <strong>custo médio</strong> do item. Exemplo fictício: você tem 10 m de cabo a R$ 2,00 (R$ 20,00) e compra mais 20 m a R$ 2,60 (R$ 52,00). Ficam 30 m que custaram R$ 72,00, ou seja, R$ 2,40 por metro.',
+          'Quando o material sai por um serviço, ele leva esse custo para o relatório de <a href="/funcionalidades/relatorios/">margem por serviço e por cliente</a>. Se você cobrou 15 m a R$ 4,50 (R$ 67,50), o custo do material foi 15 × R$ 2,40 = R$ 36,00, e a margem dele, R$ 31,50. A conta a pagar criada pela entrada de estoque fica fora da margem, para o custo não contar duas vezes.',
+        ],
+      },
+      {
+        h2: 'Ajuste de inventário, estorno e extrato',
+        body: [
+          'Contou a prateleira e o número não bate? Use o <strong>ajuste de inventário</strong>: informe a quantidade contada e o sistema registra a diferença. Uma entrada, saída ou ajuste lançado errado pode ser <strong>estornado</strong>, uma vez, com motivo; nada é apagado.',
+          'Cada item tem um <strong>extrato</strong> com data, tipo do movimento, quantidade, saldo depois do movimento, custo, o serviço de origem e quem registrou. Nos relatórios, a <strong>posição de estoque</strong> e as <strong>movimentações do período</strong> podem ser vistas na tela e, nos planos pagos, exportadas em CSV.',
+        ],
+      },
+      {
+        h2: 'Equipe: o operador registra sem ver custo',
+        body: [
+          'Nos planos com <a href="/funcionalidades/usuarios-e-permissoes/">usuários e permissões</a>, o operador cadastra itens, dá entrada, saída e ajuste e usa o material nos serviços, mas não vê custo, custo médio nem o valor total do estoque, e não cria conta a pagar. Na linha do serviço, vê o preço cobrado do cliente, que vem do cadastro do item. Administrador e financeiro veem tudo.',
+        ],
+      },
+      {
+        h2: 'Quantos itens cada plano permite',
+        body: ['O limite é de itens ativos no estoque, não de movimentos: entradas, saídas e baixas no serviço não têm limite.'],
+        table: {
+          caption: 'Itens de material ativos no estoque, por plano',
+          head: ['Plano', 'Itens ativos'],
+          rows: [
+            ['Grátis', 'Até 20'],
+            ['Essencial', 'Até 100'],
+            ['Profissional', 'Até 500'],
+            ['Negócios', 'Até 2.000'],
+          ],
+        },
+      },
+    ],
+    limits: [
+      'Não emite nota fiscal e não é inventário fiscal: não gera Registro de Inventário nem Bloco K do SPED.',
+      'Não controla lote, validade nem vários depósitos ou almoxarifados: o saldo de cada item é um só.',
+      'Não lê código de barras e não faz pedido de compra ao fornecedor.',
+      'O aviso de reposição aparece no painel e na lista; ainda não há aviso por e-mail.',
+      'Os lançamentos gerados por contratos recorrentes não baixam material: lance o material usado nesses serviços à parte.',
+    ],
+    faq: [
+      {
+        q: 'O estoque pode ficar negativo?',
+        a: 'Pode. Se o serviço usou mais material do que o saldo registrado, ele é salvo normalmente e o item fica com saldo negativo, destacado, até você registrar a entrada ou ajustar a contagem.',
+      },
+      {
+        q: 'Posso dar entrada em material comprado sem nota fiscal?',
+        a: 'Sim. A entrada registra quantidade, data, custo e fornecedor; a nota é opcional no estoque. Para a sua contabilidade, porém, guarde os comprovantes de compra e confirme com o contador o que é exigido no seu caso.',
+      },
+      {
+        q: 'Como o custo médio é calculado?',
+        a: 'A cada entrada com custo, o sistema soma o valor do saldo que você já tinha com o valor da compra e divide pela nova quantidade. Saídas e ajustes usam o custo médio do momento e não o alteram.',
+      },
+      {
+        q: 'O operador vê o custo do material?',
+        a: 'Não. O operador cadastra e movimenta o estoque e usa o material nos serviços, mas não vê custo, custo médio nem o valor do estoque. Nas linhas de serviço, ele vê o preço cobrado do cliente, que vem do cadastro do item.',
+      },
+      {
+        q: 'O que acontece com o estoque se eu cancelar o serviço?',
+        a: 'Todo o material que tinha saído por aquele serviço volta ao estoque, com o mesmo custo. Se você só alterar a quantidade de uma linha, entra ou sai apenas a diferença.',
+      },
+    ],
+    guides: [
+      { slug: 'controle-de-estoque-para-prestador-de-servico', label: 'Controle de estoque para prestador de serviço' },
+      { slug: 'estoque-minimo-material-de-consumo', label: 'Estoque mínimo e ponto de reposição' },
+      { slug: 'custo-de-material-no-preco-do-servico', label: 'Custo do material no preço do serviço' },
+      { slug: 'planilha-de-controle-de-estoque', label: 'Planilha de controle de estoque' },
+    ],
+    related: ['registro-de-servicos', 'controle-de-patrimonio', 'contas-a-pagar', 'relatorios'],
+  },
+  {
+    slug: 'controle-de-patrimonio',
+    group: 'estoque',
+    name: 'Controle de patrimônio',
+    title: 'Controle de patrimônio com etiqueta QR code',
+    h1: 'Controle de patrimônio: ferramentas, equipamentos e veículos com etiqueta QR',
+    description:
+      'Cadastre cada bem com código PAT-0001, nota fiscal, garantia e responsável. Imprima etiquetas com QR code e saiba onde está cada ferramenta da equipe.',
+    summary: 'Cada ferramenta e equipamento com código, situação, responsável, garantia e etiqueta com QR code.',
+    intro: [
+      'A furadeira emprestada que não voltou, o multímetro que ninguém sabe com quem está, a garantia do compressor que venceu sem você perceber. O <strong>controle de patrimônio</strong> do MinhaOS App registra cada ferramenta, equipamento ou veículo do negócio, com código, situação, responsável, local e garantia.',
+      'Cada bem ganha um código, como PAT-0001, e uma etiqueta com QR code para colar nele. Quem tem acesso à conta aponta a câmera do celular e abre a ficha do bem na hora. Está disponível em todos os planos, com limite de bens por plano.',
+    ],
+    sections: [
+      {
+        h2: 'Código automático e editável',
+        body: [
+          'Ao cadastrar um bem, o código é gerado na sequência da conta: PAT-0001, PAT-0002 e assim por diante. Se você já usa outra numeração, digite o seu código, com até 20 letras, números e sinais simples. O sistema não deixa dois bens com o mesmo código na conta.',
+          'Além do código, registre a descrição, a categoria, a marca, o modelo e o número de série. É o que permite reconhecer o bem num roubo, num conserto ou numa conferência.',
+        ],
+      },
+      {
+        h2: 'Situação, responsável e local',
+        body: [
+          'Cada bem tem uma situação: <strong>em uso</strong>, <strong>em manutenção</strong>, <strong>emprestado</strong> ou <strong>baixado</strong>. Ao mudar a situação, você informa o responsável, o local e uma observação, por exemplo “emprestado ao Fulano para a obra da Rua X”.',
+          'Quando o bem sai de vez (quebrou, foi vendido, foi roubado), você dá <strong>baixa</strong>, com data e motivo. O bem baixado fica só para consulta e libera a vaga do plano; se a baixa foi um engano, dá para desfazer.',
+        ],
+      },
+      {
+        h2: 'Compra, nota fiscal e garantia',
+        body: [
+          'Registre o valor e a data de aquisição, o fornecedor, o número da nota e a data em que a garantia termina. A lista mostra quando a garantia está para vencer ou já venceu.',
+          'Nos planos pagos, a partir do Essencial, anexe a <strong>nota fiscal</strong>, fotos e o certificado de garantia ao bem, em PDF ou imagem. Os anexos ficam visíveis só para administradores e financeiros. Na compra, você também pode marcar <strong>lançar conta a pagar</strong> para criar a despesa no Financeiro, ligada ao bem.',
+        ],
+      },
+      {
+        h2: 'Etiquetas com QR code',
+        body: ['Selecione os bens na lista (ou abra um só) e imprima as etiquetas em dois formatos:'],
+        bullets: [
+          '<strong>Folha A4</strong> com 24 etiquetas (3 colunas × 8 linhas, 70 × 37,1 mm), o formato das folhas adesivas vendidas em papelaria.',
+          '<strong>Etiqueta individual</strong> de 50 × 30 mm, para impressora térmica de etiquetas.',
+        ],
+      },
+      {
+        h2: 'O QR abre a ficha só para quem tem acesso',
+        body: [
+          'Cada etiqueta traz o QR code, o código grande, a descrição e o nome da sua conta. O QR leva à ficha do bem dentro do MinhaOS App: quem está logado na conta vê os dados; quem não está cai na tela de login. Nenhum dado do bem fica público.',
+        ],
+      },
+      {
+        h2: 'Histórico e inventário',
+        body: [
+          'Cada bem guarda o histórico: cadastro, alterações, mudanças de situação, baixa, anexos e conta a pagar criada. Nos relatórios, o <strong>inventário de patrimônio</strong> lista todos os bens com situação, responsável, local, aquisição e garantia, na tela e, nos planos pagos, em CSV. No painel, você vê o total de bens e, se tiver permissão, o valor de aquisição somado.',
+        ],
+      },
+      {
+        h2: 'Quantos bens cada plano permite',
+        body: ['O limite é de bens não baixados. Bens baixados continuam no histórico e não ocupam vaga.'],
+        table: {
+          caption: 'Bens no patrimônio, por plano',
+          head: ['Plano', 'Bens', 'Anexos no bem'],
+          rows: [
+            ['Grátis', 'Até 10', 'Não'],
+            ['Essencial', 'Até 50', 'Sim'],
+            ['Profissional', 'Até 200', 'Sim'],
+            ['Negócios', 'Até 1.000', 'Sim'],
+          ],
+        },
+      },
+    ],
+    limits: [
+      'Não calcula depreciação contábil nem faz o controle fiscal do ativo imobilizado: o valor registrado é o de aquisição. Para a contabilidade, fale com o seu contador.',
+      'O QR code não é público: só abre a ficha para quem tem login na conta.',
+      'Não rastreia localização por GPS: o local é o que você informa.',
+      'No plano Grátis, o bem não aceita anexos (nota, fotos, garantia).',
+    ],
+    faq: [
+      {
+        q: 'Qualquer pessoa que ler o QR code vê os dados do bem?',
+        a: 'Não. O QR aponta para a ficha do bem dentro do aplicativo. Quem não está logado na sua conta vê apenas a tela de login.',
+      },
+      {
+        q: 'Posso usar a numeração que já tenho nas minhas ferramentas?',
+        a: 'Sim. O código automático (PAT-0001) é só uma sugestão. Você pode digitar o seu código, com até 20 caracteres, desde que não se repita na conta.',
+      },
+      {
+        q: 'O MinhaOS App calcula a depreciação dos bens?',
+        a: 'Não. Ele registra o valor e a data de aquisição para controle interno. Depreciação contábil e fiscal segue regras próprias e deve ser tratada com o seu contador.',
+      },
+      {
+        q: 'Que etiqueta preciso comprar?',
+        a: 'Para a folha A4, uma folha adesiva com 24 etiquetas de 70 × 37,1 mm (3 × 8). Para impressora térmica, etiquetas de 50 × 30 mm. Faça um teste em papel comum antes de imprimir a folha adesiva.',
+      },
+      {
+        q: 'O operador vê o valor dos bens?',
+        a: 'Não. O operador cadastra bens, muda a situação e imprime etiquetas, mas não vê o valor de aquisição nem os anexos, como a nota fiscal. Administrador e financeiro veem tudo.',
+      },
+    ],
+    guides: [
+      { slug: 'controle-de-patrimonio-pequena-empresa', label: 'Controle de patrimônio em pequena empresa' },
+      { slug: 'controle-de-ferramentas-e-equipamentos', label: 'Controle de ferramentas e equipamentos' },
+      { slug: 'etiqueta-qr-code-para-patrimonio', label: 'Etiqueta patrimonial com QR code' },
+    ],
+    related: ['controle-de-estoque', 'usuarios-e-permissoes', 'contas-a-pagar', 'notas-fiscais-anexas'],
   },
 ]
 
@@ -1205,7 +1443,7 @@ export const naoFaz = [
   'Não emite nota fiscal nem NFS-e. Você emite no sistema oficial e anexa o arquivo ao demonstrativo.',
   'Não processa pagamentos, não gera boleto nem código Pix e não é banco. Recebimentos e quitações de contas são registrados por você.',
   'Não envia WhatsApp automaticamente: abre a conversa com a mensagem pronta, e o envio é seu.',
-  'Não tem controle de estoque. Material e peças entram como linhas do serviço.',
+  'Controla estoque de material e patrimônio, mas não faz inventário fiscal (como o Bloco K do SPED), não calcula depreciação e não tem lote, validade nem vários depósitos.',
   'Não tem agenda de visitas, assinatura digital nem certificado digital.',
   'Não calcula impostos, multa ou juros e não faz conciliação bancária automática.',
 ]

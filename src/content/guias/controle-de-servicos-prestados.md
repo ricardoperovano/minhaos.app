@@ -13,7 +13,7 @@ keywords:
   - "relatório de serviços prestados"
   - "como saber quanto tenho a receber"
 publishedAt: 2026-10-14
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 pillar: true
 related:
   - "planilha-de-controle-de-servicos"
@@ -42,7 +42,7 @@ A seguir você vê o que registrar, as vantagens e limites de cada ferramenta, o
 
 ## Por que controlar os serviços prestados
 
-Quem presta serviço vende tempo e trabalho. Diferente de quem vende produto, você não tem estoque para conferir no fim do dia. Se a visita de terça não foi anotada, ela simplesmente some. Os principais motivos para manter um controle são:
+Quem presta serviço vende tempo e trabalho. Diferente de quem vende produto, o seu trabalho não fica numa prateleira para ser contado no fim do dia. O material dá para conferir (veja [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/)); a visita de terça, não: se não foi anotada, ela simplesmente some. Os principais motivos para manter um controle são:
 
 - **Não perder receita.** Pequenos atendimentos — uma visita rápida, meia hora a mais, um ajuste fora do combinado — são os primeiros a serem esquecidos. Somados no mês, costumam fazer diferença.
 - **Não cobrar em dobro.** Cobrar duas vezes o mesmo serviço gera desconfiança, mesmo quando é engano. Um controle com situação ("a faturar", "faturado") evita isso.

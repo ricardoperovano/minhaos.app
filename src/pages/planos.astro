@@ -46,6 +46,7 @@ const incluso = [
   'Recebimentos registrados por você, com saldo em aberto e atrasos',
   'Painel do mês: executado, a faturar, faturado e recebido, mais o Financeiro do mês',
   'Contas a pagar e recebimentos avulsos, com lembrete diário do que vence em até 3 dias',
+  'Estoque de material com baixa automática no serviço e patrimônio com etiqueta QR code',
   'Funciona no navegador e instalado no celular (Android e iPhone)',
   'Dados da sua conta separados dos de qualquer outra',
 ]
@@ -57,7 +58,7 @@ const faq = [
   },
   {
     q: 'O que acontece se eu passar do limite do plano?',
-    a: 'Nada é apagado e você continua acessando tudo o que já registrou. O limite só impede criar além dele: novos clientes ativos, demonstrativos no mês, contas a pagar e recebimentos avulsos no mês, convites de novos usuários ou anexos acima do armazenamento. Para continuar, mude para o plano seguinte; a mudança vale na hora. Se você já está no Negócios, fale com a gente para um plano sob medida.',
+    a: 'Nada é apagado e você continua acessando tudo o que já registrou. O limite só impede criar além dele: novos clientes ativos, demonstrativos no mês, contas a pagar e recebimentos avulsos no mês, itens de estoque, bens do patrimônio, convites de novos usuários ou anexos acima do armazenamento. Para continuar, mude para o plano seguinte; a mudança vale na hora. Se você já está no Negócios, fale com a gente para um plano sob medida.',
   },
   {
     q: 'Como funciona o desconto do plano anual?',
@@ -76,6 +77,10 @@ const faq = [
   {
     q: 'Se eu voltar para o Grátis, perco meus dados?',
     a: 'Não. Clientes, serviços, demonstrativos e recebimentos continuam na sua conta. O que muda são os limites: por exemplo, novos demonstrativos passam a valer a cota de 5 por mês, contas a pagar e recebimentos avulsos a de 20 lançamentos por mês, e os anexos acima de 100 MB ficam disponíveis para download, mas não dá para enviar novos até liberar espaço. Lançamentos recorrentes e contratos recorrentes ficam pausados, sem nada ser apagado.',
+  },
+  {
+    q: 'Os limites de estoque e patrimônio são por mês?',
+    a: 'Não. Eles contam quantos itens de material estão ativos no estoque e quantos bens do patrimônio não foram baixados: 20 itens e 10 bens no Grátis, 100 e 50 no Essencial, 500 e 200 no Profissional, 2.000 e 1.000 no Negócios. Entradas, saídas e baixas de material no serviço não têm limite. Item arquivado e bem baixado liberam a vaga. Se você mudar para um plano menor, nada é apagado: só fica bloqueado cadastrar novos itens ou bens acima do limite, e a baixa do material usado nos serviços continua funcionando.',
   },
   {
     q: 'Quantos usuários posso ter na conta?',
@@ -115,7 +120,7 @@ const signup = (key: string) => `${links.signup}?plano=${key}`
       <span class="eyebrow">Planos e preços</span>
       <h1>Comece grátis. Pague só quando a cobrança virar rotina.</h1>
       <p class="lead">
-        Os quatro planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está nos limites, como clientes, demonstrativos, lançamentos, armazenamento e usuários, e nos recursos para apresentar a sua marca, acompanhar o cliente e organizar o financeiro.
+        Os quatro planos registram serviços, fecham o mês e emitem demonstrativos. A diferença está nos limites, como clientes, demonstrativos, lançamentos, itens de estoque, bens, armazenamento e usuários, e nos recursos para apresentar a sua marca, acompanhar o cliente e organizar o financeiro.
       </p>
 
       <fieldset class="toggle" aria-label="Período de cobrança">

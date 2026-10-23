@@ -16,7 +16,7 @@ const guias = defineCollection({
     title: z.string().max(60),
     h1: z.string().max(90),
     description: z.string().min(110).max(160),
-    cluster: z.enum(['ordem-de-servico', 'cobranca', 'precificacao', 'documentos', 'gestao', 'financeiro']),
+    cluster: z.enum(['ordem-de-servico', 'cobranca', 'precificacao', 'documentos', 'gestao', 'financeiro', 'estoque-e-patrimonio']),
     /** Termo principal buscado e variações (orientam o texto; não viram meta keywords). */
     keyword: z.string(),
     keywords: z.array(z.string()).default([]),

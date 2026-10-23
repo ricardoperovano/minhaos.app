@@ -5,7 +5,7 @@ profissao: "Prestador de manutenção predial"
 plural: "Manutenção predial"
 description: "Controle de manutenção predial para condomínios e empresas: registre chamados, visitas e contrato mensal e envie ao síndico um demonstrativo detalhado."
 keyword: "controle de manutenção predial"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["serviço", "visita", "hora", "diária", "unidade"]
 exemplo:
   cliente: "Condomínio Edifício Monte Verde (fictício)"
@@ -22,7 +22,7 @@ faq:
   - q: "Como prestar contas dos serviços ao síndico?"
     a: "Envie um demonstrativo com data, local e descrição de cada serviço, quantidade e valor. Anexe a nota fiscal, quando houver. Um histórico organizado ajuda o síndico a apresentar as despesas na assembleia."
   - q: "Material comprado para o condomínio entra na cobrança?"
-    a: "Sim, como linha separada, com descrição e valor, e com a nota de compra guardada. O MinhaOS App não controla estoque; o material é um item da cobrança."
+    a: "Sim, como linha separada da mão de obra, com a nota de compra guardada. No MinhaOS App, o material cadastrado no estoque é escolhido na própria linha do serviço: o preço vem do valor de venda do item e a baixa do estoque é registrada ao salvar."
   - q: "O MinhaOS App gera boleto para o condomínio?"
     a: "Não. O aplicativo emite um demonstrativo de cobrança com as instruções de pagamento que você configurar, como sua chave Pix. O pagamento é feito fora e você registra o recebimento."
 related: ["ordem-de-servico-de-manutencao", "numeracao-e-controle-de-ordens-de-servico", "contrato-de-prestacao-de-servico", "controle-de-servicos-prestados"]
@@ -63,10 +63,16 @@ O formato que melhor funciona é uma cobrança por mês e por cliente: o contrat
 - **Cobrança atrasada.** Quanto mais tempo entre o serviço e a cobrança, mais difícil lembrar e justificar. Feche o mês nos primeiros dias do mês seguinte.
 - **Histórico espalhado.** Mensagens no WhatsApp, papéis na caminhonete e anotações no celular não formam um histórico confiável do prédio.
 
+## Controle de material e ferramentas
+
+Lâmpadas, reatores, tinta, massa corrida, fita, parafusos e buchas são comprados em quantidade e usados aos poucos em vários prédios. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, cada material tem unidade (unidade, litro, quilo, caixa), estoque mínimo e custo. Ao lançar "6 lâmpadas LED" na linha do chamado, a saída é registrada sozinha, e você sabe quanto de material cada condomínio consumiu no mês.
+
+Escadas, andaimes, lavadoras de alta pressão e furadeiras costumam ficar em mais de um endereço. No [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), cada bem tem código, responsável, local e etiqueta com QR code, e a situação mostra o que está em manutenção ou emprestado. O guia [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/) mostra como organizar tudo.
+
 ## Como o MinhaOS App ajuda
 
 O MinhaOS App registra cada serviço com um código (como SV-0042) e uma ou mais linhas: data, descrição, unidade (serviço, visita, hora, diária ou unidade), quantidade e valor. O total é calculado automaticamente. A observação interna guarda o que só você precisa saber, como "motor do portão no limite, sugerir troca".
 
 No fechamento, você escolhe o cliente e o período, marca os lançamentos e emite o [demonstrativo de cobrança](/funcionalidades/demonstrativo-de-cobranca/), com número, período de referência, emissão, vencimento e as instruções de pagamento que você configurou. Um lançamento cobrado não entra em outra cobrança. O síndico recebe o link, abre sem criar conta, imprime em A4, baixa a nota fiscal [anexada](/funcionalidades/notas-fiscais-anexas/) e pode confirmar o recebimento.
 
-Você registra os pagamentos manualmente, acompanha saldos e atrasos e exporta os [relatórios](/funcionalidades/relatorios/) em CSV. O aplicativo não tem agenda de visitas, não controla estoque e não emite nota fiscal nem boleto.
+Você registra os pagamentos manualmente, acompanha saldos e atrasos e exporta os [relatórios](/funcionalidades/relatorios/) em CSV. O aplicativo não tem agenda de visitas e não emite nota fiscal nem boleto.

@@ -12,6 +12,7 @@ const crumbs = [
 ]
 const cobranca = features.filter((f) => !f.group || f.group === 'cobranca')
 const financeiro = features.filter((f) => f.group === 'financeiro')
+const estoque = features.filter((f) => f.group === 'estoque')
 const equipe = features.filter((f) => f.group === 'equipe')
 const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
   '@type': 'CollectionPage',
@@ -24,8 +25,8 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
 ---
 
 <Base
-  title="Funcionalidades: serviços, cobrança e financeiro"
-  description="Conheça o MinhaOS App: registro de serviços, fechamento mensal, demonstrativo com link, recebimentos, contas a pagar, contratos recorrentes e fluxo de caixa."
+  title="Funcionalidades: serviços, cobrança, financeiro e estoque"
+  description="Conheça o MinhaOS App: registro de serviços, fechamento mensal, demonstrativo com link, recebimentos, financeiro, estoque de material e patrimônio."
   path={path}
   jsonLd={ld}
 >
@@ -33,7 +34,7 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
     <Breadcrumbs items={crumbs} />
     <h1>Funcionalidades do MinhaOS App</h1>
     <p class="muted" style="font-size:19px;max-width:70ch">
-      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. No grupo Financeiro, controla as contas a pagar, os recebimentos avulsos e o fluxo de caixa. E, a partir do Profissional, divide o trabalho com a equipe, cada pessoa com o seu papel. Tudo no navegador ou instalado no celular.
+      Do registro do serviço ao recebimento: você anota o que executou, fecha o mês por cliente, envia um demonstrativo por link e acompanha quem já pagou. No grupo Financeiro, controla as contas a pagar, os recebimentos avulsos e o fluxo de caixa. No estoque, o material usado no serviço é baixado sozinho, e o patrimônio guarda cada ferramenta com etiqueta QR. E, a partir do Profissional, divide o trabalho com a equipe, cada pessoa com o seu papel. Tudo no navegador ou instalado no celular.
     </p>
 
     <ol class="flow" aria-label="Como funciona, em quatro passos">
@@ -60,6 +61,19 @@ const ld = graph(organizationLd, softwareLd, breadcrumbLd(crumbs), {
     <div class="grid grid-2" style="margin-top:16px">
       {
         financeiro.map((f) => (
+          <a class="card" href={`/funcionalidades/${f.slug}/`}>
+            <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
+            <p class="muted" style="margin:0">{f.summary}</p>
+          </a>
+        ))
+      }
+    </div>
+
+    <h2 id="estoque" style="margin-top:40px">Estoque e patrimônio</h2>
+    <p class="muted" style="max-width:70ch">O material que você usa nos serviços e as ferramentas e equipamentos do negócio. Em todos os planos, com limite de itens e bens por plano; anexos nos bens a partir do <a href="/planos/">Essencial</a>.</p>
+    <div class="grid grid-2" style="margin-top:16px">
+      {
+        estoque.map((f) => (
           <a class="card" href={`/funcionalidades/${f.slug}/`}>
             <h3 style="font-size:21px;margin:0 0 6px">{f.name}</h3>
             <p class="muted" style="margin:0">{f.summary}</p>

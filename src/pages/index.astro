@@ -8,10 +8,15 @@ import { tools } from '../lib/tools'
 import CurrencySwitch from '../components/CurrencySwitch.astro'
 import Money from '../components/Money.astro'
 import { plans, priceIn } from '../lib/plans'
-import { links, site } from '../site.config'
+import { clusters, links, site } from '../site.config'
 
 const guias = await getCollection('guias')
-const pilares = guias.filter((g) => g.data.pillar).slice(0, 6)
+// Pilares na ordem dos temas (site.config): os temas mais novos ficam no fim e não tiram da home os pilares de cobrança.
+const clusterOrder = Object.keys(clusters)
+const pilares = guias
+  .filter((g) => g.data.pillar)
+  .sort((a, b) => clusterOrder.indexOf(a.data.cluster) - clusterOrder.indexOf(b.data.cluster) || a.id.localeCompare(b.id))
+  .slice(0, 6)
 const profissoes = (await getCollection('profissoes')).sort((a, b) => a.data.plural.localeCompare(b.data.plural))
 
 const faq = [
@@ -36,6 +41,9 @@ const recursos = [
   { href: '/funcionalidades/contas-a-pagar/', t: 'Contas a pagar', d: 'Despesas com vencimento e categoria, lembrete diário e custo ligado ao serviço.' },
   { href: '/funcionalidades/contratos-recorrentes/', t: 'Contratos recorrentes', d: 'A mensalidade do cliente vira lançamento de serviço sozinha, em cada data.' },
   { href: '/funcionalidades/fluxo-de-caixa/', t: 'Fluxo de caixa', d: 'Realizado × previsto mês a mês, atrasos e próximos 30 dias.' },
+  { href: '/funcionalidades/controle-de-estoque/', t: 'Controle de estoque', d: 'Baixa automática do material no serviço, saldo, estoque mínimo e reposição.' },
+  { href: '/funcionalidades/controle-de-patrimonio/', t: 'Controle de patrimônio', d: 'Ferramentas e equipamentos com código, situação, nota fiscal e etiqueta QR code.' },
+  { href: '/funcionalidades/usuarios-e-permissoes/', t: 'Usuários e permissões', d: 'A equipe na mesma conta, cada pessoa com o seu papel: administrador, operador ou financeiro.' },
 ]
 ---
 

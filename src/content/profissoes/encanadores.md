@@ -5,7 +5,7 @@ profissao: "Encanador"
 plural: "Encanadores"
 description: "Ordem de serviço para encanador: registre visitas, desentupimentos, horas e material por cliente e envie a cobrança com link, sem papel e sem planilha."
 keyword: "ordem de serviço para encanador"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["visita", "serviço", "hora", "unidade"]
 exemplo:
   cliente: "Restaurante Sabor da Serra (fictício)"
@@ -22,7 +22,7 @@ faq:
   - q: "Como cobrar caça-vazamento que demora mais que o previsto?"
     a: "Para trabalhos de duração incerta, combine valor por hora e registre o tempo real gasto, com frações quando for o caso (por exemplo, 2,5 horas). Avise o cliente se o tempo passar muito do estimado."
   - q: "Posso lançar o material junto com a mão de obra?"
-    a: "Pode, mas o ideal é separar. Material em uma linha e mão de obra em outra deixam a conta transparente. O MinhaOS App não controla estoque; o material entra como linha do serviço."
+    a: "Pode, mas o ideal é separar. Material em uma linha e mão de obra em outra deixam a conta transparente. No MinhaOS App, o material cadastrado no estoque é escolhido na própria linha do serviço: o preço vem do valor de venda do item e a baixa do estoque é registrada ao salvar."
   - q: "Como cobrar clientes que chamam várias vezes no mês?"
     a: "Registre cada chamado no dia e cobre tudo de uma vez no fechamento do mês. O cliente recebe um único demonstrativo com cada data e valor."
 related: ["como-fazer-ordem-de-servico", "como-fazer-orcamento-de-servico", "custos-esquecidos-no-preco", "como-cobrar-cliente"]
@@ -70,6 +70,12 @@ Restaurantes, condomínios, lojas e imobiliárias chamam com frequência. Para e
 - **Material pago do próprio bolso e não repassado.** Pequenas compras na loja somam rápido.
 - **Hora extra sem aviso.** Se o caça-vazamento vai passar do previsto, avise o cliente antes de continuar.
 
+## Controle de material e ferramentas
+
+Tubo de PVC, conexões, registros, sifões, veda-rosca e cola somem aos poucos do carro, e falta justamente a conexão de que você precisa no meio do conserto. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, cada material tem unidade (metro para o tubo, unidade para o registro, rolo para o veda-rosca) e estoque mínimo. Ao lançar o material na linha do serviço, a saída é registrada sozinha, e o que está acabando aparece no painel.
+
+Ferramentas de maior valor, como a máquina de desentupir, o detector de vazamento e a câmera de inspeção, entram no [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), com código, situação (em uso, em manutenção, emprestada) e etiqueta com QR code. Veja o passo a passo em [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/).
+
 ## Como o MinhaOS App ajuda
 
 No MinhaOS App, cada serviço tem uma ou mais linhas com data, descrição, unidade, quantidade e valor. Se você voltou no dia seguinte para terminar, é só acrescentar uma linha com a nova data. O total é calculado automaticamente, e as observações internas não aparecem para o cliente.
@@ -78,4 +84,4 @@ Na hora de cobrar, você pode emitir um demonstrativo para um serviço específi
 
 O cliente recebe o demonstrativo por link (copiado, pelo WhatsApp com mensagem pronta ou pelo compartilhamento do celular), abre sem cadastro e pode confirmar que recebeu. Quando o pagamento chega, você registra o [recebimento](/funcionalidades/recebimentos-e-saldos/), inclusive parcial, e acompanha o saldo.
 
-O aplicativo não emite nota fiscal, não gera Pix ou boleto e não tem controle de estoque. Ele organiza o registro e a cobrança.
+O aplicativo não emite nota fiscal e não gera Pix ou boleto. Ele organiza o registro, a cobrança e o material que você usa.

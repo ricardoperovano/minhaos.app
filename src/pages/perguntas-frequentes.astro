@@ -48,11 +48,16 @@ const grupos: Grupo[] = [
       },
       {
         q: 'O que o MinhaOS App não faz?',
-        a: 'Ele não emite nota fiscal nem NFS-e, não processa pagamentos, não gera boleto nem cobrança Pix, não é banco, não faz conciliação bancária automática, não calcula impostos, não envia mensagens de WhatsApp automaticamente, não controla estoque e não tem agenda, assinatura digital nem certificado digital. Contas a pagar e recebimentos você registra no app, mas o pagamento em si acontece fora dele.',
+        a: 'Ele não emite nota fiscal nem NFS-e, não processa pagamentos, não gera boleto nem cobrança Pix, não é banco, não faz conciliação bancária automática, não calcula impostos, não envia mensagens de WhatsApp automaticamente e não tem agenda, assinatura digital nem certificado digital. O estoque e o patrimônio são para controle do seu negócio: não fazem inventário fiscal nem calculam depreciação. Contas a pagar e recebimentos você registra no app, mas o pagamento em si acontece fora dele.',
+      },
+      {
+        q: 'O MinhaOS App controla estoque de material e ferramentas?',
+        a: 'Sim. No estoque, você cadastra o material com unidade, estoque mínimo, custo e valor de venda; ao escolher o material na linha do serviço e salvar, a saída é registrada sozinha e o cliente é cobrado pelo valor de venda. No patrimônio, cada ferramenta ou equipamento tem código (como PAT-0001), situação, responsável, garantia e etiqueta com QR code. Os dois estão em todos os planos, com limite de itens e bens por plano.',
+        link: { href: '/funcionalidades/controle-de-estoque/', label: 'Controle de estoque' },
       },
       {
         q: 'Tem relatórios?',
-        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos, saldo atual, contas a pagar, recebimentos avulsos e margem por serviço e cliente, com impressão em A4 e, nos planos pagos, exportação em CSV e fluxo de caixa. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido), o Financeiro do mês e as pendências.',
+        a: 'Sim. Há relatórios de serviços executados, valores a faturar, demonstrativos emitidos, recebimentos, saldo atual, contas a pagar, recebimentos avulsos, margem por serviço e cliente, posição e movimentações de estoque e inventário de patrimônio, com impressão em A4 e, nos planos pagos, exportação em CSV e fluxo de caixa. O painel mostra os indicadores do mês (executado, a faturar, faturado e recebido), o Financeiro do mês e as pendências.',
         link: { href: '/funcionalidades/relatorios/', label: 'Relatórios' },
       },
     ],

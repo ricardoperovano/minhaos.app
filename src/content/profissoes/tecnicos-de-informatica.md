@@ -5,7 +5,7 @@ profissao: "Técnico de informática"
 plural: "Técnicos de informática"
 description: "Ordem de serviço para técnico de informática: registre visitas, horas e suporte mensal por cliente e envie um demonstrativo detalhado no fim do mês."
 keyword: "ordem de serviço para técnico de informática"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["visita", "hora", "serviço", "unidade"]
 exemplo:
   cliente: "Escritório Contábil Horizonte (fictício)"
@@ -22,7 +22,7 @@ faq:
   - q: "Como cobrar contrato mensal de suporte de TI?"
     a: "Lance o valor fixo do mês como uma linha (por exemplo, 1 serviço) e os atendimentos fora do contrato como linhas separadas, por hora ou por visita. No fechamento, tudo vai em um único demonstrativo, e o cliente vê o que é fixo e o que é extra."
   - q: "Como cobrar peças e equipamentos que eu comprei?"
-    a: "Registre a peça como uma linha própria, com descrição e valor, e guarde a nota de compra. O MinhaOS App não tem controle de estoque; a peça entra como item do serviço, separada da mão de obra."
+    a: "Registre a peça como uma linha própria, separada da mão de obra, e guarde a nota de compra. No MinhaOS App, se a peça está no estoque, você escolhe o item na linha: o preço vem do valor de venda cadastrado e a saída do estoque é registrada sozinha ao salvar o serviço."
   - q: "O cliente precisa instalar alguma coisa para ver a cobrança?"
     a: "Não. O demonstrativo é enviado por link e abre no navegador, sem cadastro. O cliente pode imprimir, salvar em PDF e baixar notas fiscais anexadas."
 related: ["ordem-de-servico-digital", "quanto-cobrar-por-hora", "cobrar-por-hora-diaria-ou-projeto", "fechamento-mensal-de-servicos"]
@@ -59,6 +59,12 @@ Com esse histórico, você responde rápido quando o cliente pergunta "o que foi
 
 Para escritórios e pequenas empresas, o melhor formato costuma ser uma cobrança por mês: o valor do contrato em uma linha e cada atendimento extra em outra, com data e quantidade. O cliente vê, em um só documento, o que é fixo e o que foi adicional. O guia de [fechamento mensal de serviços](/guias/fechamento-mensal-de-servicos/) mostra como montar essa rotina.
 
+## Controle de material e ferramentas
+
+SSD, memória, fonte, cabo de rede, conectores RJ45 e pasta térmica são peças pequenas, caras e fáceis de perder de vista. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, cada uma tem saldo, estoque mínimo e custo médio; o cabo de rede pode ser controlado em metro ou em caixa. Ao usar a peça num chamado, você escolhe o item na linha do serviço e a saída é registrada sozinha.
+
+Notebooks de teste, alicate de crimpar, testador de cabo e estação de solda entram no [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), com número de série, garantia, responsável e etiqueta com QR code. O guia [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/) explica como começar.
+
 ## Como o MinhaOS App ajuda
 
 No MinhaOS App você cadastra o cliente (pessoa física ou empresa) e registra o serviço com quantas linhas precisar. Cada linha tem data, descrição, unidade (hora, visita, unidade, serviço ou diária), quantidade com até quatro casas decimais e valor unitário. O total é calculado e arredondado em centavos. A observação interna fica separada da observação que o cliente vê.
@@ -67,4 +73,4 @@ No [fechamento mensal](/funcionalidades/fechamento-mensal/), você escolhe o cli
 
 Quando o pagamento entra, você registra o recebimento manualmente e acompanha o saldo e os atrasos nos [relatórios](/funcionalidades/relatorios/), com exportação em CSV.
 
-O aplicativo não emite nota fiscal, não gera boleto e não tem controle de estoque de peças. Se você emite NFS-e, anexe o PDF ou XML ao demonstrativo.
+O aplicativo não emite nota fiscal e não gera boleto. Se você emite NFS-e, anexe o PDF ou XML ao demonstrativo.

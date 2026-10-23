@@ -54,6 +54,7 @@ export const clusters = {
   documentos: { title: 'Recibos, notas e documentos', description: 'Recibo, nota fiscal, demonstrativo e contrato: o que cada um é e quando usar.' },
   gestao: { title: 'Organização e finanças', description: 'Controle de serviços, clientes, fluxo de caixa e rotina de quem trabalha por conta própria.' },
   financeiro: { title: 'Contas a pagar e receber', description: 'Contas a pagar, recebimentos, despesas, margem e previsão de caixa.' },
+  'estoque-e-patrimonio': { title: 'Estoque e patrimônio', description: 'Material e ferramentas: estoque mínimo, baixa no serviço e etiquetas.' },
 } as const
 
 export type ClusterKey = keyof typeof clusters

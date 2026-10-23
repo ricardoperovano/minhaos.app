@@ -12,7 +12,7 @@ keywords:
   - "registro de peças e horas na manutenção"
   - "OS de manutenção predial"
 publishedAt: 2026-10-14
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 pillar: false
 related:
   - "o-que-e-ordem-de-servico"
@@ -181,7 +181,7 @@ Uma rotina que funciona:
 2. Uma OS separada para cada chamado corretivo.
 3. No fim do mês, junte tudo: valor fixo do contrato mais os extras (peças, corretivas fora do escopo), em um único documento de cobrança. O guia [fechamento mensal de serviços](/guias/fechamento-mensal-de-servicos/) mostra como montar esse fechamento.
 
-Quem atende condomínios e empresas com várias visitas no mês pode registrar cada visita no MinhaOS App como uma linha de execução, com data, unidade (visita, hora, unidade) e valor, e no fechamento gerar o demonstrativo do período só com o que ainda não foi cobrado. Ele não controla estoque de peças nem agenda visitas; a programação das preventivas fica na sua tabela ou agenda.
+Quem atende condomínios e empresas com várias visitas no mês pode registrar cada visita no MinhaOS App como uma linha de execução, com data, unidade (visita, hora, unidade) e valor, e no fechamento gerar o demonstrativo do período só com o que ainda não foi cobrado. As peças que saem do seu [estoque](/funcionalidades/controle-de-estoque/) podem ser escolhidas na própria linha do serviço, e a baixa do material é registrada ao salvar. Ele não agenda visitas: a programação das preventivas fica na sua tabela ou agenda.
 
 ## Erros comuns na OS de manutenção
 

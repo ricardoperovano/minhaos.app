@@ -5,7 +5,7 @@ profissao: "Eletricista"
 plural: "Eletricistas"
 description: "Ordem de serviço para eletricista sem papelada: registre visitas, horas e material, feche o mês por cliente e envie um demonstrativo claro com link."
 keyword: "ordem de serviço para eletricista"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["visita", "hora", "serviço", "unidade"]
 exemplo:
   cliente: "Condomínio Residencial Ipê Amarelo (fictício)"
@@ -20,7 +20,7 @@ faq:
   - q: "Eletricista deve cobrar por visita, por hora ou por serviço?"
     a: "Depende do trabalho. Diagnóstico e pequenos reparos costumam ser cobrados por visita; instalações longas e imprevisíveis, por hora; trabalhos bem definidos, como trocar um chuveiro, por serviço com preço fechado. O importante é deixar a unidade e a quantidade explícitas na cobrança."
   - q: "Como cobrar o material que comprei para a obra?"
-    a: "Lance o material como uma linha separada, com a descrição dos itens e o valor, e guarde a nota da loja. Assim o cliente vê o que é mão de obra e o que é repasse. O MinhaOS App não controla estoque; o material entra apenas como uma linha do serviço."
+    a: "Lance o material em uma linha separada da mão de obra e guarde a nota da loja. Assim o cliente vê o que é mão de obra e o que é repasse. No MinhaOS App, se o material está cadastrado no estoque, você escolhe o item na linha: o preço vem do valor de venda e a saída do estoque é registrada sozinha ao salvar o serviço."
   - q: "O MinhaOS App emite nota fiscal para eletricista?"
     a: "Não. O aplicativo gera um demonstrativo de cobrança, que não é documento fiscal. Se você emite NFS-e pelo emissor da sua prefeitura ou pelo padrão nacional, pode anexar o PDF ou o XML ao demonstrativo para o cliente baixar pelo link."
   - q: "Dá para registrar o serviço pelo celular, no local da obra?"
@@ -72,6 +72,12 @@ Para ter um histórico útil, anote pelo menos:
 
 Esse registro serve como [comprovante de serviço executado](/guias/comprovante-de-servico-executado/) se surgir alguma dúvida depois.
 
+## Controle de material e ferramentas
+
+Cabo flexível de 2,5 mm² e 4 mm², disjuntores, tomadas, conectores e fita isolante giram rápido na van, e quase sempre acabam no pior momento. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, você cadastra cada material com a unidade certa (metro para o cabo, unidade para o disjuntor, rolo para a fita), define o estoque mínimo e, ao lançar "15 m de cabo 2,5 mm²" na linha do serviço, a saída é registrada sozinha. O painel mostra o que está abaixo do mínimo antes da próxima compra.
+
+As ferramentas que ficam com você ou com o ajudante, como alicate amperímetro, multímetro, furadeira e escada, entram no [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), com código, responsável e etiqueta com QR code. O guia [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/) mostra como montar isso do zero.
+
 ## Como o MinhaOS App ajuda o eletricista
 
 O MinhaOS App foi feito para essa rotina de registrar e cobrar. Você cadastra o cliente (pode ser só o nome, na pressa) e registra o serviço com uma ou mais linhas, cada uma com data, descrição, unidade, quantidade e valor. O total de cada linha é calculado automaticamente, arredondado em centavos. Há um campo de observação para o cliente e outro interno, só seu.
@@ -80,4 +86,4 @@ No fim do mês, o [fechamento mensal](/funcionalidades/fechamento-mensal/) mostr
 
 O demonstrativo vai por link: você copia, envia pelo WhatsApp com mensagem pronta ou usa o compartilhamento do celular. O cliente abre sem criar conta, pode imprimir e clicar em "Confirmar recebimento". Você acompanha a primeira e a última visualização registrada. Quando o pagamento chega, você registra o recebimento (Pix, transferência, dinheiro e outros) e o saldo é atualizado.
 
-O que ele não faz: não emite nota fiscal, não gera boleto nem Pix e não controla estoque de material. Se você emite NFS-e fora, basta [anexar o arquivo](/funcionalidades/notas-fiscais-anexas/) ao demonstrativo.
+O que ele não faz: não emite nota fiscal e não gera boleto nem Pix. Se você emite NFS-e fora, basta [anexar o arquivo](/funcionalidades/notas-fiscais-anexas/) ao demonstrativo.

@@ -5,7 +5,7 @@ profissao: "Técnico de ar-condicionado"
 plural: "Técnicos de ar-condicionado"
 description: "Ordem de serviço para técnico de ar-condicionado: registre limpezas, instalações e visitas por aparelho e cobre contratos de manutenção sem planilha."
 keyword: "ordem de serviço para ar-condicionado"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["unidade", "serviço", "visita", "hora"]
 exemplo:
   cliente: "Clínica Odontológica Bem Sorrir (fictícia)"
@@ -22,7 +22,7 @@ faq:
   - q: "Como cobrar contrato de manutenção preventiva?"
     a: "Registre cada visita de manutenção no dia em que acontece e faça um fechamento por mês ou por período combinado. Assim o cliente recebe um demonstrativo com as datas e os aparelhos atendidos, em vez de um valor sem detalhe."
   - q: "Gás, capacitor e outras peças entram na cobrança?"
-    a: "Sim, como linhas do serviço, com descrição e valor. O MinhaOS App não controla estoque; o material é apenas um item da cobrança. Guarde as notas de compra para conferência."
+    a: "Sim, como linhas do serviço, separadas da mão de obra. No MinhaOS App, gás, tubulação e peças cadastrados no estoque são escolhidos na própria linha: o preço vem do valor de venda e a saída do estoque é registrada sozinha ao salvar. Guarde as notas de compra para conferência."
   - q: "O demonstrativo substitui a nota fiscal?"
     a: "Não. O demonstrativo de cobrança organiza o que foi feito e quanto custa, mas não é documento fiscal. Se você emite nota, anexe o arquivo ao demonstrativo para o cliente baixar pelo link."
 related: ["ordem-de-servico-de-manutencao", "como-fazer-orcamento-de-servico", "fechamento-mensal-de-servicos", "comprovante-de-servico-executado"]
@@ -70,6 +70,12 @@ Esse registro também serve como [comprovante do serviço executado](/guias/comp
 - **Visita de diagnóstico esquecida.** Quando o reparo é feito dias depois, a visita inicial costuma ficar fora da conta.
 - **Contrato sem registro das visitas.** Sem as datas, é difícil comprovar que a manutenção periódica foi feita.
 
+## Controle de material e ferramentas
+
+Gás refrigerante (em quilo), tubulação de cobre (em metro), isolamento térmico, cabo PP, suportes e filtros são o material que mais pesa no custo de uma instalação. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, você registra cada compra com o custo, o sistema calcula o custo médio e, ao lançar "0,8 kg de gás" ou "4 m de tubo de cobre" na linha do serviço, a saída é registrada sozinha. A margem de cada instalação passa a considerar o material de verdade.
+
+Bomba de vácuo, manifold, recolhedora e flangeador são caros e circulam entre técnicos. No [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), cada um ganha código, responsável, garantia e etiqueta com QR code. O guia [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/) explica como começar.
+
 ## Como o MinhaOS App ajuda
 
 O MinhaOS App permite registrar um serviço com várias linhas: cada uma com data, descrição, unidade (unidade, serviço, visita, hora ou diária), quantidade e valor unitário. O total é calculado automaticamente. Você usa a observação para o cliente quando precisa explicar algo no documento, e a observação interna para anotações que só você vê.
@@ -78,4 +84,4 @@ No fim do mês, o [fechamento mensal](/funcionalidades/fechamento-mensal/) reún
 
 O cliente recebe um link, abre sem criar conta e pode baixar a nota fiscal que você [anexou](/funcionalidades/notas-fiscais-anexas/). Os pagamentos são registrados por você, inclusive parciais, e o saldo em aberto aparece no painel.
 
-O aplicativo não tem agenda de visitas, não controla estoque de peças e não emite nota fiscal.
+O aplicativo não tem agenda de visitas e não emite nota fiscal.

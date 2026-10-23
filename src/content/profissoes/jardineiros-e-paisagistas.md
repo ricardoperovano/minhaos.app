@@ -5,7 +5,7 @@ profissao: "Jardineiro"
 plural: "Jardineiros e paisagistas"
 description: "Controle de serviços de jardinagem: registre visitas de manutenção, diárias e mudas por cliente e envie no fim do mês uma cobrança detalhada por link."
 keyword: "controle de serviços de jardinagem"
-updatedAt: 2026-10-14
+updatedAt: 2026-10-22
 unidades: ["visita", "diária", "hora", "unidade", "serviço"]
 exemplo:
   cliente: "Condomínio Jardim das Palmeiras (fictício)"
@@ -18,7 +18,7 @@ faq:
   - q: "Como cobrar manutenção de jardim?"
     a: "O mais comum é um valor por visita, com frequência combinada (semanal, quinzenal, mensal), e extras cobrados à parte: poda de árvores, plantio, troca de grama. Registre cada visita no dia e cobre tudo no fim do mês."
   - q: "Como cobrar mudas, adubo e terra?"
-    a: "Lance os insumos como linhas separadas da mão de obra, com quantidade e valor por unidade. Guarde as notas de compra. O MinhaOS App não controla estoque; os insumos entram como itens da cobrança."
+    a: "Lance os insumos em linhas separadas da mão de obra, com quantidade e valor por unidade, e guarde as notas de compra. No MinhaOS App, adubo, substrato e mudas cadastrados no estoque são escolhidos na própria linha do serviço: o preço vem do valor de venda e a saída é registrada sozinha ao salvar."
   - q: "Paisagista cobra por projeto ou por hora?"
     a: "Projetos de paisagismo costumam ter preço fechado, definido por orçamento, enquanto a execução pode ser cobrada por diária de equipe. Deixe o escopo e as etapas por escrito antes de começar."
   - q: "Como evitar que o cliente esqueça de pagar a manutenção mensal?"
@@ -68,10 +68,16 @@ O formato mais prático é registrar cada atendimento no dia e fazer um [fechame
 - **Insumo sem quantidade.** "Mudas — R$ 156,00" gera dúvida; "24 mudas × R$ 6,50" não.
 - **Cobrar sem vencimento.** Defina uma data de pagamento e mantenha sempre o mesmo dia do mês.
 
+## Controle de material e ferramentas
+
+Adubo, substrato, terra vegetal, casca de pinus e mudas são comprados em saco, quilo ou unidade e usados aos poucos em vários clientes. No [controle de estoque](/funcionalidades/controle-de-estoque/) do MinhaOS App, cada insumo tem unidade, estoque mínimo e custo. Ao lançar "2 sacos de substrato" na linha da visita, a saída é registrada sozinha, e o painel mostra o que precisa ser reposto antes da próxima compra no viveiro. Para mudas e insumos perecíveis, lembre que o app não controla validade nem lote.
+
+Roçadeira, cortador de grama, soprador e motosserra exigem manutenção e às vezes ficam com um ajudante. No [controle de patrimônio](/funcionalidades/controle-de-patrimonio/), cada máquina tem código, situação, responsável, garantia e etiqueta com QR code. Veja mais em [controle de estoque para prestador de serviço](/guias/controle-de-estoque-para-prestador-de-servico/).
+
 ## Como o MinhaOS App ajuda
 
 O MinhaOS App registra serviços com várias linhas, cada uma com data, descrição, unidade (visita, diária, hora, unidade ou serviço), quantidade e valor unitário. O total é calculado automaticamente. Para um cliente de manutenção, você pode lançar cada visita como uma linha nova no mesmo serviço, ou criar um serviço por visita, como preferir.
 
 No início do mês, o [fechamento mensal](/funcionalidades/fechamento-mensal/) mostra o que ainda não foi cobrado daquele cliente. Você escolhe os lançamentos, define o vencimento e emite o demonstrativo, que vai por [link](/funcionalidades/link-e-acessos/). O cliente abre sem criar conta, imprime ou salva em PDF, e você acompanha se o link foi aberto.
 
-Quando o pagamento chega, você registra o recebimento e vê o saldo de cada cliente. O aplicativo não tem agenda de visitas, não controla estoque de mudas e não emite nota fiscal; ele cuida do registro e da cobrança.
+Quando o pagamento chega, você registra o recebimento e vê o saldo de cada cliente. O aplicativo não tem agenda de visitas e não emite nota fiscal; ele cuida do registro, da cobrança e do material que você usa.
